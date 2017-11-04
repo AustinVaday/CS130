@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "917988913368",
+    "firebase_url": "https://cs130-swaggy.firebaseio.com",
+    "project_id": "cs130-swaggy",
+    "storage_bucket": "cs130-swaggy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917988913368:android:22a49e452032d2a7",
+        "android_client_info": {
+          "package_name": "com.example.lunchmeet.lunchmeet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "917988913368-qen1oq2r1ga1b68aopg2d45saekv83tu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.lunchmeet.lunchmeet",
+            "certificate_hash": "f31f4aa2d19b76b1b4a541f7bebd95c4b7038696"
+          }
+        },
+        {
+          "client_id": "917988913368-c14g6kjcpm485nhd1pf5iqjua7llu5tv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2H1SCDgHHffRfrPIqPqF7TRdJMeNunc0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "917988913368-c14g6kjcpm485nhd1pf5iqjua7llu5tv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
