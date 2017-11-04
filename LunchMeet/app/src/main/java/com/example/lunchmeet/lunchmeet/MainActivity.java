@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "login";
     private TextView mStatusTextView;
     private TextView mDetailTextView;
+    public Button b;
+
     ///////////////
 
     private FirebaseAuth mAuth;
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mStatusTextView = (TextView) findViewById(R.id.status);
         mDetailTextView = (TextView) findViewById(R.id.detail);
+        b=(Button)findViewById(R.id.button);
         mAuth = FirebaseAuth.getInstance();
 
         ///////////////////////////////////
@@ -69,8 +73,21 @@ public class MainActivity extends AppCompatActivity {
                 updateUI(null);
                 // [END_EXCLUDE]
             }
+
+
+
+
+
         });
         //////////////////////////////////
+        b.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+               gotoMaps();
+
+            }
+        });
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
