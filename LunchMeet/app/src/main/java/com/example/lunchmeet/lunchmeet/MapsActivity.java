@@ -2,6 +2,9 @@ package com.example.lunchmeet.lunchmeet;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -14,6 +17,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     public User user;
+    PopupWindow popupwindow;
+    LayoutInflater layoutinflater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
