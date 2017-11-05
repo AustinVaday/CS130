@@ -57,19 +57,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         CameraUpdateFactory cameraUpdateFactory;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
+        LatLng sydney = new LatLng(-31, 150);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
         Bitmap resized = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+        Bitmap black = BitmapFactory.decodeResource(getResources(),
+                R.drawable.black);
+        Bitmap r_black = Bitmap.createScaledBitmap(black, 75, 75, true);
 
 //        BitmapDescriptorFactory
 //                .fromBitmap(getCircleBitmap(bitmap));
-        mMap.setMinZoomPreference(18.0f);
+        mMap.setMinZoomPreference(15.0f);
         mMap.setMaxZoomPreference(20.0f);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 10));
 
@@ -77,7 +81,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 .position(sydney)
                 .icon(BitmapDescriptorFactory
-                        .fromBitmap(getCircleBitmap(resized)))
+                        .fromBitmap(getCircleBitmap(resized,0,"5")))
+
+                .draggable(false));
+
+
+
+        Marker counter = mMap.addMarker(new MarkerOptions()
+                .position(sydney)
+                .anchor((float)-.75,(float).75)
+
+                .icon(BitmapDescriptorFactory
+                        .fromBitmap(getCircleBitmap(r_black,1,"5")))
 
                 .draggable(false));
 
@@ -87,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
-    private Bitmap getCircleBitmap(Bitmap bitmap) {
+    private Bitmap getCircleBitmap(Bitmap bitmap,int subcircle,String num) {
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(output);
@@ -104,6 +119,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
+        paint.setTextSize(50);
+        //paint.setColor(Color.BLACK);
+        if(subcircle==1)
+        canvas.drawText(num, (float)25, (float)55, paint );
 
         bitmap.recycle();
 
