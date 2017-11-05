@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -78,7 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 10));
 
         Marker perth = mMap.addMarker(new MarkerOptions()
-
+                .title("sydney")
                 .position(sydney)
                 .icon(BitmapDescriptorFactory
                         .fromBitmap(getCircleBitmap(resized,0,"5")))
@@ -100,6 +101,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
        // MarkerOptions markerOptionsObj = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.file));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if(marker != null && marker.getTitle().equals("sydney")); // if marker  source is clicked
+                Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
+                return true;
+            }
+        });
     }
 
     private Bitmap getCircleBitmap(Bitmap bitmap,int subcircle,String num) {
