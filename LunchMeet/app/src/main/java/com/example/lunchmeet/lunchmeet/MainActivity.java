@@ -146,4 +146,14 @@ public class MainActivity extends AppCompatActivity {
 //        startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
 
+    public void goToDBTest(View view){
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser == null) {
+            Toast.makeText(getApplicationContext(),"Please log in via Facebook", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(this, DBTestActivity.class);
+            startActivity(intent);
+        }
+    }
+
 }
