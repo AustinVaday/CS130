@@ -8,8 +8,8 @@ public class User {
     private String name;
     private String gender;
     private String profile_pic;
-    private float lat;
-    private float lon;
+    private double lat;
+    private double lon;
     private Group group;
     private State state;
     private Free_agent free_agent;
@@ -46,6 +46,19 @@ public class User {
             return free_agent;
         }
         return null;
+    }
+
+    public void setCoordinates(double latitude, double longitude) {
+        lat = latitude;
+        lon = longitude;
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLong() {
+        return lon;
     }
 
     public interface State{

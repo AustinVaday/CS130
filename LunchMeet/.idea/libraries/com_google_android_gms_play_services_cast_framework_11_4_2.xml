@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="com.google.android.gms:play-services-cast-framework-11.4.2">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.4.2.aar/5c11d34460782c695db048f19e51ace4/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.4.2.aar/5c11d34460782c695db048f19e51ace4/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.4.2.aar/87703e809a2922c41a38298d1ec78a4d/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.4.2.aar/87703e809a2922c41a38298d1ec78a4d/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
