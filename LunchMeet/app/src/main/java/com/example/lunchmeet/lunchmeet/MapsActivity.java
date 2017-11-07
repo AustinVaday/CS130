@@ -48,7 +48,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,22 +68,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void checkLocationPermissions() {
+        // check if user has granted the Location permission to app to continuously track location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             System.out.println("request permission");
+
+            // request Location permission
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
         else {
+            // permission already granted
             System.out.println("permission already granted");
             setUpLocationRequest();
+        }
+    }
+
+    public void setUpLocationRequest() {
+        // set up location request for Google Play Services to get location continuously
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(5000);
+        mLocationRequest.setFastestInterval(3000);
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
+        // get user's current location + add marker on map at that loc
+        Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (loc != null) {
+            LatLng currLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
+            createMarker(currLoc);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
         }
     }
 
@@ -102,7 +116,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     setUpLocationRequest();
 
                 } else {
-                    System.out.println("boo");
                     // permission denied, boo! Disable the functionality that depends on this permission.
                 }
                 return;
@@ -123,54 +136,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //updateMap(-34, 151);
+        mMap.setMinZoomPreference(15.0f);
+        mMap.setMaxZoomPreference(20.0f);
     }
 
-    public void updateMap(Marker m, double lat, double lon) {
-        CameraUpdateFactory cameraUpdateFactory;
+    public void updateMap(double lat, double lon) {
+        // set marker at the user's new position specified by lat and lon
+        LatLng currPos = new LatLng(lat, lon);
+        if (marker == null) {
+            marker = createMarker(currPos);
+        }
+        marker.setPosition(currPos);
 
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);
-        /*
-        LatLng sydney = new LatLng(lat, lon);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPos, 17));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
+    }
 
+    public Marker createMarker(LatLng currLoc) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
-        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 200, 200, true); */
-
-//        BitmapDescriptorFactory
-//                .fromBitmap(getCircleBitmap(bitmap));
-        mMap.setMinZoomPreference(15.0f);
-        //mMap.setMinZoomPreference(2.0f);
-        mMap.setMaxZoomPreference(20.0f);
-        LatLng currPos = new LatLng(lat, lon);
-        m.setPosition(currPos);
-
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPos, 10));
-
-        /*
-        Marker perth = mMap.addMarker(new MarkerOptions()
-
-                .position(sydney)
+        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+        marker = mMap.addMarker(new MarkerOptions()
+                .position(currLoc)
                 .icon(BitmapDescriptorFactory
                         .fromBitmap(getCircleBitmap(resized)))
-
-                .draggable(false));
-                */
-
-
-
-        // MarkerOptions markerOptionsObj = new MarkerOptions().icon(BitmapDescriptorFactory.fromResource(R.drawable.file));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPos, 17));
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        System.out.println("location change");
-        //user.setCoordinates(location.getLatitude(), location.getLongitude());
-        //updateMap(user.getLat(), user.getLong());
-        updateMap(marker, location.getLatitude(), location.getLongitude());
+                .draggable(false)
+                .title("Current Location"));
+        return marker;
     }
 
     private Bitmap getCircleBitmap(Bitmap bitmap) {
@@ -196,30 +188,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return output;
     }
 
-    public void setUpLocationRequest() {
-        System.out.println("set up location request");
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(3000);
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-
-        Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        LatLng currLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.file);
-        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-        marker = mMap.addMarker(new MarkerOptions()
-                .position(currLoc)
-                .icon(BitmapDescriptorFactory
-                        .fromBitmap(getCircleBitmap(resized)))
-                .draggable(false)
-                .title("Current Location"));
-        updateMap(marker, loc.getLatitude(), loc.getLongitude());
+    @Override
+    public void onLocationChanged(Location location) {
+        System.out.println("location change");
+        updateMap(location.getLatitude(), location.getLongitude());
     }
 
     @Override
     public void onConnected(Bundle bundle) {
+        // check if user has granted permission for app to access Location upon connecting to Google Play Services
         checkLocationPermissions();
     }
 
