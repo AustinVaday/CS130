@@ -2,8 +2,6 @@ package com.example.lunchmeet.lunchmeet;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
