@@ -2,8 +2,6 @@ package com.example.lunchmeet.lunchmeet;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -144,6 +142,16 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 //        intent.putExtra("userID", curUser);
 //        startActivityForResult(intent, REQUEST_CODE_LOGIN);
+    }
+
+    public void goToDBTest(View view){
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser == null) {
+            Toast.makeText(getApplicationContext(),"Please log in via Facebook", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(this, DBTestActivity.class);
+            startActivity(intent);
+        }
     }
 
 }

@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -43,6 +44,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationRequest mLocationRequest;
     public User user;
     private Marker marker;
+    private Marker counterMarker;
     PopupWindow popupwindow;
     LayoutInflater layoutinflater;
 
@@ -52,7 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -138,6 +140,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.setMinZoomPreference(15.0f);
         mMap.setMaxZoomPreference(20.0f);
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                if(marker != null && marker.getTitle().equals("sydney")); // if marker  source is clicked
+                Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
+                return true;
+            }
+        });
     }
 
     public void updateMap(double lat, double lon) {
@@ -162,10 +172,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .fromBitmap(getCircleBitmap(resized)))
                 .draggable(false)
                 .title("Current Location"));
+
+        counterMarker = mMap.addMarker(new MarkerOptions()
+                .position(currLoc)
+                .anchor((float)-.75,(float).75)
+
+                .icon(BitmapDescriptorFactory
+                        .fromBitmap(getCircleBitmap(r_black,1,"5")))
+
+                .draggable(false));
         return marker;
     }
 
-    private Bitmap getCircleBitmap(Bitmap bitmap) {
+    private Bitmap getCircleBitmap(Bitmap bitmap,int subcircle,String num) {
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(output);
@@ -182,6 +201,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
+        paint.setTextSize(50);
+        //paint.setColor(Color.BLACK);
+        if(subcircle==1)
+        canvas.drawText(num, (float)25, (float)55, paint );
 
         bitmap.recycle();
 
