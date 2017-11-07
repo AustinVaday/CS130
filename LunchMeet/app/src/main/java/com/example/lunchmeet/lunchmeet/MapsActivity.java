@@ -143,8 +143,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                if(marker != null && marker.getTitle().equals("sydney")); // if marker  source is clicked
-                Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
+                if (marker != null) {
+                    if (marker.getTitle().equals("Current Location")) { // if marker source is clicked
+                        Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
+                    }
+                }
                 return true;
             }
         });
@@ -157,6 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             marker = createMarker(currPos);
         }
         marker.setPosition(currPos);
+        counterMarker.setPosition(currPos);
 
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPos, 17));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
@@ -166,10 +170,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
         Bitmap resized = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+        Bitmap black = BitmapFactory.decodeResource(getResources(),
+                R.drawable.black);
+        Bitmap r_black = Bitmap.createScaledBitmap(black, 75, 75, true);
         marker = mMap.addMarker(new MarkerOptions()
                 .position(currLoc)
                 .icon(BitmapDescriptorFactory
-                        .fromBitmap(getCircleBitmap(resized)))
+                        .fromBitmap(getCircleBitmap(resized, 0, "5")))
                 .draggable(false)
                 .title("Current Location"));
 
