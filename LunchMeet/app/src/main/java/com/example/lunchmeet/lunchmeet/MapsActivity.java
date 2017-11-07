@@ -183,11 +183,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         counterMarker = mMap.addMarker(new MarkerOptions()
                 .position(currLoc)
                 .anchor((float)-.75,(float).75)
-
                 .icon(BitmapDescriptorFactory
                         .fromBitmap(getCircleBitmap(r_black,1,"5")))
-
-                .draggable(false));
+                .draggable(false)
+                .title("Counter"));
         return marker;
     }
 
