@@ -15,42 +15,49 @@ public class DBUser {
     private String photoUrl;
     private double lat;
     private double lng;
+    private String group;
 
     public DBUser(){}
-    public DBUser(String uid, String name, String photoUrl, double lat, double lng){
+    DBUser(String uid, String name, String photoUrl, double lat, double lng, String group){
         this.uid = uid;
         this.name = name;
         this.photoUrl = photoUrl;
         this.lat = lat;
         this.lng = lng;
+        this.group = null;
     }
 
-    public Map<String,Object> toMap(){
+    Map<String,Object> toMap(){
         HashMap<String, Object> map = new HashMap<>();
         map.put("name",name);
         map.put("photoUrl",photoUrl);
         map.put("lat",lat);
         map.put("lng",lng);
+        map.put("group",group);
         return map;
     }
 
-    public String getUid(){
+    String getUid(){
         return uid;
     }
 
-    public String getName(){
+    String getName(){
         return name;
     }
 
-    public String getPhotoUrl(){
+    String getPhotoUrl(){
         return photoUrl;
     }
 
-    public double getLat(){
+    double getLat(){
         return lat;
     }
 
-    public double getLng(){
+    double getLng(){
         return lng;
+    }
+
+    void setUid(String uid) {
+        this.uid = uid;
     }
 }

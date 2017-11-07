@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CS130.iml" filepath="$PROJECT_DIR$/CS130.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/CS130.iml" filepath="$PROJECT_DIR$/.idea/CS130.iml" />
+      <module fileurl="file://C:\Users\Brian\AndroidStudioProjects\CS130\CS130.iml" filepath="C:\Users\Brian\AndroidStudioProjects\CS130\CS130.iml" />
     </modules>
   </component>
 </project>

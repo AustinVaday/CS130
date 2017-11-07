@@ -1,8 +1,15 @@
 package com.example.lunchmeet.lunchmeet;
 
-import com.google.android.gms.maps.model.LatLng;
+import android.util.Log;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Brian Kwak on 11/4/2017.
@@ -11,42 +18,63 @@ import com.google.firebase.database.FirebaseDatabase;
 public class DBManager{
     private static final DBManager instance = new DBManager();
     private DatabaseReference database;
-    private DBUserNotifier userNotifier;
-
+    private String TAG = "DBManager";
 
 
     private DBManager(){
         database = FirebaseDatabase.getInstance().getReference();
-        userNotifier = new DBUserNotifier();
     }
 
-    public static DBManager getInstance(){
+    static DBManager getInstance(){
         return instance;
     }
 
-    public void updateUser(DBUser u){
+    void updateUser(DBUser u){
         database.child("users").child(u.getUid()).setValue(u.toMap());
     }
 
-    public void updateUser(String uid, double lat, double lng){
+    void updateUser(String uid, double lat, double lng){
         DatabaseReference ref = database.child("users").child(uid);
         ref.child("lat").setValue(lat);
         ref.child("lng").setValue(lng);
     }
 
-    public void removeUser(DBUser u){
-        database.child("users").child(u.getUid()).removeValue();
+    void getUsers(DBUserObserver o){
+        final DBUserObserver obs = o;
+        database.child("users").addListenerForSingleValueEvent(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<DBUser> result = new ArrayList<>();
+                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                    String uid = child.getKey();
+                    DBUser user = child.getValue(DBUser.class);
+                    user.setUid(uid);
+
+                    result.add(user);
+                }
+                obs.run(result);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getUsers:onCancelled", databaseError.toException());
+            }
+        });
     }
 
-    public void removeUser(String uid){
+    void removeUser(DBUser u){
+        database.child("users").child(u.getUid()).removeValue();
+    }
+    void removeUser(String uid){
         database.child("users").child(uid).removeValue();
     }
 
-    public void addUserObserver(DBObserver o){
-        userNotifier.attach(o);
-    }
-    public void removeUserObserver(DBObserver o){
-        userNotifier.detach(o);
+    void createGroup(String uid){
+        DatabaseReference ref = database.child("groups").push();
+        String key = ref.getKey();
+        ref.child(uid).setValue(true);
+
+        database.child("users").child(uid).child("group").setValue(key);
     }
 
 }
