@@ -9,7 +9,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Brian Kwak on 11/4/2017.
@@ -39,9 +41,9 @@ public class DBManager{
         ref.child("lng").setValue(lng);
     }
 
-    void getUsers(DBUserObserver o){
-        final DBUserObserver obs = o;
-        database.child("users").addListenerForSingleValueEvent(new ValueEventListener(){
+    void getUsers(DBObserver<List<DBUser>> o){
+        final DBObserver obs = o;
+        database.child("users").addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<DBUser> result = new ArrayList<>();
@@ -62,6 +64,25 @@ public class DBManager{
         });
     }
 
+    void getUserFromUid(DBObserver<DBUser> o, String uid){
+        final DBObserver obs = o;
+        database.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String uid = dataSnapshot.getKey();
+                DBUser user = dataSnapshot.getValue(DBUser.class);
+                user.setUid(uid);
+
+                obs.run(user);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getUserFromUid:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
     void removeUser(DBUser u){
         database.child("users").child(u.getUid()).removeValue();
     }
@@ -69,12 +90,42 @@ public class DBManager{
         database.child("users").child(uid).removeValue();
     }
 
-    void createGroup(String uid){
+    String createGroup(String uid){
         DatabaseReference ref = database.child("groups").push();
         String key = ref.getKey();
         ref.child(uid).setValue(true);
 
         database.child("users").child(uid).child("group").setValue(key);
+        return key;
     }
 
+    void getGroups(DBObserver<Map<String,List<String>>> o){
+        final DBObserver obs = o;
+        database.child("groups").addValueEventListener(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, List<String>> result = new HashMap<>();
+                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                    String gid = child.getKey();
+                    List<String> userList = new ArrayList<>();
+                    for(DataSnapshot user : child.getChildren()){
+                        userList.add(user.getKey());
+                    }
+
+                    result.put(gid, userList);
+                }
+                obs.run(result);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "getUsersInGroup:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
+    public void joinGroup(String gid, String uid) {
+        database.child("users").child(uid).child("group").setValue(gid);
+        database.child("groups").child(gid).child(uid).setValue(true);
+    }
 }

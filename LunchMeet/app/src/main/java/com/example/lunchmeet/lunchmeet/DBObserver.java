@@ -6,6 +6,6 @@ import java.util.List;
  * Created by Brian on 11/6/2017.
  */
 
-public interface DBUserObserver {
-    public void run(List<DBUser> list);
+public interface DBObserver<T> {
+    public void run(T param);
 }
