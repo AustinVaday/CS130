@@ -17,7 +17,11 @@ import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.Toast;
@@ -145,7 +149,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public boolean onMarkerClick(Marker marker) {
                 if (marker != null) {
                     if (marker.getTitle().equals("Current Location")) { // if marker source is clicked
-                        Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
+                        // Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
+                        layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                        ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null);
+                        popupwindow = new PopupWindow(container, 400, 400, true);
+                        popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, 500, 500);
+
+                        container.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View view, MotionEvent motionEvent) {
+                                popupwindow.dismiss();
+                                return false;
+                            }
+                        });
                     }
                 }
                 return true;
