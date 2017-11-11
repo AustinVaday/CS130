@@ -36,8 +36,9 @@ public class DBTestActivity extends AppCompatActivity {
 
         DBUser u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString(),0.0,0.0,null);
 
-        mManager.updateUser(u);
-        mManager.getUsers(new DBObserver<List<DBUser>>(){
+        mManager.addUser(u);
+        mManager.updateUserLocation(u, 0, 0);
+        mManager.getActiveUsers(new DBObserver<List<DBUser>>(){
             @Override
             public void run(List<DBUser> list){
                 drawUsers(list);
@@ -58,11 +59,18 @@ public class DBTestActivity extends AppCompatActivity {
     }
 
     public void drawUsers(List<DBUser> list){
-        TableLayout layout = findViewById(R.id.users);
+        final TableLayout layout = findViewById(R.id.users);
         layout.removeAllViews();
         for(DBUser u : list){
-            TableRow entry = drawUser(u);
-            layout.addView(entry);
+            final DBUser user = u;
+            mManager.getUserFromUid(new DBObserver<DBUser>(){
+                @Override
+                public void run(DBUser u){
+                    u.setLocation(user.getLat(),user.getLng());
+                    TableRow entry = drawUser(u);
+                    layout.addView(entry);
+                }
+            }, u.getUid());
         }
     }
 

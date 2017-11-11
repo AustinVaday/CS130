@@ -31,19 +31,23 @@ public class DBManager{
         return instance;
     }
 
-    void updateUser(DBUser u){
+    void addUser(DBUser u){
         database.child("users").child(u.getUid()).setValue(u.toMap());
     }
 
-    void updateUser(String uid, double lat, double lng){
-        DatabaseReference ref = database.child("users").child(uid);
+    void updateUserLocation(String uid, double lat, double lng){
+        DatabaseReference ref = database.child("active").child(uid);
         ref.child("lat").setValue(lat);
         ref.child("lng").setValue(lng);
     }
 
-    void getUsers(DBObserver<List<DBUser>> o){
+    void updateUserLocation(DBUser u, double lat, double lng){
+        updateUserLocation(u.getUid(),lat,lng);
+    }
+
+    void getActiveUsers(DBObserver<List<DBUser>> o){
         final DBObserver obs = o;
-        database.child("users").addValueEventListener(new ValueEventListener(){
+        database.child("active").addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<DBUser> result = new ArrayList<>();

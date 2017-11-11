@@ -60,4 +60,9 @@ public class DBUser {
     void setUid(String uid) {
         this.uid = uid;
     }
+
+    void setLocation(double lat, double lng){
+        this.lat = lat;
+        this.lng = lng;
+    }
 }
