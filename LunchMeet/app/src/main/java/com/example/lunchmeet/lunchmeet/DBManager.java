@@ -99,17 +99,17 @@ public class DBManager{
         return key;
     }
 
-    void getGroups(DBObserver<Map<String,List<String>>> o){
+    void getGroups(DBObserver<Map<String,Map<String,Boolean>>> o){
         final DBObserver obs = o;
         database.child("groups").addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, List<String>> result = new HashMap<>();
+                Map<String, Map<String,Boolean>> result = new HashMap<>();
                 for(DataSnapshot child : dataSnapshot.getChildren()) {
                     String gid = child.getKey();
-                    List<String> userList = new ArrayList<>();
+                    Map<String,Boolean> userList = new HashMap<>();
                     for(DataSnapshot user : child.getChildren()){
-                        userList.add(user.getKey());
+                        userList.put(user.getKey(),(Boolean)user.getValue());
                     }
 
                     result.put(gid, userList);
@@ -126,6 +126,6 @@ public class DBManager{
 
     public void joinGroup(String gid, String uid) {
         database.child("users").child(uid).child("group").setValue(gid);
-        database.child("groups").child(gid).child(uid).setValue(true);
+        database.child("groups").child(gid).child(uid).setValue(false);
     }
 }

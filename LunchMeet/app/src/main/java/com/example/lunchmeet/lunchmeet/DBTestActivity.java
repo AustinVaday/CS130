@@ -44,9 +44,9 @@ public class DBTestActivity extends AppCompatActivity {
             }
         });
 
-        mManager.getGroups(new DBObserver<Map<String,List<String>>>(){
+        mManager.getGroups(new DBObserver<Map<String,Map<String,Boolean>>>(){
             @Override
-            public void run(Map<String,List<String>> map){
+            public void run(Map<String,Map<String,Boolean>> map){
                 LinearLayout ll = findViewById(R.id.groups);
                 ll.removeAllViews();
                 for(String gid : map.keySet()){
@@ -65,6 +65,7 @@ public class DBTestActivity extends AppCompatActivity {
             layout.addView(entry);
         }
     }
+
 
     public TableRow drawUser(DBUser u){
         TableRow tr = new TableRow(this);
@@ -90,7 +91,34 @@ public class DBTestActivity extends AppCompatActivity {
         return tr;
     }
 
-    public TableLayout drawGroup(String gid, List<String> uids){
+    public TableRow drawUser(DBUser u, boolean isLeader){
+        TableRow tr = new TableRow(this);
+        tr.setPadding(0, 20, 0, 29);
+        tr.setOrientation(LinearLayout.HORIZONTAL);
+
+        ImageView image = new ImageView(this);
+        Picasso.with(this)
+                .load(u.getPhotoUrl())
+                .into(image);
+        tr.addView(image);
+
+        TextView view = new TextView(this);
+        view.setPadding(10,0,0,0);
+
+        String name = u.getName();
+        if(isLeader) name += " " + getResources().getString(R.string.leader);
+        view.setText(name);
+        tr.addView(view);
+
+
+        TextView loc = new TextView(this);
+        loc.setPadding(10,0,0,0);
+        loc.setText("Loc: ("+u.getLat()+","+u.getLng()+")");
+        tr.addView(loc);
+        return tr;
+    }
+
+    public TableLayout drawGroup(String gid, Map<String,Boolean> uids){
         final TableLayout layout = new TableLayout(this);
         final String groupId = gid;
 
@@ -113,11 +141,12 @@ public class DBTestActivity extends AppCompatActivity {
         layout.addView(tr);
 
 
-        for(String uid : uids){
+        for(String uid : uids.keySet()){
+            final boolean bool = uids.get(uid);
             mManager.getUserFromUid(new DBObserver<DBUser>(){
                 @Override
                 public void run(DBUser u){
-                    TableRow entry = drawUser(u);
+                    TableRow entry = drawUser(u, bool);
                     layout.addView(entry);
                 }
             }, uid);

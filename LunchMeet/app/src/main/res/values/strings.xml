@@ -5,4 +5,7 @@
     <string name="fb_login_protocol_scheme">fb148732289207865</string>
     <string name="signed_out">Signed Out</string>
     <string name="title_activity_dbtest">DBTestActivity</string>
+
+
+    <string name="leader">👑</string>
 </resources>
