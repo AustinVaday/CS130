@@ -22,6 +22,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.Toast;
@@ -83,8 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-        else {
+        } else {
             // permission already granted
             System.out.println("permission already granted");
             setUpLocationRequest();
@@ -152,8 +153,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         // Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
                         layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                         ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null);
-                        popupwindow = new PopupWindow(container, 400, 400, true);
-                        popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, 500, 500);
+                        popupwindow = new PopupWindow(container, 300, 210, true);
+                        ImageButton ib = (ImageButton)container.findViewById(R.id.imageButton);
+                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                                R.drawable.file);
+                        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
+                        ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+                        Button bt = (Button)container.findViewById(R.id.button2);
+                        bt.setBackgroundColor(Color.BLUE);
+                        popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
 
                         container.setOnTouchListener(new View.OnTouchListener() {
                             @Override
