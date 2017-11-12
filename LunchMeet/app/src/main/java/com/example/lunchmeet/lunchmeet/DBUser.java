@@ -13,27 +13,18 @@ public class DBUser {
     private String uid;
     private String name;
     private String photoUrl;
-    private double lat;
-    private double lng;
-    private String group;
 
     public DBUser(){}
-    DBUser(String uid, String name, String photoUrl, double lat, double lng, String group){
+    DBUser(String uid, String name, String photoUrl){
         this.uid = uid;
         this.name = name;
         this.photoUrl = photoUrl;
-        this.lat = lat;
-        this.lng = lng;
-        this.group = null;
     }
 
     Map<String,Object> toMap(){
         HashMap<String, Object> map = new HashMap<>();
         map.put("name",name);
         map.put("photoUrl",photoUrl);
-        map.put("lat",lat);
-        map.put("lng",lng);
-        map.put("group",group);
         return map;
     }
 
@@ -49,20 +40,13 @@ public class DBUser {
         return photoUrl;
     }
 
-    double getLat(){
-        return lat;
-    }
-
-    double getLng(){
-        return lng;
-    }
-
-    void setUid(String uid) {
+    void setUid(String uid){
         this.uid = uid;
     }
-
-    void setLocation(double lat, double lng){
-        this.lat = lat;
-        this.lng = lng;
+    void setName(String name){
+        this.name = name;
+    }
+    void setPhotoUrl(String photoUrl){
+        this.photoUrl = photoUrl;
     }
 }

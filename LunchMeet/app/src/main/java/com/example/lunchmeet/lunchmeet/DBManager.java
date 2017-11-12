@@ -2,6 +2,7 @@ package com.example.lunchmeet.lunchmeet;
 
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,50 +35,26 @@ public class DBManager{
     void addUser(DBUser u){
         database.child("users").child(u.getUid()).setValue(u.toMap());
     }
-
-    void updateUserLocation(String uid, double lat, double lng){
-        DatabaseReference ref = database.child("active").child(uid);
-        ref.child("lat").setValue(lat);
-        ref.child("lng").setValue(lng);
+    void addUser(String uid, String name, String photoUrl){
+        DatabaseReference ref = database.child("users").child(uid);
+        ref.child("name").setValue(name);
+        ref.child("photoUrl").setValue(photoUrl);
     }
-
-    void updateUserLocation(DBUser u, double lat, double lng){
-        updateUserLocation(u.getUid(),lat,lng);
+    void removeUser(DBUser u){
+        removeUser(u.getUid());
     }
-
-    void getActiveUsers(DBObserver<List<DBUser>> o){
-        final DBObserver obs = o;
-        database.child("active").addValueEventListener(new ValueEventListener(){
+    void removeUser(String uid){
+        database.child("users").child(uid).removeValue();
+    }
+    void getUserFromUid(DBListener<DBUser> o, String id){
+        final DBListener obs = o;
+        final String uid = id;
+        database.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<DBUser> result = new ArrayList<>();
-                for(DataSnapshot child : dataSnapshot.getChildren()) {
-                    String uid = child.getKey();
-                    DBUser user = child.getValue(DBUser.class);
-                    user.setUid(uid);
-
-                    result.add(user);
-                }
-                obs.run(result);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "getUsers:onCancelled", databaseError.toException());
-            }
-        });
-    }
-
-    void getUserFromUid(DBObserver<DBUser> o, String uid){
-        final DBObserver obs = o;
-        database.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener(){
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String uid = dataSnapshot.getKey();
-                DBUser user = dataSnapshot.getValue(DBUser.class);
-                user.setUid(uid);
-
-                obs.run(user);
+                DBUser u = dataSnapshot.getValue(DBUser.class);
+                u.setUid(uid);
+                obs.run(u);
             }
 
             @Override
@@ -87,49 +64,103 @@ public class DBManager{
         });
     }
 
-    void removeUser(DBUser u){
-        database.child("users").child(u.getUid()).removeValue();
+    void updateActiveUser(DBUser u, double lat, double lng){
+        updateActiveUser(u.getUid(),lat,lng);
     }
-    void removeUser(String uid){
-        database.child("users").child(uid).removeValue();
+    void updateActiveUser(String uid, double lat, double lng){
+        DatabaseReference ref = database.child("active").child(uid);
+        ref.child("lat").setValue(lat);
+        ref.child("lng").setValue(lng);
     }
-
-    String createGroup(String uid){
-        DatabaseReference ref = database.child("groups").push();
-        String key = ref.getKey();
-        ref.child(uid).setValue(true);
-
-        database.child("users").child(uid).child("group").setValue(key);
-        return key;
+    void removeActiveUser(String uid){
+        database.child("active").child(uid).removeValue();
     }
-
-    void getGroups(DBObserver<Map<String,Map<String,Boolean>>> o){
-        final DBObserver obs = o;
-        database.child("groups").addValueEventListener(new ValueEventListener(){
+    void attachListenerForActiveUsers(DBListener<List<DBActive>> o){
+        final DBListener obs = o;
+        database.child("active").addValueEventListener(new ValueEventListener(){
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Map<String,Boolean>> result = new HashMap<>();
+                List<DBActive> result = new ArrayList<>();
                 for(DataSnapshot child : dataSnapshot.getChildren()) {
-                    String gid = child.getKey();
-                    Map<String,Boolean> userList = new HashMap<>();
-                    for(DataSnapshot user : child.getChildren()){
-                        userList.put(user.getKey(),(Boolean)user.getValue());
-                    }
+                    DBActive active = child.getValue(DBActive.class);
+                    active.setUid(child.getKey());
 
-                    result.put(gid, userList);
+                    result.add(active);
                 }
                 obs.run(result);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "getUsersInGroup:onCancelled", databaseError.toException());
+                Log.w(TAG, "attachListenerForActiveUsers:onCancelled", databaseError.toException());
             }
         });
     }
 
-    public void joinGroup(String gid, String uid) {
-        database.child("users").child(uid).child("group").setValue(gid);
-        database.child("groups").child(gid).child(uid).setValue(false);
+    void updateGroupLeader(String gid, String uid){
+        database.child("groups").child(gid).child("leader").setValue(uid);
+    }
+    void updateGroupLocation(String gid, double lat, double lng){
+        DatabaseReference ref = database.child("groups").child(gid);
+        ref.child("lat").setValue(lat);
+        ref.child("lng").setValue(lng);
+
+    }
+    void updateGroupSize(String gid, int size){
+        database.child("groups").child(gid).child("size").setValue(size);
+    }
+    void removeGroup(String gid){
+        database.child("groups").child(gid).removeValue();
+    }
+    void attachListenerForGroups(DBListener<List<DBGroup>> o){
+        final DBListener obs = o;
+        database.child("groups").addValueEventListener(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<DBGroup> result = new ArrayList<>();
+                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                    DBGroup group = child.getValue(DBGroup.class);
+                    group.setGid(child.getKey());
+
+                    result.add(group);
+                }
+                obs.run(result);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "attachListenerForGroups:onCancelled", databaseError.toException());
+            }
+        });
+    }
+
+    String createGroup(String uid){
+        DatabaseReference ref = database.child("members").push();
+        String key = ref.getKey();
+        ref.child(uid).setValue(true);
+
+        return key;
+    }
+    void joinGroup(String gid, String uid, int size){
+        database.child("members").child(gid).child(uid).setValue(true);
+        database.child("groups").child(gid).child("size").setValue(size + 1);
+    }
+    void getMembers(DBListener<List<String>> o, String gid){
+        final DBListener obs = o;
+        database.child("members").child(gid).addListenerForSingleValueEvent(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> result = new ArrayList<>();
+                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                    result.add(child.getKey());
+                }
+                obs.run(result);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "attachListenerForMembers:onCancelled", databaseError.toException());
+            }
+        });
     }
 }
