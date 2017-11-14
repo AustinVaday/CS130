@@ -12,11 +12,13 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -24,8 +26,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -41,6 +47,19 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.squareup.picasso.Picasso;
+
+import com.google.firebase.auth.FirebaseUser;
+import com.squareup.picasso.Target;
+
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
+import static com.facebook.internal.Utility.logd;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
@@ -49,17 +68,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     public User user;
+    Bitmap bm;
     private Marker marker;
     private Marker counterMarker;
     PopupWindow popupwindow;
     LayoutInflater layoutinflater;
+    private final DBManager mManager = DBManager.getInstance();
+    private final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+    private String mGid;
+    DBUser u;
+
+
+
 
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.activity_maps);
+        if(mUser == null) {
+            return;
+        }
+
+        mGid = null;
+
+         u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
+
+        mManager.addUser(u);
+        mManager.updateActiveUser(u, 0, 0);
+
+        ImageView image = new ImageView(this);
+//        Picasso.with(this)
+//                .load(u.getPhotoUrl())
+//                .into(image);
+       // Log.e("url",u.getPhotoUrl());
+        Thread thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try  {
+                    try {
+                        URL url = new URL(u.getPhotoUrl());
+                        bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                    } catch(IOException e) {
+                        System.out.println(e);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+
+
+
+        //bm=((BitmapDrawable)image.getDrawable()).getBitmap();
+
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -74,6 +144,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .build();
         }
     }
+
+
 
     public void checkLocationPermissions() {
         // check if user has granted the Location permission to app to continuously track location
@@ -153,14 +225,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         // Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
                         layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                         ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null);
-                        popupwindow = new PopupWindow(container, 300, 210, true);
+                        popupwindow = new PopupWindow(container, 500, 500, true);
                         ImageButton ib = (ImageButton)container.findViewById(R.id.imageButton);
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                                 R.drawable.file);
                         Bitmap resized = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
                         ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
                         Button bt = (Button)container.findViewById(R.id.button2);
-                        bt.setBackgroundColor(Color.BLUE);
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
 
                         container.setOnTouchListener(new View.OnTouchListener() {
@@ -176,6 +247,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
+
 
     public void updateMap(double lat, double lon) {
         // set marker at the user's new position specified by lat and lon
@@ -193,7 +266,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public Marker createMarker(LatLng currLoc) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
-        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+        Bitmap resized;
+        if(bm==null){
+             resized= Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+
+        }
+        else{
+            Log.e("event","i went in the else statement");
+             resized= Bitmap.createScaledBitmap(bm, 200, 200, true);
+
+        }
+
+
         Bitmap black = BitmapFactory.decodeResource(getResources(),
                 R.drawable.black);
         Bitmap r_black = Bitmap.createScaledBitmap(black, 75, 75, true);

@@ -12,22 +12,20 @@
         android:gravity="center"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@color/white"
-        android:text="cacwafeawef" />
+
+        android:text="Robert" />
 
     <ImageButton
         android:id="@+id/imageButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="5"
-        android:background="@color/white"
-        android:scaleType="fitCenter"/>
+        />
         <!--app:srcCompat="@drawable/file" /> -->
 
     <Button
         android:id="@+id/button2"
         android:layout_width="match_parent"
-        android:background="@drawable/rounded"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Button" />
