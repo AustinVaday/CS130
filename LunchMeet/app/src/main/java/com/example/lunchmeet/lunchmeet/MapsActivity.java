@@ -102,10 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mManager.updateActiveUser(u, 0, 0);
 
         ImageView image = new ImageView(this);
-//        Picasso.with(this)
-//                .load(u.getPhotoUrl())
-//                .into(image);
-       // Log.e("url",u.getPhotoUrl());
+
         Thread thread = new Thread(new Runnable() {
 
             @Override
@@ -225,11 +222,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         // Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
                         layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                         ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null);
-                        popupwindow = new PopupWindow(container, 500, 500, true);
+                        popupwindow = new PopupWindow(container, 700, 600, true);
                         ImageButton ib = (ImageButton)container.findViewById(R.id.imageButton);
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                                 R.drawable.file);
-                        Bitmap resized = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
+                        Bitmap resized = Bitmap.createScaledBitmap(bm, 200, 200, true);
                         ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
                         Button bt = (Button)container.findViewById(R.id.button2);
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
