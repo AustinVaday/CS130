@@ -61,26 +61,46 @@ import java.util.List;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static com.facebook.internal.Utility.logd;
 
+/**
+ * The Default MapActivity class
+ *
+ */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    /**
+     * The User.
+     */
     public User user;
+    /**
+     * The Bm.
+     */
     Bitmap bm;
     private Marker marker;
     private Marker counterMarker;
+    /**
+     * The Popupwindow.
+     */
     PopupWindow popupwindow;
+    /**
+     * The Layoutinflater.
+     */
     LayoutInflater layoutinflater;
     private final DBManager mManager = DBManager.getInstance();
     private final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
     private String mGid;
+    /**
+     * The U.
+     */
     DBUser u;
 
 
-
-
+    /**
+     * The My permissions request access fine location.
+     */
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     @Override
@@ -143,7 +163,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
+    /**
+     * Check location permissions.
+     */
     public void checkLocationPermissions() {
         // check if user has granted the Location permission to app to continuously track location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -161,6 +183,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Sets up location request.
+     */
     public void setUpLocationRequest() {
         // set up location request for Google Play Services to get location continuously
         mLocationRequest = LocationRequest.create();
@@ -246,7 +271,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
+    /**
+     * Update map.
+     *
+     * @param lat the lat
+     * @param lon the lon
+     */
     public void updateMap(double lat, double lon) {
         // set marker at the user's new position specified by lat and lon
         LatLng currPos = new LatLng(lat, lon);
@@ -260,6 +290,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
     }
 
+    /**
+     * Create marker marker.
+     *
+     * @param currLoc the curr loc
+     * @return the marker
+     */
     public Marker createMarker(LatLng currLoc) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
