@@ -19,6 +19,13 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * DBTestActivity is basically just an activity made as a practical application of the functions
+ * implemented in DBManager, testing to make sure they are all functioning correctly. Most, if not
+ * all, of this is placeholder code that is unlikely to appear in the final product.
+ *
+ * @author Brian Kwak
+ */
 public class DBTestActivity extends AppCompatActivity {
     private final String TAG = "DBTestActivity";
 
