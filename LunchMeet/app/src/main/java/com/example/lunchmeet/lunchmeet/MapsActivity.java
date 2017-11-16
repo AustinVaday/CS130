@@ -62,11 +62,10 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static com.facebook.internal.Utility.logd;
 
 /**
- * The Default MapActivity class
+ * The Default MapActivity class.
  * Displays a map of the user's location and the surrounding area using the Google Maps API.
  * The map is shown upon the user successfully logging into the app via Facebook.
  * From here, the user can choose to invite others to their group, join a group, or create a group.
- *
  */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
@@ -79,7 +78,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * user based on what state they are in (eg a user in creator state can dissolve a group, but a user in
      * the free agent state cannot).
      */
-    public User user;
+    private User user;
     /**
      * Bitmap object used to draw the user and counter markers on the map.
      */
@@ -121,7 +120,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * maps activity. Also takes care of location permissions: if the user has not permitted the app
      * to access their location, they will be prompted to do so before being able to access any of the
      * map features.
-     * @param savedInstanceState: saved activity state, null upon first starting the activity
+     *
+     * @param savedInstanceState saved activity state, null upon first starting the activity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,9 +229,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Takes the appropriate actions based on whether the user granted location permissions to the app or not.
      * If the permission was granted, set up the Google Play Services location request to use GPS tracking.
      * Otherwise, don't allow the user to see the map actions.
-     * @param requestCode: the permission the user granted/denied
-     * @param permissions: list of permissions needed
-     * @param grantResults: which permissions were granted
+     *
+     * @param requestCode the permission the user granted/denied
+     * @param permissions list of permissions needed
+     * @param grantResults which permissions were granted
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
@@ -256,12 +257,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     /**
-     * Manipulates the map once available. The map is obtained through Google Maps API.
+     * Sets up the map once available. The map is obtained through Google Maps API.
      * This callback is triggered when the map is ready to be used.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      * Sets a listener to display a user's photo + info when their marker is clicked.
+     *
+     * @param googleMap the google map
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -306,8 +309,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Update the map based on the user's new location.
      *
-     * @param lat: user's new latitude
-     * @param lon: user's new longitude
+     * @param lat user's new latitude
+     * @param lon user's new longitude
      */
     public void updateMap(double lat, double lon) {
         // set marker at the user's new position specified by lat and lon
@@ -326,7 +329,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Create markers for the user and count of how many people are in their group (if any).
      * Markers are created using bitmaps.
      *
-     * @param currLoc: the current location of the user
+     * @param currLoc the current location of the user
      * @return the marker of the user's current location
      */
     public Marker createMarker(LatLng currLoc) {
@@ -394,7 +397,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Called when the user's location changes based on the location tracked from the phone GPS.
      * Calls the updateMap() method to show the user's new location on the map.
-     * @param location: user's new location
+     *
+     * @param location user's new location
      */
     @Override
     public void onLocationChanged(Location location) {
@@ -405,7 +409,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Called upon the app connecting to Google Play Services. Once this happens, checks that the user
      * has granted location permissions to the app.
-     * @param bundle
+     *
+     * @param bundle the application state
      */
     @Override
     public void onConnected(Bundle bundle) {
@@ -413,23 +418,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         checkLocationPermissions();
     }
 
+    /**
+     * On connection suspended.
+     *
+     * @param i the suspended code
+     */
     @Override
     public void onConnectionSuspended(int i) {
         System.out.println("Connection Suspended");
         mGoogleApiClient.connect();
     }
 
+    /**
+     * On connection failed.
+     *
+     * @param connectionResult the connection result
+     */
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         System.out.println("Connection failed. Error: " + connectionResult.getErrorCode());
     }
 
+    /**
+     * On start.
+     */
     @Override
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
     }
 
+    /**
+     * On stop.
+     */
     @Override
     protected void onStop() {
         super.onStop();
