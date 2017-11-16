@@ -63,6 +63,9 @@ import static com.facebook.internal.Utility.logd;
 
 /**
  * The Default MapActivity class
+ * Displays a map of the user's location and the surrounding area using the Google Maps API.
+ * The map is shown upon the user successfully logging into the app via Facebook.
+ * From here, the user can choose to invite others to their group, join a group, or create a group.
  *
  */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
@@ -72,17 +75,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     /**
-     * The User.
+     * User object that keeps track of the current user's state. Different actions are available to the
+     * user based on what state they are in (eg a user in creator state can dissolve a group, but a user in
+     * the free agent state cannot).
      */
     public User user;
     /**
-     * The Bm.
+     * Bitmap object used to draw the user and counter markers on the map.
      */
     Bitmap bm;
+    /**
+     * Marker used to show the user's image and location on the map.
+     */
     private Marker marker;
+    /**
+     * Marker used to show how many other people are in the user's group.
+     */
     private Marker counterMarker;
     /**
-     * The Popupwindow.
+     * Popup window used to display the user's name, picture, and action buttons (ex invite to group)
+     * when clicked on.
      */
     PopupWindow popupwindow;
     /**
@@ -93,21 +105,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
     private String mGid;
     /**
-     * The U.
+     * DBUser instance that keeps track of user info obtained from Facebook + Firebase
      */
     DBUser u;
 
 
     /**
-     * The My permissions request access fine location.
+     * int identifier for the ACCESS_FINE_LOCATION permission. This permission allows the app to keep
+     * track of the user's location using their phone GPS.
      */
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
+    /**
+     * Sets up the map and user/database instances so they can be used. Called upon starting the
+     * maps activity. Also takes care of location permissions: if the user has not permitted the app
+     * to access their location, they will be prompted to do so before being able to access any of the
+     * map features.
+     * @param savedInstanceState: saved activity state, null upon first starting the activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
 
         setContentView(R.layout.activity_maps);
         if(mUser == null) {
@@ -116,7 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mGid = null;
 
-         u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
+        u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
 
         mManager.addUser(u);
         mManager.updateActiveUser(u, 0, 0);
@@ -164,7 +183,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     /**
-     * Check location permissions.
+     * Checks if the user has granted location permission to the app. If they have not, the user will be
+     * prompted to grant this permission so that the app can use GPS to track their location.
      */
     public void checkLocationPermissions() {
         // check if user has granted the Location permission to app to continuously track location
@@ -184,7 +204,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Sets up location request.
+     * Sets up location request using Google Play Services in order to track the user's location continuously
+     * through GPS. Upon obtaining an initial location for the user, it sets up a marker to display
+     * their location + info on the map.
      */
     public void setUpLocationRequest() {
         // set up location request for Google Play Services to get location continuously
@@ -203,6 +225,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * Takes the appropriate actions based on whether the user granted location permissions to the app or not.
+     * If the permission was granted, set up the Google Play Services location request to use GPS tracking.
+     * Otherwise, don't allow the user to see the map actions.
+     * @param requestCode: the permission the user granted/denied
+     * @param permissions: list of permissions needed
+     * @param grantResults: which permissions were granted
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         System.out.println("requesting permission");
@@ -226,13 +256,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     /**
-     * Manipulates the map once available.
+     * Manipulates the map once available. The map is obtained through Google Maps API.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
+     * Sets a listener to display a user's photo + info when their marker is clicked.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -253,6 +282,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 R.drawable.file);
                         Bitmap resized = Bitmap.createScaledBitmap(bm, 200, 200, true);
                         ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+                        TextView text = (TextView)container.findViewById(R.id.textView);
+                        System.out.println("name = " + u.getName());
+                        text.setText(u.getName());
                         Button bt = (Button)container.findViewById(R.id.button2);
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
 
@@ -272,10 +304,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     /**
-     * Update map.
+     * Update the map based on the user's new location.
      *
-     * @param lat the lat
-     * @param lon the lon
+     * @param lat: user's new latitude
+     * @param lon: user's new longitude
      */
     public void updateMap(double lat, double lon) {
         // set marker at the user's new position specified by lat and lon
@@ -291,10 +323,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * Create marker marker.
+     * Create markers for the user and count of how many people are in their group (if any).
+     * Markers are created using bitmaps.
      *
-     * @param currLoc the curr loc
-     * @return the marker
+     * @param currLoc: the current location of the user
+     * @return the marker of the user's current location
      */
     public Marker createMarker(LatLng currLoc) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
@@ -358,12 +391,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return output;
     }
 
+    /**
+     * Called when the user's location changes based on the location tracked from the phone GPS.
+     * Calls the updateMap() method to show the user's new location on the map.
+     * @param location: user's new location
+     */
     @Override
     public void onLocationChanged(Location location) {
         System.out.println("location change");
         updateMap(location.getLatitude(), location.getLongitude());
     }
 
+    /**
+     * Called upon the app connecting to Google Play Services. Once this happens, checks that the user
+     * has granted location permissions to the app.
+     * @param bundle
+     */
     @Override
     public void onConnected(Bundle bundle) {
         // check if user has granted permission for app to access Location upon connecting to Google Play Services
