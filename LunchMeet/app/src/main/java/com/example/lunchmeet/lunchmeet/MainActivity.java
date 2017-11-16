@@ -1,5 +1,6 @@
 package com.example.lunchmeet.lunchmeet;
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 
@@ -32,11 +33,13 @@ public class MainActivity extends AppCompatActivity {
     private TextView mStatusTextView;
     private TextView mDetailTextView;
     public Button b;
+    public Button b2;
 
     ///////////////
 
     private FirebaseAuth mAuth;
     private CallbackManager mCallbackManager;
+    private AccessTokenTracker accessTokenTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         mStatusTextView = (TextView) findViewById(R.id.status);
         mDetailTextView = (TextView) findViewById(R.id.detail);
         b=(Button)findViewById(R.id.button);
+        b2=(Button)findViewById(R.id.dbtestbutton);
         mAuth = FirebaseAuth.getInstance();
         LogOut();
         ///////////////////////////////////
@@ -73,6 +77,15 @@ public class MainActivity extends AppCompatActivity {
                 // [END_EXCLUDE]
             }
         });
+
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
+                                                       AccessToken currentAccessToken) {
+                if(currentAccessToken == null)
+                    updateUI(null);
+            }
+        };
         //////////////////////////////////
         b.setOnClickListener(new View.OnClickListener() {
 
@@ -122,7 +135,18 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
     }
 
-    private void updateUI(FirebaseUser user) {}
+    private void updateUI(FirebaseUser user) {
+        if(user == null)
+        {
+            b.setEnabled(false);
+            b2.setEnabled(false);
+        }
+        else
+        {
+            b.setEnabled(true);
+            b2.setEnabled(true);
+        }
+    }
 
     public void LogOut() {
         mAuth.signOut();
