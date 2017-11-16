@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         mDetailTextView = (TextView) findViewById(R.id.detail);
         b=(Button)findViewById(R.id.button);
         mAuth = FirebaseAuth.getInstance();
-
+        LogOut();
         ///////////////////////////////////
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
@@ -71,11 +72,6 @@ public class MainActivity extends AppCompatActivity {
                 updateUI(null);
                 // [END_EXCLUDE]
             }
-
-
-
-
-
         });
         //////////////////////////////////
         b.setOnClickListener(new View.OnClickListener() {
@@ -126,16 +122,14 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
     }
 
-    private void updateUI(FirebaseUser user) {
-        if (user != null) {
-            findViewById(R.id.login_button).setVisibility(View.GONE);
-            mStatusTextView.setText("success!!!");
-        } else {
-            mStatusTextView.setText(R.string.signed_out);
-            mDetailTextView.setText(null);
-            findViewById(R.id.login_button).setVisibility(View.VISIBLE);
-        }
+    private void updateUI(FirebaseUser user) {}
+
+    public void LogOut() {
+        mAuth.signOut();
+        LoginManager.getInstance().logOut();
+        updateUI(null);
     }
+
 
     private void gotoMaps() {
         Intent intent = new Intent(this, MapsActivity.class);
