@@ -25,6 +25,8 @@ public class Group {
         for(int i=0;i<Array.getLength(members);i++){
             if(members[i]==null){
                 members[i]=user;
+                curr_size++;
+                break;
             }
         }
 
@@ -35,11 +37,14 @@ public class Group {
         for(int i=0;i< Array.getLength(members);i++){
             if(members[i]==user){
                     members[i]=null;
+                    curr_size--;
             }
 
         }
     }
 
 
-
+    public int getCurr_size() {
+        return curr_size;
+    }
 }
