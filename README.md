@@ -5,7 +5,7 @@
 
 ## Directory Structure
 * We have implemented our project as an Android mobile application. 
-* Library dependencies can be found in LunchMeet/app/build.gradle 
+* Library dependencies can be found in LunchMeet/app/build.gradle. 
 * Source code can be found in LunchMeet/app/src/main. 
   * LunchMeet/app/src/main/java contains the Java files for our project. 
     * MainActivity.java: Contains the home screen that the user will see upon opening the app. Allows the user to authenticate with Facebook. 
@@ -14,7 +14,7 @@
     * User.java: Contains methods to get and modify user information, such as their name, Facebook profile picture, and what group they are in. Also contains class definitions of the different states a user can be in (free agent, creator, and member) based on whether they are in a group or not.
     * DBActive.java, DBGroup.java, DBListener.java, DBManager.java, DBUser.java: Classes containing backend APIs to access the data in the Firebase database.
     * DBTestActivity.java: Temporary activity used to debug the backend APIs.
-  * app/src/main/res contains the XML files used for the app UI. 
+  * LunchMeet/app/src/main/res contains the XML files used for the app UI. 
     * activity_dbtest.xml: Contains UI for DBTestActivity.java.
     * activity_main.xml: Contains UI for MainActivity.java.
     * activity_maps.xml: Contains UI for MapsActivity.java.
