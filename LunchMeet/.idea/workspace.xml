@@ -7,11 +7,12 @@
   </component>
   <component name="ChangeListManager">
     <list id="46f3d29a-2750-4485-b875-86d5403a8bce" name="Default" comment="" />
-    <list default="true" id="489cabb0-c7dd-41b5-8682-3b08f37cb5bc" name="javadoc for MapsActivity" comment="javadoc changes for MapsActivity">
+    <list default="true" id="6e9ad5ec-26bd-4788-8b0d-4ba6800993ee" name="adding javadoc for Group and User" comment="add javadoc for Group and User, add getters + setters for Group">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/allclasses-frame.html" afterPath="$PROJECT_DIR$/allclasses-frame.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/allclasses-noframe.html" afterPath="$PROJECT_DIR$/allclasses-noframe.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/MapsActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/MapsActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/Group.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/Group.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/User.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/User.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/com/example/lunchmeet/lunchmeet/BuildConfig.html" afterPath="$PROJECT_DIR$/com/example/lunchmeet/lunchmeet/BuildConfig.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/com/example/lunchmeet/lunchmeet/DBActive.html" afterPath="$PROJECT_DIR$/com/example/lunchmeet/lunchmeet/DBActive.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/com/example/lunchmeet/lunchmeet/DBGroup.html" afterPath="$PROJECT_DIR$/com/example/lunchmeet/lunchmeet/DBGroup.html" />
@@ -104,9 +105,22 @@
       <file leaf-file-name="Group.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/Group.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="354">
+              <caret line="72" column="71" lean-forward="false" selection-start-line="72" selection-start-column="71" selection-end-line="72" selection-end-column="71" />
+              <folding>
+                <element signature="e#2630#2631#0" expanded="true" />
+                <element signature="e#2660#2661#0" expanded="true" />
+                <element signature="e#2790#2791#0" expanded="true" />
+                <element signature="e#2821#2822#0" expanded="true" />
+                <element signature="e#2966#2967#0" expanded="true" />
+                <element signature="e#2994#2995#0" expanded="true" />
+                <element signature="e#3139#3140#0" expanded="true" />
+                <element signature="e#3171#3172#0" expanded="true" />
+                <element signature="e#3629#3630#0" expanded="true" />
+                <element signature="e#3655#3656#0" expanded="true" />
+                <element signature="e#3783#3784#0" expanded="true" />
+                <element signature="e#3809#3810#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -114,8 +128,8 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1140">
-              <caret line="99" column="50" lean-forward="false" selection-start-line="99" selection-start-column="50" selection-end-line="99" selection-end-column="50" />
+            <state relative-caret-position="165">
+              <caret line="34" column="19" lean-forward="false" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
               <folding>
                 <marker date="1510797553000" expanded="false" signature="4862:4881" ph="&quot;Signed Out&quot;" />
               </folding>
@@ -123,11 +137,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MapsActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MapsActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/MapsActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="151">
-              <caret line="267" column="7" lean-forward="false" selection-start-line="267" selection-start-column="7" selection-end-line="267" selection-end-column="7" />
+            <state relative-caret-position="133">
+              <caret line="271" column="40" lean-forward="false" selection-start-line="271" selection-start-column="40" selection-end-line="271" selection-end-column="40" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#5258#5771#0" expanded="true" />
@@ -135,16 +149,6 @@
                 <element signature="e#12395#12707#0" expanded="true" />
                 <element signature="e#12706#12707#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="R.attr.html" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/com/example/lunchmeet/lunchmeet/R.attr.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="4273" column="1" lean-forward="false" selection-start-line="4273" selection-start-column="1" selection-end-line="4273" selection-end-column="1" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -175,9 +179,22 @@
       <file leaf-file-name="User.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/User.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="870">
-              <caret line="66" column="21" lean-forward="false" selection-start-line="66" selection-start-column="21" selection-end-line="66" selection-end-column="21" />
-              <folding />
+            <state relative-caret-position="247">
+              <caret line="204" column="0" lean-forward="false" selection-start-line="204" selection-start-column="0" selection-end-line="204" selection-end-column="0" />
+              <folding>
+                <element signature="e#1375#1376#0" expanded="true" />
+                <element signature="e#1402#1403#0" expanded="true" />
+                <element signature="e#1558#1559#0" expanded="true" />
+                <element signature="e#1583#1584#0" expanded="true" />
+                <element signature="e#2527#2528#0" expanded="true" />
+                <element signature="e#2553#2554#0" expanded="true" />
+                <element signature="e#2673#2674#0" expanded="true" />
+                <element signature="e#2699#2700#0" expanded="true" />
+                <element signature="e#5291#5292#0" expanded="true" />
+                <element signature="e#5326#5327#0" expanded="true" />
+                <element signature="e#6195#6196#0" expanded="true" />
+                <element signature="e#6231#6232#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -217,6 +234,7 @@
       <find>getdrawa</find>
       <find>popup</find>
       <find>createmarker</find>
+      <find>group</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -1960,12 +1978,13 @@
       <list>
         <option value="$PROJECT_DIR$/app/src/main/res/values/colors.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/DBTestActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/User.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/circle_shape.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/rounded.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/popup.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/MapsActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/Group.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/User.java" />
       </list>
     </option>
   </component>
@@ -2285,7 +2304,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510802247379" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510807067769" />
       </method>
     </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
@@ -2333,7 +2352,7 @@
       </Profilers>
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510802247379" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510807067769" />
       </method>
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -2516,7 +2535,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <method>
         <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510802247380" />
+        <option name="com.android.instantApps.provision.BeforeRunTask" enabled="true" clearCache="false" clearProvisionedDevices="false" myTimestamp="1510807067770" />
       </method>
     </configuration>
     <list size="1">
@@ -2555,12 +2574,20 @@
       <option name="presentableId" value="Default" />
       <updated>1510163472889</updated>
     </task>
+    <task id="LOCAL-00001" summary="javadoc changes for MapsActivity">
+      <created>1510802322196</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1510802322196</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="734" extended-state="6" />
     <layout>
-      <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Profiler" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32763976" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -2630,21 +2657,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/MapsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#5258#5771#0" expanded="true" />
-            <element signature="e#5770#5771#0" expanded="true" />
-            <element signature="e#12395#12707#0" expanded="true" />
-            <element signature="e#12706#12707#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/DBActive.java" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/DBListener.java" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/DBTestActivity.java" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/User.java" />
@@ -2814,29 +2826,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/Group.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/DBTestActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="600">
           <caret line="60" column="34" lean-forward="false" selection-start-line="60" selection-start-column="34" selection-end-line="60" selection-end-column="34" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1140">
-          <caret line="99" column="50" lean-forward="false" selection-start-line="99" selection-start-column="50" selection-end-line="99" selection-end-column="50" />
-          <folding>
-            <marker date="1510797553000" expanded="false" signature="4862:4881" ph="&quot;Signed Out&quot;" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2870,22 +2864,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/DBActive.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="13" lean-forward="false" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/User.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="870">
-          <caret line="66" column="21" lean-forward="false" selection-start-line="66" selection-start-column="21" selection-end-line="66" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/DBUser.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -2913,10 +2891,94 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/com/example/lunchmeet/lunchmeet/R.attr.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="4273" column="1" lean-forward="false" selection-start-line="4273" selection-start-column="1" selection-end-line="4273" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/DBActive.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" column="13" lean-forward="false" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/DBGroup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/Group.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="354">
+          <caret line="72" column="71" lean-forward="false" selection-start-line="72" selection-start-column="71" selection-end-line="72" selection-end-column="71" />
+          <folding>
+            <element signature="e#2630#2631#0" expanded="true" />
+            <element signature="e#2660#2661#0" expanded="true" />
+            <element signature="e#2790#2791#0" expanded="true" />
+            <element signature="e#2821#2822#0" expanded="true" />
+            <element signature="e#2966#2967#0" expanded="true" />
+            <element signature="e#2994#2995#0" expanded="true" />
+            <element signature="e#3139#3140#0" expanded="true" />
+            <element signature="e#3171#3172#0" expanded="true" />
+            <element signature="e#3629#3630#0" expanded="true" />
+            <element signature="e#3655#3656#0" expanded="true" />
+            <element signature="e#3783#3784#0" expanded="true" />
+            <element signature="e#3809#3810#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="34" column="19" lean-forward="false" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
+          <folding>
+            <marker date="1510797553000" expanded="false" signature="4862:4881" ph="&quot;Signed Out&quot;" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/User.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="204" column="0" lean-forward="false" selection-start-line="204" selection-start-column="0" selection-end-line="204" selection-end-column="0" />
+          <folding>
+            <element signature="e#1375#1376#0" expanded="true" />
+            <element signature="e#1402#1403#0" expanded="true" />
+            <element signature="e#1558#1559#0" expanded="true" />
+            <element signature="e#1583#1584#0" expanded="true" />
+            <element signature="e#2527#2528#0" expanded="true" />
+            <element signature="e#2553#2554#0" expanded="true" />
+            <element signature="e#2673#2674#0" expanded="true" />
+            <element signature="e#2699#2700#0" expanded="true" />
+            <element signature="e#5291#5292#0" expanded="true" />
+            <element signature="e#5326#5327#0" expanded="true" />
+            <element signature="e#6195#6196#0" expanded="true" />
+            <element signature="e#6231#6232#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/Library/Android/sdk/platforms/android-26/android.jar!/android/graphics/Bitmap.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="317">
+          <caret line="279" column="0" lean-forward="false" selection-start-line="279" selection-start-column="0" selection-end-line="279" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/example/lunchmeet/lunchmeet/MapsActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="267" column="7" lean-forward="false" selection-start-line="267" selection-start-column="7" selection-end-line="267" selection-end-column="7" />
+        <state relative-caret-position="133">
+          <caret line="271" column="40" lean-forward="false" selection-start-line="271" selection-start-column="40" selection-end-line="271" selection-end-column="40" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#5258#5771#0" expanded="true" />
@@ -2924,14 +2986,6 @@
             <element signature="e#12395#12707#0" expanded="true" />
             <element signature="e#12706#12707#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/com/example/lunchmeet/lunchmeet/R.attr.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="4273" column="1" lean-forward="false" selection-start-line="4273" selection-start-column="1" selection-end-line="4273" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
