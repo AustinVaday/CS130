@@ -43,4 +43,26 @@ public class ExampleUnitTest {
         group.remove_user(user2);
         assertEquals(1, group.getCurr_size());
     }
+
+    @Test
+    public void freestateUserTest() throws Exception{
+        User temp = new User("name","male", "profile_pic", 0,0);
+        assertEquals("Free_agent", temp.getState("freeagent").getClass().getSimpleName());
+    }
+
+    @Test
+    public void creatorTest() throws Exception{
+        User temp = new User("name","male", "profile_pic", 0,0);
+        Group group = new Group(temp);
+        assertEquals("Creator", temp.getState("creator").getClass().getSimpleName());
+    }
+
+    @Test
+    public void memberTest()throws Exception{
+        User user1 = new User("name","male", "profile_pic", 0,0);
+        Group group = new Group(user1);
+        User user2 = new User("name2","male", "profile_pic2", 10,10);
+        group.add_user(user2);
+        assertEquals("Member", user2.getState("member").getClass().getSimpleName());
+    }
 }
