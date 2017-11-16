@@ -47,22 +47,22 @@ public class ExampleUnitTest {
     @Test
     public void freestateUserTest() throws Exception{
         User temp = new User("name","male", "profile_pic", 0,0);
-        assertEquals("Free_agent", temp.getState("freeagent").getClass().getSimpleName());
+        assertEquals("Free_agent", temp.getCurrentState().getClass().getSimpleName());
     }
 
     @Test
-    public void creatorTest() throws Exception{
-        User temp = new User("name","male", "profile_pic", 0,0);
-        Group group = new Group(temp);
-        assertEquals("Creator", temp.getState("creator").getClass().getSimpleName());
+    public void userCreatesGroupTest(){
+        User user1 = new User("name","male", "profile_pic", 0,0);
+        user1.createGroup();
+        assertEquals("Creator", user1.getCurrentState().getClass().getSimpleName());
     }
 
     @Test
     public void memberTest()throws Exception{
         User user1 = new User("name","male", "profile_pic", 0,0);
-        Group group = new Group(user1);
+        user1.createGroup();
         User user2 = new User("name2","male", "profile_pic2", 10,10);
-        group.add_user(user2);
-        assertEquals("Member", user2.getState("member").getClass().getSimpleName());
+        user2.joinAGroup(user1.getGroup());
+        assertEquals("Member", user2.getCurrentState().getClass().getSimpleName());
     }
 }

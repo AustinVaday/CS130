@@ -35,7 +35,7 @@ public class User {
         this.profile_pic=profile_pic;
         this.lat=lat;
         this.lon=lon;
-        this.state=free_agent;
+        this.state= free_agent;
     }
 
     /**
@@ -70,6 +70,34 @@ public class User {
             return free_agent;
         }
         return null;
+    }
+    /**
+     * creates a group by calling state.create_group()
+     * if the state == Free_state it will create a group
+     * in any other state it will do nothing.
+     */
+    public void createGroup(){
+        group = state.create_group();
+    }
+    /**
+     * If the user is in freeagent state
+     * then the user cann join to a group
+     */
+    public void joinAGroup(Group g){
+        state.join_group(g);
+    }
+    /*
+     * @return the group object which the user is in.
+     * */
+    public Group getGroup(){
+        return group;
+    }
+
+    /**
+     * @return the current state of the user
+     */
+    public State getCurrentState(){
+        return state;
     }
 
     /**
@@ -152,6 +180,7 @@ public class User {
          */
         @Override
         public void join_group(Group group) {
+            User.this.group = group;
             group.add_user(User.this);
             User.this.setState(User.this.getState("member"));
         }
