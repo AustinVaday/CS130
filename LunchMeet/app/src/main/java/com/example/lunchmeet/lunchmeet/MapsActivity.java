@@ -336,15 +336,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
         Bitmap resized;
-        if(bm==null){
-             resized= Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-
-        }
-        else{
-            Log.e("event","i went in the else statement");
+//        if(bm==null){
+//             resized= Bitmap.createScaledBitmap(bitmap, 200, 200, true);
+//
+//        }
+//        else{
              resized= Bitmap.createScaledBitmap(bm, 200, 200, true);
 
-        }
+
 
 
         Bitmap black = BitmapFactory.decodeResource(getResources(),
