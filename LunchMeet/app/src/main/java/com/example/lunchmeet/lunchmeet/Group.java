@@ -108,7 +108,7 @@ public class Group {
      * Gets the group's current size.
      * @return number of members currently in the group
      */
-    public int getCurrentSize() {
+    public int getCurr_size() {
         return curr_size;
     }
 
