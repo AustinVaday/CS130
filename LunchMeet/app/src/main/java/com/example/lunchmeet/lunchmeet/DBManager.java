@@ -39,7 +39,7 @@ public class DBManager{
      *
      * @return The single instance of the DBManager class.
      */
-    static DBManager getInstance(){
+    public static DBManager getInstance(){
         return instance;
     }
 
@@ -48,7 +48,7 @@ public class DBManager{
      *
      * @param u The user to be added to the database.
      */
-    void addUser(DBUser u){
+    public void addUser(DBUser u){
         database.child("users").child(u.getUid()).setValue(u.toMap());
     }
 
@@ -57,7 +57,7 @@ public class DBManager{
      *
      * @param u The user to be removed from the database.
      */
-    void removeUser(DBUser u){
+    public void removeUser(DBUser u){
         removeUser(u.getUid());
     }
 
@@ -66,7 +66,7 @@ public class DBManager{
      *
      * @param uid The UID of the user to be removed from the database.
      */
-    void removeUser(String uid){
+    public void removeUser(String uid){
         database.child("users").child(uid).removeValue();
     }
 
@@ -81,7 +81,7 @@ public class DBManager{
      * @param o The DBListener that will process the user information read from the database.
      * @param id The user ID of the user whose information should be read from the database.
      */
-    void getUserFromUid(DBListener<DBUser> o, String id){
+    public void getUserFromUid(DBListener<DBUser> o, String id){
         final DBListener obs = o;
         final String uid = id;
         database.child("users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -106,7 +106,7 @@ public class DBManager{
      * @param lat The latitude of the user.
      * @param lng The longitude of the user.
      */
-    void updateActiveUser(DBUser u, double lat, double lng){
+    public void updateActiveUser(DBUser u, double lat, double lng){
         updateActiveUser(u.getUid(),lat,lng);
     }
 
@@ -117,7 +117,7 @@ public class DBManager{
      * @param lat The latitude of the user.
      * @param lng The longitude of the user.
      */
-    void updateActiveUser(String uid, double lat, double lng){
+    public void updateActiveUser(String uid, double lat, double lng){
         DatabaseReference ref = database.child("active").child(uid);
         ref.child("lat").setValue(lat);
         ref.child("lng").setValue(lng);
@@ -129,7 +129,7 @@ public class DBManager{
      *
      * @param uid The ID of the user to be removed.
      */
-    void removeActiveUser(String uid){
+    public void removeActiveUser(String uid){
         database.child("active").child(uid).removeValue();
     }
 
@@ -143,7 +143,7 @@ public class DBManager{
      *
      * @param o The DBListener that will process the active user information from the database.
      */
-    void attachListenerForActiveUsers(DBListener<List<DBActive>> o){
+    public void attachListenerForActiveUsers(DBListener<List<DBActive>> o){
         final DBListener obs = o;
         database.child("active").addValueEventListener(new ValueEventListener(){
             @Override
@@ -171,7 +171,7 @@ public class DBManager{
      * @param gid The ID of the group to be updated.
      * @param uid The ID of the leader to be updated.
      */
-    void updateGroupLeader(String gid, String uid){
+    public void updateGroupLeader(String gid, String uid){
         database.child("groups").child(gid).child("leader").setValue(uid);
     }
 
@@ -182,7 +182,7 @@ public class DBManager{
      * @param lat The latitutde of the group.
      * @param lng The longitude of the group.
      */
-    void updateGroupLocation(String gid, double lat, double lng){
+    public void updateGroupLocation(String gid, double lat, double lng){
         DatabaseReference ref = database.child("groups").child(gid);
         ref.child("lat").setValue(lat);
         ref.child("lng").setValue(lng);
@@ -195,7 +195,7 @@ public class DBManager{
      * @param gid The ID of the group to be updated.
      * @param size The size of the group.
      */
-    void updateGroupSize(String gid, int size){
+    public void updateGroupSize(String gid, int size){
         database.child("groups").child(gid).child("size").setValue(size);
     }
 
@@ -204,7 +204,7 @@ public class DBManager{
      *
      * @param gid The ID of the group to be removed.
      */
-    void removeGroup(String gid){
+    public void removeGroup(String gid){
         database.child("groups").child(gid).removeValue();
     }
 
@@ -218,7 +218,7 @@ public class DBManager{
      *
      * @param o The DBListener that will process the group information from the database.
      */
-    void attachListenerForGroups(DBListener<List<DBGroup>> o){
+    public void attachListenerForGroups(DBListener<List<DBGroup>> o){
         final DBListener obs = o;
         database.child("groups").addValueEventListener(new ValueEventListener(){
             @Override
@@ -246,7 +246,7 @@ public class DBManager{
      * @param uid The ID of the leader that is creating the group. Every group requires a leader.
      * @return The ID of the group that has just been created.
      */
-    String createGroup(String uid){
+    public String createGroup(String uid){
         DatabaseReference ref = database.child("members").push();
         String key = ref.getKey();
         ref.child(uid).setValue(true);
@@ -262,7 +262,7 @@ public class DBManager{
      * @param uid The ID of the user that is joining the group.
      * @param size The current size of the group.
      */
-    void joinGroup(String gid, String uid, int size){
+    public void joinGroup(String gid, String uid, int size){
         database.child("members").child(gid).child(uid).setValue(true);
         database.child("groups").child(gid).child("size").setValue(size + 1);
     }
@@ -275,7 +275,7 @@ public class DBManager{
      * @param o The DBListener that will process the member information from the database.
      * @param gid The ID of the group whose members are being retrieved.
      */
-    void getMembers(DBListener<List<String>> o, String gid){
+    public void getMembers(DBListener<List<String>> o, String gid){
         final DBListener obs = o;
         database.child("members").child(gid).addListenerForSingleValueEvent(new ValueEventListener(){
             @Override
