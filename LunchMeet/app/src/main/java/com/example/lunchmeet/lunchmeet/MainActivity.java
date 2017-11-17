@@ -26,14 +26,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.facebook.CallbackManager;
 
+/**
+ * This class handles the Facebook login authentication as well as set up the elements on the front page of the app
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     //for debugging
     private static final String TAG = "login";
     private TextView mStatusTextView;
     private TextView mDetailTextView;
-    public Button b;
-    public Button b2;
+    private Button b;
+    private Button b2;
 
     ///////////////
 
@@ -41,6 +45,10 @@ public class MainActivity extends AppCompatActivity {
     private CallbackManager mCallbackManager;
     private AccessTokenTracker accessTokenTracker;
 
+    /**
+     * Called when the main activity is starting. Defines the user interface of the front page. Sets up buttons and layout. Handles Facebook login authentication and exchanging the Facebook access token with a Firebase credential. Sets up connection to Firebase. Starts MapsActivity once user signs in
+     * @param savedInstanceState A Bundle object containing the activity's previously saved state. Value is null upon when the app is first initialized
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,15 +130,23 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
+    /**
+     * Called when main activity exits after transitioning to another activity.
+     * @param requestCode The request code supplied to startActivityForResult if it was called
+     * @param resultCode The result code returned from the activity started by MainActivity
+     * @param data An Intent containing result data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * On start
+     */
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
     }
@@ -148,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void LogOut() {
+    private void LogOut() {
         mAuth.signOut();
         LoginManager.getInstance().logOut();
         updateUI(null);
@@ -162,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 //        startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
 
-    public void goToDBTest(View view){
+    private void goToDBTest(View view){
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(currentUser == null) {
             Toast.makeText(getApplicationContext(),"Please log in via Facebook", Toast.LENGTH_SHORT).show();
