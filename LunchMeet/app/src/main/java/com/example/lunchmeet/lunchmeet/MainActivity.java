@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
 //        startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
 
-    private void goToDBTest(View view){
+    public void goToDBTest(View view){
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(currentUser == null) {
             Toast.makeText(getApplicationContext(),"Please log in via Facebook", Toast.LENGTH_SHORT).show();
