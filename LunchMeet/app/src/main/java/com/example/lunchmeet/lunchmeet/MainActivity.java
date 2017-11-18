@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "login";
     private TextView mStatusTextView;
     private TextView mDetailTextView;
+    private ProgressBar progressBar;
     private Button b;
     private Button b2;
 
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
         mDetailTextView = (TextView) findViewById(R.id.detail);
         b=(Button)findViewById(R.id.button);
         b2=(Button)findViewById(R.id.dbtestbutton);
+        progressBar = (ProgressBar) findViewById(R.id.continueWithFBProgressBar);
+        progressBar.setVisibility(View.GONE);
         mAuth = FirebaseAuth.getInstance();
         LogOut();
         ///////////////////////////////////
@@ -109,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        progressBar.setVisibility(View.VISIBLE);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -118,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            progressBar.setVisibility(View.GONE);
                             gotoMaps();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -125,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
+                            progressBar.setVisibility(View.GONE);
                         }
 
                     }
