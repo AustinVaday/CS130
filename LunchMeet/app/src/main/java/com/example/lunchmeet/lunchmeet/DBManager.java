@@ -24,6 +24,7 @@ import java.util.Map;
  * @author Brian Kwak
  */
 public class DBManager{
+
     private static final DBManager instance = new DBManager();
     private DatabaseReference database;
     private String TAG = "DBManager";

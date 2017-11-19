@@ -212,8 +212,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // set up location request for Google Play Services to get location continuously
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(3000);
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(500);
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
         // get user's current location + add marker on map at that loc
@@ -403,6 +403,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onLocationChanged(Location location) {
         System.out.println("location change");
         updateMap(location.getLatitude(), location.getLongitude());
+        mManager.updateActiveUser(u, location.getLatitude(), location.getLongitude());
     }
 
     /**
