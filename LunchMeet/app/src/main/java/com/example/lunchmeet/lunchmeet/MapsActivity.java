@@ -56,6 +56,7 @@ import com.squareup.picasso.Target;
 
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -91,22 +92,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private User user;
     /**
-     * Bitmap object used to draw the user and counter markers on the map.
-     */
-    Bitmap bm;
-    /**
      * Marker used to show the user's image and location on the map.
      */
-    private Marker m_marker;
     private HashMap<String,Marker> markerHashMap = new HashMap<String,Marker>();
     /**
-     * Marker used to show how many other people are in the user's group.
+     * CounterMarker used to show how many other people are in the user's group.
      */
-    private Marker m_counterMarker;
     private HashMap<String,Marker> counterMarkerHashMap = new HashMap<String,Marker>();
     private HashMap<String,Tuple<Double,Double>> uid_loc_hm = new HashMap<String,Tuple<Double,Double>>();
     private HashSet<String> uids = new HashSet<String>();
     private HashMap<String,String> uid_profilePicURL_hm = new HashMap<String,String>();
+    private HashMap<String,Thread> uid_threads = new HashMap<String,Thread>();
+    /**
+     * Bitmap Hashmap used to draw the user and counter markers on the map.
+     */
+    private HashMap<String,Bitmap> uid_bitmaps = new HashMap<String,Bitmap>();
     /**
      * Popup window used to display the user's name, picture, and action buttons (ex invite to group)
      * when clicked on.
@@ -124,9 +124,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     DBUser u;
 
-    Thread thread;
+//    Thread thread;
 
-    private int count;
+    private long count = 0;
 
     /**
      * int identifier for the ACCESS_FINE_LOCATION permission. This permission allows the app to keep
@@ -161,47 +161,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         ImageView image = new ImageView(this);
 
-//        count = getIntent().getExtras().getInt("count");
-//        System.out.println("count: ");
-//        System.out.println(count);
+        uid_profilePicURL_hm = (HashMap<String, String>) getIntent().getSerializableExtra("uid_profilePicURL_hm");
         mManager.attachListenerForActiveUsers(new DBListener<List<DBActive>>(){
             @Override
             public void run(List<DBActive> list){
-//                if(uid_loc_hm.isEmpty()) {
-                count = 0;
                 for(DBActive e : list){
-//                        double lat = u.getLat();
-//                        double lng = u.getLng();
-//                        Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
-//                        uid_loc_hm.put(u.getUid(),coord);
                     uids.add(e.getUid());
-                    uid_profilePicURL_hm.put(e.getUid(),e.getProfilePicURL());
+                    double lat = e.getLat();
+                    double lng = e.getLng();
+                    Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
+                    uid_loc_hm.put(e.getUid(),coord);
                     System.out.println(e.getLat());
                     System.out.println(e.getProfilePicURL());
-                    count++;
                 }
-                System.out.println(count);
-//                }
-//                for(DBActive u : list){
-////                    LatLng tempcurrPos = new LatLng(u.getLat(),u.getLng());
-////                    Marker tempmarker;
-////                    Marker tempcounterMarker;
-////                    if (tempmarker == null) {
-////                        tempmarker = createMarker(tempcurrPos);
-////                    }
-////                    tempmarker.setPosition(tempcurrPos);
-////                    tempcounterMarker.setPosition(tempcurrPos);
-//                }
             }
         });
 
-//        System.out.println("count was printed first");
+        int idx_1 = 1;
+        for(Map.Entry<String,String> entry : uid_profilePicURL_hm.entrySet()) {
+            final int idx = idx_1;
+            final String uid = entry.getKey();
+            final String profilePicURL = entry.getValue();
+            Thread thread = new Thread(new Runnable() {
 
-
-
+                @Override
+                public void run() {
+                    try  {
+                        try {
+                            URL url = new URL(profilePicURL);
+                            Bitmap bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                            uid_bitmaps.put(uid,bm);
+                            System.out.println("thread " + idx + " created");
+                        } catch(IOException e) {
+                            System.out.println(e);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            uid_threads.put(uid,thread);
+            thread.start();
+            idx_1++;
+        }
 
         //bm=((BitmapDrawable)image.getDrawable()).getBitmap();
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -321,7 +325,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         ImageButton ib = (ImageButton)container.findViewById(R.id.imageButton);
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                                 R.drawable.file);
-                        Bitmap resized = Bitmap.createScaledBitmap(bm, 200, 200, true);
+                        Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
                         ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
                         TextView text = (TextView)container.findViewById(R.id.textView);
                         System.out.println("name = " + u.getName());
@@ -379,38 +383,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
         Bitmap resized;
-//        if(bm==null){
-//             resized= Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-//
-//        }
-//        else{
-
-//        thread = new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//                try  {
-//                    try {
-//                        Log.d("login", "thread got started hahahahahaha");
-//                        URL url = new URL(u.getPhotoUrl());
-//                        bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//                    } catch(IOException e) {
-//                        System.out.println(e);
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//        thread.start();
-        resized= Bitmap.createScaledBitmap(bm, 200, 200, true);
-
-
-
-
-
-
+        resized= Bitmap.createScaledBitmap(uid_bitmaps.get(uid), 200, 200, true);
         Bitmap black = BitmapFactory.decodeResource(getResources(),
                 R.drawable.black);
         Bitmap r_black = Bitmap.createScaledBitmap(black, 75, 75, true);
@@ -482,20 +455,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
         uid_loc_hm.put(u.getUid(),coord);
 
-        for(String uid : uids) {
-            if(uid != u.getUid()) {
-                double lat_lowerbound = location.getLatitude()-0.0005;
-                double lat_upperbound = location.getLatitude()+0.0005;
-                double lng_lowerbound = location.getLongitude()-0.0005;
-                double lng_upperbound = location.getLongitude()+0.0005;
-                double randomlat = lat_lowerbound + (lat_upperbound - lat_lowerbound) * r.nextDouble();
-                double randomlng = lng_lowerbound + (lng_upperbound - lng_lowerbound) * r.nextDouble();
-                mManager.updateActiveUser(uid, randomlat, randomlng, uid_profilePicURL_hm.get(uid));
-                Tuple <Double,Double> randomCoord = new Tuple <Double, Double> (randomlat,randomlng);
-                uid_loc_hm.put(uid,randomCoord);
-            }
-        }
+        //for testing only
         //create test coordinates and update all the other users
+//        for(String uid : uids) {
+//            if(uid != u.getUid()) {
+//                double lat_lowerbound = location.getLatitude()-0.0005;
+//                double lat_upperbound = location.getLatitude()+0.0005;
+//                double lng_lowerbound = location.getLongitude()-0.0005;
+//                double lng_upperbound = location.getLongitude()+0.0005;
+//                double randomlat = lat_lowerbound + (lat_upperbound - lat_lowerbound) * r.nextDouble();
+//                double randomlng = lng_lowerbound + (lng_upperbound - lng_lowerbound) * r.nextDouble();
+//                mManager.updateActiveUser(uid, randomlat, randomlng, uid_profilePicURL_hm.get(uid));
+//                Tuple <Double,Double> randomCoord = new Tuple <Double, Double> (randomlat,randomlng);
+//                uid_loc_hm.put(uid,randomCoord);
+//            }
+//        }
+
         updateMap();
     }
 
@@ -537,26 +512,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     protected void onStart() {
-        thread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try  {
-                    try {
-                        URL url = new URL(u.getPhotoUrl());
-                        bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                        System.out.println("thread created");
-                    } catch(IOException e) {
-                        System.out.println(e);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        thread.start();
-
         super.onStart();
         mGoogleApiClient.connect();
     }
