@@ -47,7 +47,7 @@ public class DBTestActivity extends AppCompatActivity {
         DBUser u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
 
         mManager.addUser(u);
-        mManager.updateActiveUser(u, 0, 0);
+        mManager.updateActiveUser(u, 0, 0, u.getPhotoUrl());
         mManager.attachListenerForActiveUsers(new DBListener<List<DBActive>>(){
             @Override
             public void run(List<DBActive> list){

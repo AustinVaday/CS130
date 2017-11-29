@@ -13,6 +13,7 @@ public class DBActive {
     private String uid;
     private double lat;
     private double lng;
+    private String profilePicURL;
 
 
     /**
@@ -38,6 +39,8 @@ public class DBActive {
     public double getLng(){
         return lng;
     }
+
+    public String getProfilePicURL() { return profilePicURL; }
 
     /**
      * Sets the UID of the user.

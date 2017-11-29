@@ -106,6 +106,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private HashMap<String,Marker> counterMarkerHashMap = new HashMap<String,Marker>();
     private HashMap<String,Tuple<Double,Double>> uid_loc_hm = new HashMap<String,Tuple<Double,Double>>();
     private HashSet<String> uids = new HashSet<String>();
+    private HashMap<String,String> uid_profilePicURL_hm = new HashMap<String,String>();
     /**
      * Popup window used to display the user's name, picture, and action buttons (ex invite to group)
      * when clicked on.
@@ -124,6 +125,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     DBUser u;
 
     Thread thread;
+
+    private int count;
 
     /**
      * int identifier for the ACCESS_FINE_LOCATION permission. This permission allows the app to keep
@@ -154,28 +157,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
 
         mManager.addUser(u);
-        mManager.updateActiveUser(u, 0, 0);
+        mManager.updateActiveUser(u, 0, 0, u.getPhotoUrl());
 
         ImageView image = new ImageView(this);
 
-         thread = new Thread(new Runnable() {
-
+//        count = getIntent().getExtras().getInt("count");
+//        System.out.println("count: ");
+//        System.out.println(count);
+        mManager.attachListenerForActiveUsers(new DBListener<List<DBActive>>(){
             @Override
-            public void run() {
-                try  {
-                    try {
-                        URL url = new URL(u.getPhotoUrl());
-                        bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    } catch(IOException e) {
-                        System.out.println(e);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+            public void run(List<DBActive> list){
+//                if(uid_loc_hm.isEmpty()) {
+                count = 0;
+                for(DBActive e : list){
+//                        double lat = u.getLat();
+//                        double lng = u.getLng();
+//                        Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
+//                        uid_loc_hm.put(u.getUid(),coord);
+                    uids.add(e.getUid());
+                    uid_profilePicURL_hm.put(e.getUid(),e.getProfilePicURL());
+                    System.out.println(e.getLat());
+                    System.out.println(e.getProfilePicURL());
+                    count++;
                 }
+                System.out.println(count);
+//                }
+//                for(DBActive u : list){
+////                    LatLng tempcurrPos = new LatLng(u.getLat(),u.getLng());
+////                    Marker tempmarker;
+////                    Marker tempcounterMarker;
+////                    if (tempmarker == null) {
+////                        tempmarker = createMarker(tempcurrPos);
+////                    }
+////                    tempmarker.setPosition(tempcurrPos);
+////                    tempcounterMarker.setPosition(tempcurrPos);
+//                }
             }
         });
 
-        thread.start();
+//        System.out.println("count was printed first");
+
 
 
 
@@ -195,31 +216,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .addApi(LocationServices.API)
                     .build();
         }
-
-        mManager.attachListenerForActiveUsers(new DBListener<List<DBActive>>(){
-            @Override
-            public void run(List<DBActive> list){
-//                if(uid_loc_hm.isEmpty()) {
-                    for(DBActive e : list){
-//                        double lat = u.getLat();
-//                        double lng = u.getLng();
-//                        Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
-//                        uid_loc_hm.put(u.getUid(),coord);
-                        uids.add(e.getUid());
-                    }
-//                }
-//                for(DBActive u : list){
-////                    LatLng tempcurrPos = new LatLng(u.getLat(),u.getLng());
-////                    Marker tempmarker;
-////                    Marker tempcounterMarker;
-////                    if (tempmarker == null) {
-////                        tempmarker = createMarker(tempcurrPos);
-////                    }
-////                    tempmarker.setPosition(tempcurrPos);
-////                    tempcounterMarker.setPosition(tempcurrPos);
-//                }
-            }
-        });
     }
 
 
@@ -480,7 +476,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         System.out.println(markerHashMap.size());
         System.out.println(uid_loc_hm.size());
 //        updateMap(m_marker, m_counterMarker, location.getLatitude(), location.getLongitude());
-        mManager.updateActiveUser(u.getUid(), location.getLatitude(), location.getLongitude());
+        mManager.updateActiveUser(u.getUid(), location.getLatitude(), location.getLongitude(), u.getPhotoUrl());
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
@@ -494,7 +490,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double lng_upperbound = location.getLongitude()+0.0005;
                 double randomlat = lat_lowerbound + (lat_upperbound - lat_lowerbound) * r.nextDouble();
                 double randomlng = lng_lowerbound + (lng_upperbound - lng_lowerbound) * r.nextDouble();
-                mManager.updateActiveUser(uid, randomlat, randomlng);
+                mManager.updateActiveUser(uid, randomlat, randomlng, uid_profilePicURL_hm.get(uid));
                 Tuple <Double,Double> randomCoord = new Tuple <Double, Double> (randomlat,randomlng);
                 uid_loc_hm.put(uid,randomCoord);
             }
@@ -541,6 +537,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     protected void onStart() {
+        thread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try  {
+                    try {
+                        URL url = new URL(u.getPhotoUrl());
+                        bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                        System.out.println("thread created");
+                    } catch(IOException e) {
+                        System.out.println(e);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+
         super.onStart();
         mGoogleApiClient.connect();
     }

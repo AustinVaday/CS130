@@ -26,6 +26,14 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.facebook.CallbackManager;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class handles the Facebook login authentication as well as set up the elements on the front page of the app
@@ -46,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private CallbackManager mCallbackManager;
     private AccessTokenTracker accessTokenTracker;
+    private long count = 0;
+    private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+    private final DBManager mManager = DBManager.getInstance();
+    DBUser u;
+
 
     /**
      * Called when the main activity is starting. Defines the user interface of the front page. Sets up buttons and layout. Handles Facebook login authentication and exchanging the Facebook access token with a Firebase credential. Sets up connection to Firebase. Starts MapsActivity once user signs in
@@ -53,6 +66,24 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        database.child("active").addListenerForSingleValueEvent(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                count = dataSnapshot.getChildrenCount();
+                System.out.println("count: ");
+                System.out.println(count);
+//                for(DataSnapshot child : dataSnapshot.getChildren()) {
+//                    count++;
+//                }
+                gotoMaps();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "MainActivity:onCancelled", databaseError.toException());
+            }
+        });
+
         super.onCreate(savedInstanceState);
         Log.d(TAG,"hello");
         setContentView(R.layout.activity_main);
@@ -108,6 +139,19 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+//        mManager.attachListenerForActiveUsers(new DBListener<List<DBActive>>(){
+//            @Override
+//            public void run(List<DBActive> list){
+//                count = 0;
+//                for(DBActive e : list){
+//                    count++;
+//                }
+//                System.out.println(count);
+//            }
+//        });
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -125,7 +169,11 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
                             progressBar.setVisibility(View.GONE);
-                            gotoMaps();
+                            FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+                            u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
+                            mManager.addUser(u);
+                            mManager.updateActiveUser(u, 0, 1, u.getPhotoUrl());
+//                            gotoMaps();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -180,7 +228,24 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void gotoMaps() {
+//        FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(
+//                new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        for(DataSnapshot child : dataSnapshot.getChildren()) {
+//                            count++;
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//                        Log.w(TAG, "gotoMaps:onCancelled", databaseError.toException());
+//                    }
+//                }
+//
+//        );
         Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("count", count);
         startActivity(intent);
 //        intent.putExtra("userID", curUser);
 //        startActivityForResult(intent, REQUEST_CODE_LOGIN);

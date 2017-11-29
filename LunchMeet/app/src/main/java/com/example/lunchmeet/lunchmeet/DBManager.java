@@ -107,8 +107,8 @@ public class DBManager{
      * @param lat The latitude of the user.
      * @param lng The longitude of the user.
      */
-    public void updateActiveUser(DBUser u, double lat, double lng){
-        updateActiveUser(u.getUid(),lat,lng);
+    public void updateActiveUser(DBUser u, double lat, double lng, String profilePicURL){
+        updateActiveUser(u.getUid(),lat,lng, profilePicURL);
     }
 
     /**
@@ -118,10 +118,11 @@ public class DBManager{
      * @param lat The latitude of the user.
      * @param lng The longitude of the user.
      */
-    public void updateActiveUser(String uid, double lat, double lng){
+    public void updateActiveUser(String uid, double lat, double lng, String profilePicURL){
         DatabaseReference ref = database.child("active").child(uid);
         ref.child("lat").setValue(lat);
         ref.child("lng").setValue(lng);
+        ref.child("profilePicURL").setValue(profilePicURL);
     }
 
     /**
