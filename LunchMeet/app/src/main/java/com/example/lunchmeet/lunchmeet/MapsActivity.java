@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -55,8 +56,16 @@ import com.squareup.picasso.Target;
 
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static com.facebook.internal.Utility.logd;
@@ -70,6 +79,9 @@ import static com.facebook.internal.Utility.logd;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
+    private static final String TAG1 = "MapsActivity";
+    private Random r = new Random();
+
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -80,17 +92,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private User user;
     /**
-     * Bitmap object used to draw the user and counter markers on the map.
-     */
-    Bitmap bm;
-    /**
      * Marker used to show the user's image and location on the map.
      */
-    private Marker marker;
+    private HashMap<String,Marker> markerHashMap = new HashMap<String,Marker>();
     /**
-     * Marker used to show how many other people are in the user's group.
+     * CounterMarker used to show how many other people are in the user's group.
      */
-    private Marker counterMarker;
+    private HashMap<String,Marker> counterMarkerHashMap = new HashMap<String,Marker>();
+    private HashMap<String,Tuple<Double,Double>> uid_loc_hm = new HashMap<String,Tuple<Double,Double>>();
+    private HashSet<String> uids = new HashSet<String>();
+    private HashMap<String,String> uid_profilePicURL_hm = new HashMap<String,String>();
+    private HashMap<String,Thread> uid_threads = new HashMap<String,Thread>();
+    /**
+     * Bitmap Hashmap used to draw the user and counter markers on the map.
+     */
+    private HashMap<String,Bitmap> uid_bitmaps = new HashMap<String,Bitmap>();
     /**
      * Popup window used to display the user's name, picture, and action buttons (ex invite to group)
      * when clicked on.
@@ -108,6 +124,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     DBUser u;
 
+//    Thread thread;
+
+    private long count = 0;
 
     /**
      * int identifier for the ACCESS_FINE_LOCATION permission. This permission allows the app to keep
@@ -127,7 +146,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        Log.d(TAG1, "test");
         setContentView(R.layout.activity_maps);
         if(mUser == null) {
             return;
@@ -138,33 +157,55 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
 
         mManager.addUser(u);
-        mManager.updateActiveUser(u, 0, 0);
+        mManager.updateActiveUser(u, 0, 0, u.getPhotoUrl());
 
         ImageView image = new ImageView(this);
 
-        Thread thread = new Thread(new Runnable() {
-
+        uid_profilePicURL_hm = (HashMap<String, String>) getIntent().getSerializableExtra("uid_profilePicURL_hm");
+        mManager.attachListenerForActiveUsers(new DBListener<List<DBActive>>(){
             @Override
-            public void run() {
-                try  {
-                    try {
-                        URL url = new URL(u.getPhotoUrl());
-                        bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                    } catch(IOException e) {
-                        System.out.println(e);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+            public void run(List<DBActive> list){
+                for(DBActive e : list){
+                    uids.add(e.getUid());
+                    double lat = e.getLat();
+                    double lng = e.getLng();
+                    Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
+                    uid_loc_hm.put(e.getUid(),coord);
+                    System.out.println(e.getLat());
+                    System.out.println(e.getProfilePicURL());
                 }
             }
         });
 
-        thread.start();
+        int idx_1 = 1;
+        for(Map.Entry<String,String> entry : uid_profilePicURL_hm.entrySet()) {
+            final int idx = idx_1;
+            final String uid = entry.getKey();
+            final String profilePicURL = entry.getValue();
+            Thread thread = new Thread(new Runnable() {
 
-
+                @Override
+                public void run() {
+                    try  {
+                        try {
+                            URL url = new URL(profilePicURL);
+                            Bitmap bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                            uid_bitmaps.put(uid,bm);
+                            System.out.println("thread " + idx + " created");
+                        } catch(IOException e) {
+                            System.out.println(e);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            uid_threads.put(uid,thread);
+            thread.start();
+            idx_1++;
+        }
 
         //bm=((BitmapDrawable)image.getDrawable()).getBitmap();
-
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -212,15 +253,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // set up location request for Google Play Services to get location continuously
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(3000);
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(500);
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
         // get user's current location + add marker on map at that loc
         Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (loc != null) {
             LatLng currLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
-            createMarker(currLoc);
+            createMarker(u.getUid(),currLoc);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
         }
     }
@@ -275,15 +316,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if (marker != null) {
-                    if (marker.getTitle().equals("Current Location")) { // if marker source is clicked
+//                    if (marker.getTitle().equals("Current Location")) { // if marker source is clicked
                         // Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
+                        String marker_uid = marker.getTitle();
                         layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                         ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null);
                         popupwindow = new PopupWindow(container, 700, 600, true);
                         ImageButton ib = (ImageButton)container.findViewById(R.id.imageButton);
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                                 R.drawable.file);
-                        Bitmap resized = Bitmap.createScaledBitmap(bm, 200, 200, true);
+                        Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
                         ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
                         TextView text = (TextView)container.findViewById(R.id.textView);
                         System.out.println("name = " + u.getName());
@@ -298,7 +340,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 return false;
                             }
                         });
-                    }
+//                    }
                 }
                 return true;
             }
@@ -309,61 +351,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * Update the map based on the user's new location.
      *
-     * @param lat user's new latitude
-     * @param lon user's new longitude
+     //* @param lat user's new latitude
+     //* @param lon user's new longitude
      */
-    public void updateMap(double lat, double lon) {
+    public void updateMap() {
         // set marker at the user's new position specified by lat and lon
-        LatLng currPos = new LatLng(lat, lon);
-        if (marker == null) {
-            marker = createMarker(currPos);
+        for(Map.Entry<String,Tuple<Double,Double>> entry : uid_loc_hm.entrySet()) {
+            double lat = entry.getValue().getLat();
+            double lng = entry.getValue().getLng();
+            String uid = entry.getKey();
+            LatLng pos = new LatLng(lat, lng);
+            if (markerHashMap.get(uid) == null) {
+                createMarker(uid,pos);
+            }
+            markerHashMap.get(uid).setPosition(pos);
+            counterMarkerHashMap.get(uid).setPosition(pos);
         }
-        marker.setPosition(currPos);
-        counterMarker.setPosition(currPos);
-
+        LatLng currPos = new LatLng(uid_loc_hm.get(u.getUid()).getLat(),uid_loc_hm.get(u.getUid()).getLng());
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPos, 17));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
     }
 
     /**
      * Create markers for the user and count of how many people are in their group (if any).
      * Markers are created using bitmaps.
      *
-     * @param currLoc the current location of the user
+     //* @param currLoc the current location of the user
      * @return the marker of the user's current location
      */
-    public Marker createMarker(LatLng currLoc) {
+    public void createMarker(String uid, LatLng loc) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
         Bitmap resized;
-//        if(bm==null){
-//             resized= Bitmap.createScaledBitmap(bitmap, 200, 200, true);
-//
-//        }
-//        else{
-             resized= Bitmap.createScaledBitmap(bm, 200, 200, true);
-
-
-
-
+        resized= Bitmap.createScaledBitmap(uid_bitmaps.get(uid), 200, 200, true);
         Bitmap black = BitmapFactory.decodeResource(getResources(),
                 R.drawable.black);
         Bitmap r_black = Bitmap.createScaledBitmap(black, 75, 75, true);
-        marker = mMap.addMarker(new MarkerOptions()
-                .position(currLoc)
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(loc)
                 .icon(BitmapDescriptorFactory
                         .fromBitmap(getCircleBitmap(resized, 0, "5")))
                 .draggable(false)
-                .title("Current Location"));
+                .title(uid));
 
-        counterMarker = mMap.addMarker(new MarkerOptions()
-                .position(currLoc)
+        Marker counterMarker = mMap.addMarker(new MarkerOptions()
+                .position(loc)
                 .anchor((float)-.75,(float).75)
                 .icon(BitmapDescriptorFactory
                         .fromBitmap(getCircleBitmap(r_black,1,"5")))
                 .draggable(false)
-                .title("Counter"));
-        return marker;
+                .title(uid));
+        double lat = loc.latitude;
+        double lng = loc.longitude;
+        Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
+        uid_loc_hm.put(uid,coord);
+        markerHashMap.put(uid,marker);
+        counterMarkerHashMap.put(uid,counterMarker);
     }
 
     private Bitmap getCircleBitmap(Bitmap bitmap,int subcircle,String num) {
@@ -402,7 +445,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onLocationChanged(Location location) {
         System.out.println("location change");
-        updateMap(location.getLatitude(), location.getLongitude());
+        System.out.println(counterMarkerHashMap.size());
+        System.out.println(markerHashMap.size());
+        System.out.println(uid_loc_hm.size());
+//        updateMap(m_marker, m_counterMarker, location.getLatitude(), location.getLongitude());
+        mManager.updateActiveUser(u.getUid(), location.getLatitude(), location.getLongitude(), u.getPhotoUrl());
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+        Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
+        uid_loc_hm.put(u.getUid(),coord);
+
+        //for testing only
+        //create test coordinates and update all the other users
+//        for(String uid : uids) {
+//            if(uid != u.getUid()) {
+//                double lat_lowerbound = location.getLatitude()-0.0005;
+//                double lat_upperbound = location.getLatitude()+0.0005;
+//                double lng_lowerbound = location.getLongitude()-0.0005;
+//                double lng_upperbound = location.getLongitude()+0.0005;
+//                double randomlat = lat_lowerbound + (lat_upperbound - lat_lowerbound) * r.nextDouble();
+//                double randomlng = lng_lowerbound + (lng_upperbound - lng_lowerbound) * r.nextDouble();
+//                mManager.updateActiveUser(uid, randomlat, randomlng, uid_profilePicURL_hm.get(uid));
+//                Tuple <Double,Double> randomCoord = new Tuple <Double, Double> (randomlat,randomlng);
+//                uid_loc_hm.put(uid,randomCoord);
+//            }
+//        }
+
+        updateMap();
     }
 
     /**
