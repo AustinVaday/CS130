@@ -334,7 +334,7 @@ public class DBManager{
      * Attaches a listener to a user ID for invites to a group.
      *
      * IMPORTANT: The associated DBListener will run on an individual group ID when it is added to
-     * the invite list. It does NOT get a full list of every invite on the list, like other methods.
+     * the invite list. It does NOT get a full list of every invite on the list.
      *
      * @param o The DBListener that processes a group ID as it is added to the invite list.
      * @param uid The ID of the current user, listening for invites.
@@ -366,6 +366,58 @@ public class DBManager{
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.w(TAG, "waitForInvites:onCancelled", databaseError.toException());
+
+            }
+        });
+    }
+
+    /**
+     * Sends a request to the leader of the group for the user to join the group. Similar to
+     * invites.
+     *
+     * @param gid The ID of the group that is being requested to join.
+     * @param uid The ID of the user doing the requesting.
+     */
+    public void requestToJoinGroup(String gid, String uid){
+        database.child("requests").child(gid).child(uid).setValue(true);
+    }
+
+    /**
+     * Attaches a listener to a group ID for requests to join the group
+     *
+     * IMPORTANT: The associated DBListener will run on an individual user ID when it is added to
+     * the request list. It does NOT get a full list of every request on the list.
+     *
+     * @param o The DBListener that processes a user ID as it is added to the request list.
+     * @param gid The ID of the group, whose leader is listening for requests.
+     */
+    public void waitForRequests(DBListener<String> o, String gid){
+        final DBListener obs = o;
+        database.child("invites").child(gid).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                String uid = dataSnapshot.getKey();
+                obs.run(uid);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "waitForRequests:onCancelled", databaseError.toException());
 
             }
         });
