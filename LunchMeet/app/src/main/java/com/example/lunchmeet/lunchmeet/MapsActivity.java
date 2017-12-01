@@ -370,8 +370,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (markerHashMap.get(uid) == null) {
                 createMarker(uid,pos);
             }
-            markerHashMap.get(uid).setPosition(pos);
-            counterMarkerHashMap.get(uid).setPosition(pos);
+            updateMarker(uid,pos);
         }
         LatLng currPos = new LatLng(uid_loc_hm.get(u.getUid()).getLat(),uid_loc_hm.get(u.getUid()).getLng());
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPos, 17));
@@ -391,11 +390,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bitmap resized;
         Bitmap black = BitmapFactory.decodeResource(getResources(),
                 R.drawable.black);
+
+        Integer iconExists; // value to check whether we loaded the icon or not
         if(uid_bitmaps.get(uid)!=null) {
             resized = Bitmap.createScaledBitmap(uid_bitmaps.get(uid), 200, 200, true);
+            iconExists = 1;
         }
         else{
             resized = Bitmap.createScaledBitmap(black, 200, 200, true);
+            iconExists = 0;
         }
 
         Bitmap r_black = Bitmap.createScaledBitmap(black, 75, 75, true);
@@ -405,6 +408,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .fromBitmap(getCircleBitmap(resized, 0, "5")))
                 .draggable(false)
                 .title(uid));
+        // we put whether the icon was loaded or not as a tag, so that we can check it later
+        marker.setTag(iconExists);
 
         Marker counterMarker = mMap.addMarker(new MarkerOptions()
                 .position(loc)
@@ -419,6 +424,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         uid_loc_hm.put(uid,coord);
         markerHashMap.put(uid,marker);
         counterMarkerHashMap.put(uid,counterMarker);
+    }
+
+    /**
+     * Updates the location of the marker, as well as the marker's icon if it hadn't already been
+     * loaded.
+     *
+     * @param uid The ID of the user that the marker corresponds to.
+     * @param loc The new location of the marker.
+     */
+    public void updateMarker(String uid, LatLng loc){
+        Marker currentMarker = markerHashMap.get(uid);
+        currentMarker.setPosition(loc);
+        counterMarkerHashMap.get(uid).setPosition(loc);
+
+        // checking the tag and if the icon has been loaded. if the icon is loaded but the tag is 0,
+        // we can reset the icon and update the tag.
+        Integer iconExists = (Integer)currentMarker.getTag();
+        Bitmap icon = uid_bitmaps.get(uid);
+        if(iconExists == 0 && icon != null){
+            Bitmap resized = Bitmap.createScaledBitmap(icon, 200, 200, true);
+            currentMarker.setIcon(BitmapDescriptorFactory
+                    .fromBitmap(getCircleBitmap(resized, 0, "5")));
+            currentMarker.setTag(1);
+        }
     }
 
     private Bitmap getCircleBitmap(Bitmap bitmap,int subcircle,String num) {
