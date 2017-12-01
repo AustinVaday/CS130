@@ -3,6 +3,7 @@ package com.example.lunchmeet.lunchmeet;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -291,7 +292,7 @@ public class DBManager{
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "attachListenerForMembers:onCancelled", databaseError.toException());
+                Log.w(TAG, "getMembers:onCancelled", databaseError.toException());
             }
         });
     }
@@ -317,4 +318,57 @@ public class DBManager{
         database.child("groups").child(gid).removeValue();
         database.child("members").child(gid).removeValue();
     }
+
+    /**
+     * Invites a user to a group. Specifically, puts down a group ID under a list for
+     * the given user.
+     *
+     * @param gid The ID of the group that the user is being invited to.
+     * @param uid The ID of the user being invited.
+     */
+    public void inviteUser(String gid, String uid){
+        database.child("invites").child(uid).child(gid).setValue(true);
+    }
+
+    /**
+     * Attaches a listener to a user ID for invites to a group.
+     *
+     * IMPORTANT: The associated DBListener will run on an individual group ID when it is added to
+     * the invite list. It does NOT get a full list of every invite on the list, like other methods.
+     *
+     * @param o The DBListener that processes a group ID as it is added to the invite list.
+     * @param uid The ID of the current user, listening for invites.
+     */
+    public void waitForInvites(DBListener<String> o, String uid){
+        final DBListener obs = o;
+        database.child("invites").child(uid).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                String gid = dataSnapshot.getKey();
+                obs.run(gid);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "waitForInvites:onCancelled", databaseError.toException());
+
+            }
+        });
+    }
+
 }
