@@ -295,4 +295,26 @@ public class DBManager{
             }
         });
     }
+
+    /**
+     * Removes a member from the list of members of a group.
+     *
+     * @param gid The ID of the group that is being left.
+     * @param uid The ID of the user that is leaving.
+     * @param size The current size of the group.
+     */
+    public void leaveGroup(String gid, String uid, int size){
+        database.child("members").child(gid).child(uid).removeValue();
+        database.child("groups").child(gid).child("size").setValue(size - 1);
+    }
+
+    /**
+     * Dissolves a group, removing all information about it from the database.
+     *
+     * @param gid The ID of the group being dissolved.
+     */
+    public void dissolveGroup(String gid){
+        database.child("groups").child(gid).removeValue();
+        database.child("members").child(gid).removeValue();
+    }
 }
