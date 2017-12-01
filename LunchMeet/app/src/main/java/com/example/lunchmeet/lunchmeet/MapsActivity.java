@@ -107,6 +107,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * Bitmap Hashmap used to draw the user and counter markers on the map.
      */
     private HashMap<String,Bitmap> uid_bitmaps = new HashMap<String,Bitmap>();
+
     /**
      * Popup window used to display the user's name, picture, and action buttons (ex invite to group)
      * when clicked on.
@@ -191,6 +192,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             URL url = new URL(profilePicURL);
                             Bitmap bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
                             uid_bitmaps.put(uid,bm);
+
                             System.out.println("thread " + idx + " created");
                         } catch(IOException e) {
                             System.out.println(e);
@@ -310,7 +312,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        mMap.setMinZoomPreference(15.0f);
+        mMap.setMinZoomPreference(5.0f);
         mMap.setMaxZoomPreference(20.0f);
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -325,10 +327,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         ImageButton ib = (ImageButton)container.findViewById(R.id.imageButton);
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                                 R.drawable.file);
-                        Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
-                        ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+                        if(uid_bitmaps.get(marker_uid)!=null) {
+                            Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
+                            ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+
+                        }
                         TextView text = (TextView)container.findViewById(R.id.textView);
                         System.out.println("name = " + u.getName());
+
                         text.setText(u.getName());
                         Button bt = (Button)container.findViewById(R.id.button2);
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
@@ -383,9 +389,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
         Bitmap resized;
-        resized= Bitmap.createScaledBitmap(uid_bitmaps.get(uid), 200, 200, true);
         Bitmap black = BitmapFactory.decodeResource(getResources(),
                 R.drawable.black);
+        if(uid_bitmaps.get(uid)!=null) {
+            resized = Bitmap.createScaledBitmap(uid_bitmaps.get(uid), 200, 200, true);
+        }
+        else{
+            resized = Bitmap.createScaledBitmap(black, 200, 200, true);
+        }
+
         Bitmap r_black = Bitmap.createScaledBitmap(black, 75, 75, true);
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(loc)
