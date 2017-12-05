@@ -1,5 +1,7 @@
 package com.example.lunchmeet.lunchmeet;
 
+import android.graphics.Bitmap;
+
 /**
  * A class to keep track of user information, such as their name, gender, and profile picture as taken from Facebook.
  * Keeps track of the user's current state and allows or disallows certain actions based on the state. Provides
@@ -8,10 +10,11 @@ package com.example.lunchmeet.lunchmeet;
 public class User {
 
     private String name;
-    private String gender;
-    private String profile_pic;
-    private double lat;
-    private double lon;
+    private String uid;
+    private Bitmap profile_pic;
+    private String url;
+    private float lat;
+    private float lon;
     private Group group;
     private State state;
     private Free_agent free_agent;
@@ -21,17 +24,16 @@ public class User {
     /**
      * Default constructor to initialize user information.
      * @param name user's name
-     * @param gender user's gender
      * @param profile_pic user's profile picture URL from Facebook
-     * @param lat user's current latitude
-     * @param lon user's current longitude
+
      */
-    public User(String name,String gender,String profile_pic,float lat,float lon){
+    public User(String name, Bitmap profile_pic, float lat, float lon, String uid,String bmp_url){
         free_agent=new Free_agent();
         member=new Member();
         creator=new Creator();
+        this.uid=uid;
+        this.url=bmp_url;
         this.name=name;
-        this.gender=gender;
         this.profile_pic=profile_pic;
         this.lat=lat;
         this.lon=lon;
@@ -93,6 +95,11 @@ public class User {
         return group;
     }
 
+    public Bitmap get_bmp(){return profile_pic; }
+
+    public void set_bmp(Bitmap bmp){this.profile_pic=bmp; }
+
+
     /**
      * @return the current state of the user
      */
@@ -105,7 +112,7 @@ public class User {
      * @param latitude user's new latitude
      * @param longitude user's new longitude
      */
-    public void setCoordinates(double latitude, double longitude) {
+    public void setCoordinates(float latitude, float longitude) {
         lat = latitude;
         lon = longitude;
     }
@@ -122,7 +129,7 @@ public class User {
      * Gets the user's current longitude
      * @return user's longitude
      */
-    public double getLong() {
+    public double getLon() {
         return lon;
     }
 

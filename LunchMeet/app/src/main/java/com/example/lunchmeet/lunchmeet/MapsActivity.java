@@ -81,7 +81,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private static final String TAG1 = "MapsActivity";
     private Random r = new Random();
-
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -99,6 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * CounterMarker used to show how many other people are in the user's group.
      */
     private HashMap<String,Marker> counterMarkerHashMap = new HashMap<String,Marker>();
+    private HashMap<String,User> user_hmp=new HashMap<String,User>();
     private HashMap<String,Tuple<Double,Double>> uid_loc_hm = new HashMap<String,Tuple<Double,Double>>();
     private HashSet<String> uids = new HashSet<String>();
     private HashMap<String,String> uid_profilePicURL_hm = new HashMap<String,String>();
@@ -167,6 +167,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void run(List<DBActive> list){
                 for(DBActive e : list){
+                    if(user_hmp.containsKey(e.getUid())==false){
+                        user_hmp.put(e.getUid(),new User("default",null,(float)e.getLat(),(float)e.getLng(),e.getUid(),e.getProfilePicURL()));
+
+                    }
+
                     uids.add(e.getUid());
                     double lat = e.getLat();
                     double lng = e.getLng();
@@ -191,7 +196,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         try {
                             URL url = new URL(profilePicURL);
                             Bitmap bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+
                             uid_bitmaps.put(uid,bm);
+                            user_hmp.get(uid).set_bmp(bm);
 
                             System.out.println("thread " + idx + " created");
                         } catch(IOException e) {
@@ -337,12 +344,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         text.setText(u.getName());
                         Button bt = (Button)container.findViewById(R.id.button2);
-                        bt.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(getApplicationContext(), "A group hasn't been created yet!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
 
                         container.setOnTouchListener(new View.OnTouchListener() {
@@ -456,13 +457,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    /**
-     *
-     * @param bitmap
-     * @param subcircle
-     * @param num
-     * @return Bitmap
-     */
     private Bitmap getCircleBitmap(Bitmap bitmap,int subcircle,String num) {
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
