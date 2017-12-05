@@ -156,6 +156,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mGid = null;
 
         u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
+        user = new User(mUser.getDisplayName(), "Male", mUser.getPhotoUrl().toString(), 0,0);
 
         mManager.addUser(u);
         mManager.updateActiveUser(u, 0, 0, u.getPhotoUrl());
@@ -265,6 +266,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng currLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
             createMarker(u.getUid(),currLoc);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
+            user.setCoordinates(loc.getLatitude(), loc.getLongitude());
         }
     }
 
@@ -321,26 +323,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                    if (marker.getTitle().equals("Current Location")) { // if marker source is clicked
                         // Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
                         String marker_uid = marker.getTitle();
+                        if(marker_uid.equals(u.getUid())){
                         layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                         ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null);
                         popupwindow = new PopupWindow(container, 700, 600, true);
-                        ImageButton ib = (ImageButton)container.findViewById(R.id.imageButton);
+                        ImageButton ib = (ImageButton) container.findViewById(R.id.imageButton);
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                                 R.drawable.file);
-                        if(uid_bitmaps.get(marker_uid)!=null) {
+                        if (uid_bitmaps.get(marker_uid) != null) {
                             Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
                             ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
 
                         }
-                        TextView text = (TextView)container.findViewById(R.id.textView);
+                        TextView text = (TextView) container.findViewById(R.id.textView);
                         System.out.println("name = " + u.getName());
 
                         text.setText(u.getName());
-                        Button bt = (Button)container.findViewById(R.id.button2);
+                        Button bt = (Button) container.findViewById(R.id.button2);
                         bt.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(getApplicationContext(), "A group hasn't been created yet!", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(), "A group hasn't been created yet!", Toast.LENGTH_SHORT).show();
+                                mManager.createGroup(u.getUid());
                             }
                         });
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
@@ -353,6 +357,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         });
 //                    }
+                    }
                 }
                 return true;
             }
