@@ -22,7 +22,7 @@ public class Group {
         capacity = 6;
         curr_size = 1;
         lat = user.getLat();
-        lon = user.getLong();
+        lon = user.getLon();
     }
 
     /**
@@ -36,7 +36,7 @@ public class Group {
         capacity = c;
         curr_size = 1;
         lat = user.getLat();
-        lon = user.getLong();
+        lon = user.getLon();
     }
 
     /**

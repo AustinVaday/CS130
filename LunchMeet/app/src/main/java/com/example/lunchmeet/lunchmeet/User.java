@@ -13,8 +13,8 @@ public class User {
     private String uid;
     private Bitmap profile_pic;
     private String url;
-    private float lat;
-    private float lon;
+    private double lat;
+    private double lon;
     private Group group;
     private State state;
     private Free_agent free_agent;
@@ -81,6 +81,10 @@ public class User {
     public void createGroup(){
         group = state.create_group();
     }
+
+    public String geturl(){
+        return url;
+    }
     /**
      * If the user is in freeagent state
      * then the user cann join to a group
@@ -95,6 +99,10 @@ public class User {
         return group;
     }
 
+
+    public String getuid(){
+        return uid;
+    }
     public Bitmap get_bmp(){return profile_pic; }
 
     public void set_bmp(Bitmap bmp){this.profile_pic=bmp; }
@@ -112,7 +120,7 @@ public class User {
      * @param latitude user's new latitude
      * @param longitude user's new longitude
      */
-    public void setCoordinates(float latitude, float longitude) {
+    public void setCoordinates(double latitude, double longitude) {
         lat = latitude;
         lon = longitude;
     }
