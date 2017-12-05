@@ -337,6 +337,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         text.setText(u.getName());
                         Button bt = (Button)container.findViewById(R.id.button2);
+                        bt.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(getApplicationContext(), "A group hasn't been created yet!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
 
                         container.setOnTouchListener(new View.OnTouchListener() {
@@ -450,6 +456,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     *
+     * @param bitmap
+     * @param subcircle
+     * @param num
+     * @return Bitmap
+     */
     private Bitmap getCircleBitmap(Bitmap bitmap,int subcircle,String num) {
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
