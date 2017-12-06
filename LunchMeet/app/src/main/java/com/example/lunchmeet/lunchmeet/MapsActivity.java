@@ -81,7 +81,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private static final String TAG1 = "MapsActivity";
     private Random r = new Random();
-
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -99,10 +98,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * CounterMarker used to show how many other people are in the user's group.
      */
     private HashMap<String,Marker> counterMarkerHashMap = new HashMap<String,Marker>();
+    private HashMap<String,User> user_hmp = new HashMap<String,User>();
     private HashMap<String,Tuple<Double,Double>> uid_loc_hm = new HashMap<String,Tuple<Double,Double>>();
-    private HashSet<String> uids = new HashSet<String>();
-    private HashMap<String,String> uid_profilePicURL_hm = new HashMap<String,String>();
+    //private HashMap<String,String> uid_profilePicURL_hm = new HashMap<String,String>();
     private HashMap<String,Thread> uid_threads = new HashMap<String,Thread>();
+    private int idx_1=0;
     /**
      * Bitmap Hashmap used to draw the user and counter markers on the map.
      */
@@ -163,50 +163,90 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         ImageView image = new ImageView(this);
 
-        uid_profilePicURL_hm = (HashMap<String, String>) getIntent().getSerializableExtra("uid_profilePicURL_hm");
+        //uid_profilePicURL_hm = (HashMap<String, String>) getIntent().getSerializableExtra("uid_profilePicURL_hm");
         mManager.attachListenerForActiveUsers(new DBListener<List<DBActive>>(){
             @Override
             public void run(List<DBActive> list){
                 for(DBActive e : list){
-                    uids.add(e.getUid());
-                    double lat = e.getLat();
-                    double lng = e.getLng();
-                    Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
-                    uid_loc_hm.put(e.getUid(),coord);
+                    if(user_hmp.containsKey(e.getUid())==false){
+                        user_hmp.put(e.getUid(),new User("default",null,(float)e.getLat(),(float)e.getLng(),e.getUid(),e.getProfilePicURL()));
+
+                    }
+                    Log.d("USERS",user_hmp.get(e.getUid()).geturl());
+                    user_hmp.get(e.getUid()).setCoordinates(e.getLat(),e.getLng());
+
+                    final int idx = 1;
+                    final String uid=e.getUid();
+
+                    Thread thread = new Thread(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            try  {
+                                try {
+                                    URL url = new URL(user_hmp.get(uid).geturl());
+                                    Bitmap bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+
+                                    //uid_bitmaps.put(uid,bm);
+                                    user_hmp.get(uid).set_bmp(bm);
+
+
+
+                                    System.out.println("thread " + idx + " created");
+                                } catch(IOException e) {
+                                    System.out.println(e);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    uid_threads.put(uid,thread);
+                    thread.start();
+                    idx_1++;
+//                    uids.add(e.getUid());
+//                    double lat = e.getLat();
+//                    double lng = e.getLng();
+//                    Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
+//                    uid_loc_hm.put(e.getUid(),coord);
                     System.out.println(e.getLat());
                     System.out.println(e.getProfilePicURL());
                 }
             }
         });
 
-        int idx_1 = 1;
-        for(Map.Entry<String,String> entry : uid_profilePicURL_hm.entrySet()) {
-            final int idx = idx_1;
-            final String uid = entry.getKey();
-            final String profilePicURL = entry.getValue();
-            Thread thread = new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    try  {
-                        try {
-                            URL url = new URL(profilePicURL);
-                            Bitmap bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-                            uid_bitmaps.put(uid,bm);
-
-                            System.out.println("thread " + idx + " created");
-                        } catch(IOException e) {
-                            System.out.println(e);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            uid_threads.put(uid,thread);
-            thread.start();
-            idx_1++;
-        }
+//        int idx_1 = 1;
+//        for(Map.Entry<String,String> entry : uid_profilePicURL_hm.entrySet()) {
+//            final int idx = idx_1;
+//            final String uid = entry.getKey();
+//            final String profilePicURL = entry.getValue();
+//            Thread thread = new Thread(new Runnable() {
+//
+//                @Override
+//                public void run() {
+//                    try  {
+//                        try {
+//                            URL url = new URL(profilePicURL);
+//                            Bitmap bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+//
+//                            //uid_bitmaps.put(uid,bm);
+//                            user_hmp.get(uid).set_bmp(bm);
+//
+//
+//
+//                            System.out.println("thread " + idx + " created");
+//                        } catch(IOException e) {
+//                            System.out.println(e);
+//                        }
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//            uid_threads.put(uid,thread);
+//            thread.start();
+//            idx_1++;
+//        }
 
         //bm=((BitmapDrawable)image.getDrawable()).getBitmap();
 
@@ -330,8 +370,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         ImageButton ib = (ImageButton) container.findViewById(R.id.imageButton);
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                                 R.drawable.file);
-                        if (uid_bitmaps.get(marker_uid) != null) {
-                            Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
+                        if(user_hmp.get(marker_uid).get_bmp()!=null) {
+                           // Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
+                            Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(marker_uid).get_bmp(), 200, 200, true);
                             ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
 
                         }
@@ -339,14 +380,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         System.out.println("name = " + u.getName());
 
                         text.setText(u.getName());
-                        Button bt = (Button) container.findViewById(R.id.button2);
-                        bt.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //Toast.makeText(getApplicationContext(), "A group hasn't been created yet!", Toast.LENGTH_SHORT).show();
-                                mManager.createGroup(u.getUid());
-                            }
-                        });
+                        Button bt = (Button)container.findViewById(R.id.button2);
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
 
                         container.setOnTouchListener(new View.OnTouchListener() {
@@ -373,17 +407,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     public void updateMap() {
         // set marker at the user's new position specified by lat and lon
-        for(Map.Entry<String,Tuple<Double,Double>> entry : uid_loc_hm.entrySet()) {
-            double lat = entry.getValue().getLat();
-            double lng = entry.getValue().getLng();
-            String uid = entry.getKey();
+        Iterator it=user_hmp.entrySet().iterator();
+        while(it.hasNext()) {
+            Map.Entry entry = (Map.Entry) it.next();
+            String key=(String)entry.getKey();
+            double lat = user_hmp.get(key).getLat();
+            double lng = user_hmp.get(key).getLon();
+            String uid = user_hmp.get(key).getuid();
             LatLng pos = new LatLng(lat, lng);
             if (markerHashMap.get(uid) == null) {
                 createMarker(uid,pos);
             }
             updateMarker(uid,pos);
         }
-        LatLng currPos = new LatLng(uid_loc_hm.get(u.getUid()).getLat(),uid_loc_hm.get(u.getUid()).getLng());
+        LatLng currPos = new LatLng(user_hmp.get(u.getUid()).getLat(),user_hmp.get(u.getUid()).getLon());
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPos, 17));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
     }
@@ -403,8 +440,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 R.drawable.black);
 
         Integer iconExists; // value to check whether we loaded the icon or not
-        if(uid_bitmaps.get(uid)!=null) {
-            resized = Bitmap.createScaledBitmap(uid_bitmaps.get(uid), 200, 200, true);
+        if(user_hmp.get(uid).get_bmp()!=null) {
+            resized = Bitmap.createScaledBitmap(user_hmp.get(uid).get_bmp(), 200, 200, true);
             iconExists = 1;
         }
         else{
@@ -429,6 +466,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         .fromBitmap(getCircleBitmap(r_black,1,"5")))
                 .draggable(false)
                 .title(uid));
+
         double lat = loc.latitude;
         double lng = loc.longitude;
         Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
@@ -452,8 +490,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // checking the tag and if the icon has been loaded. if the icon is loaded but the tag is 0,
         // we can reset the icon and update the tag.
         Integer iconExists = (Integer)currentMarker.getTag();
-        Bitmap icon = uid_bitmaps.get(uid);
+        Bitmap icon = user_hmp.get(uid).get_bmp();
         if(iconExists == 0 && icon != null){
+            Log.d("Verification","inside of marker update");
             Bitmap resized = Bitmap.createScaledBitmap(icon, 200, 200, true);
             currentMarker.setIcon(BitmapDescriptorFactory
                     .fromBitmap(getCircleBitmap(resized, 0, "5")));
@@ -461,13 +500,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    /**
-     *
-     * @param bitmap
-     * @param subcircle
-     * @param num
-     * @return Bitmap
-     */
     private Bitmap getCircleBitmap(Bitmap bitmap,int subcircle,String num) {
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -512,7 +544,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
-        uid_loc_hm.put(u.getUid(),coord);
+        //uid_loc_hm.put(u.getUid(),coord);
+        user_hmp.get(u.getUid()).setCoordinates(lat,lng);
 
         //for testing only
         //create test coordinates and update all the other users
