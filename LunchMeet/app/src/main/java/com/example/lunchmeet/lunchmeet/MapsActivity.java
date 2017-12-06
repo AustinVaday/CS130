@@ -177,33 +177,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     final int idx = 1;
                     final String uid=e.getUid();
                     if(uid_threads.get(uid)==null) {
-                    Thread thread = new Thread(new Runnable() {
+                        Thread thread = new Thread(new Runnable() {
 
-                        @Override
-                        public void run() {
-                            try  {
-                                try {
-                                    URL url = new URL(user_hmp.get(uid).geturl());
-                                    Bitmap bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                            @Override
+                            public void run() {
+                                try  {
+                                    try {
+                                        URL url = new URL(user_hmp.get(uid).geturl());
+                                        Bitmap bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 
-                                    //uid_bitmaps.put(uid,bm);
-                                    user_hmp.get(uid).set_bmp(bm);
+                                        //uid_bitmaps.put(uid,bm);
+                                        user_hmp.get(uid).set_bmp(bm);
 
 
 
-                                    System.out.println("thread " + idx + " created");
-                                } catch(IOException e) {
-                                    System.out.println(e);
+                                        System.out.println("thread " + idx + " created");
+                                    } catch(IOException e) {
+                                        System.out.println(e);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (Exception e) {
-                                e.printStackTrace();
                             }
-                        }
-                    });
+                        });
 
-                        uid_threads.put(uid, thread);
-                        thread.start();
-                        idx_1++;
+                            uid_threads.put(uid, thread);
+                            thread.start();
+                            idx_1++;
                     }
 //                    uids.add(e.getUid());
 //                    double lat = e.getLat();
@@ -305,7 +305,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (loc != null) {
             LatLng currLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
-            createMarker(u.getUid(),currLoc);
+            createMarker(u.getUid(),currLoc,0);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
         }
     }
@@ -416,7 +416,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String uid = user_hmp.get(key).getuid();
             LatLng pos = new LatLng(lat, lng);
             if (markerHashMap.get(uid) == null) {
-                createMarker(uid,pos);
+                createMarker(uid,pos,0);
             }
             updateMarker(uid,pos);
         }
@@ -432,7 +432,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      //* @param currLoc the current location of the user
      * @return the marker of the user's current location
      */
-    public void createMarker(String uid, LatLng loc) {
+    public void createMarker(String uid, LatLng loc,int counter) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
         Bitmap resized;
@@ -458,10 +458,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .title(uid));
         // we put whether the icon was loaded or not as a tag, so that we can check it later
         marker.setTag(iconExists);
+        boolean visible=true;
+        
+        if(counter==0){
+            visible=false;
 
+        }
+        else{
+            visible=true;
+        }
         Marker counterMarker = mMap.addMarker(new MarkerOptions()
                 .position(loc)
                 .anchor((float)-.75,(float).75)
+                .visible(visible)
                 .icon(BitmapDescriptorFactory
                         .fromBitmap(getCircleBitmap(r_black,1,"5")))
                 .draggable(false)
