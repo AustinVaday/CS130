@@ -309,6 +309,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (markerHashMap.get(u.getUid()) == null) {
                 createMarker(u.getUid(), currLoc, 0);
             }
+            else{
+                updateMarker(u.getUid(),currLoc);
+            }
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
         }
     }
