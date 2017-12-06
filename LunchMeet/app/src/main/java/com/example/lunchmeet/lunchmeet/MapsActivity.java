@@ -459,7 +459,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // we put whether the icon was loaded or not as a tag, so that we can check it later
         marker.setTag(iconExists);
         boolean visible=true;
-        
+
         if(counter==0){
             visible=false;
 
@@ -472,7 +472,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .anchor((float)-.75,(float).75)
                 .visible(visible)
                 .icon(BitmapDescriptorFactory
-                        .fromBitmap(getCircleBitmap(r_black,1,"5")))
+                        .fromBitmap(getCircleBitmap(r_black,1,Integer.toString(counter))))
                 .draggable(false)
                 .title(uid));
 
