@@ -376,13 +376,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Point p = mMap.getProjection().toScreenLocation(marker.getPosition());
                         popupwindow.showAtLocation(findViewById(R.id.map),Gravity.NO_GRAVITY,p.x-350,p.y-300);
 
-                        ImageButton ib = (ImageButton) container.findViewById(R.id.imageButton);
-                        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                        LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
+                        ImageView imb=new ImageView(getApplicationContext());
+                    ImageButton imb2=new ImageButton(getApplicationContext());
+
+
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                                 R.drawable.file);
                         if(user_hmp.get(marker_uid).get_bmp()!=null) {
                            // Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
                             Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(marker_uid).get_bmp(), 200, 200, true);
-                            ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+                            //ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+                            imb.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+
+
+                            ib.addView(imb);
+
+
+
 
                         }
                         TextView text = (TextView) container.findViewById(R.id.textView);
