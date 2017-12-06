@@ -306,7 +306,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Location loc = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (loc != null) {
             LatLng currLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
-            createMarker(u.getUid(),currLoc,0);
+            if (markerHashMap.get(u.getUid()) == null) {
+                createMarker(u.getUid(), currLoc, 0);
+            }
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
         }
     }
