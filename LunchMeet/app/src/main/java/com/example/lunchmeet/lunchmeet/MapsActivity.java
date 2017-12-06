@@ -176,7 +176,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     final int idx = 1;
                     final String uid=e.getUid();
-
+                    if(uid_threads.get(uid)==null) {
                     Thread thread = new Thread(new Runnable() {
 
                         @Override
@@ -200,9 +200,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         }
                     });
-                    uid_threads.put(uid,thread);
-                    thread.start();
-                    idx_1++;
+
+                        uid_threads.put(uid, thread);
+                        thread.start();
+                        idx_1++;
+                    }
 //                    uids.add(e.getUid());
 //                    double lat = e.getLat();
 //                    double lng = e.getLng();
