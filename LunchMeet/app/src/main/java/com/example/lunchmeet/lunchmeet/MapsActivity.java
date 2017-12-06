@@ -156,7 +156,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mGid = null;
 
         u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
-        user = new User(mUser.getDisplayName(), "Male", mUser.getPhotoUrl().toString(), 0,0);
 
         mManager.addUser(u);
         mManager.updateActiveUser(u, 0, 0, u.getPhotoUrl());
@@ -306,7 +305,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng currLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
             createMarker(u.getUid(),currLoc);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
-            user.setCoordinates(loc.getLatitude(), loc.getLongitude());
         }
     }
 
@@ -363,7 +361,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                    if (marker.getTitle().equals("Current Location")) { // if marker source is clicked
                         // Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
                         String marker_uid = marker.getTitle();
-                        if(marker_uid.equals(u.getUid())){
+                       // if(marker_uid.equals(u.getUid())){
                         layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                         ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null);
                         popupwindow = new PopupWindow(container, 700, 600, true);
@@ -392,7 +390,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         });
 //                    }
                     }
-                }
+                //}
                 return true;
             }
         });
