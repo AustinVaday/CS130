@@ -126,6 +126,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     DBUser u;
 
+    public Marker m;
+
 //    Thread thread;
 
     private long count = 0;
@@ -366,9 +368,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if (marker != null) {
+                    m = marker;
 //                    if (marker.getTitle().equals("Current Location")) { // if marker source is clicked
                         // Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
-                        String marker_uid = marker.getTitle();
+                        final String marker_uid = marker.getTitle();
                        // if(marker_uid.equals(u.getUid())){
                         layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                         ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null);
@@ -383,8 +386,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
-                                R.drawable.file);
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.file);
                         if(user_hmp.get(marker_uid).get_bmp()!=null) {
                            // Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
                             Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(marker_uid).get_bmp(), 200, 200, true);
@@ -406,7 +408,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         bt.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(getApplicationContext(),"A Group is created\n The Id of Group is " + mManager.createGroup(u.getUid()), Toast.LENGTH_SHORT).show();
+                                String gID =  mManager.createGroup(u.getUid());
+                                Toast.makeText(getApplicationContext(),"A Group is created", Toast.LENGTH_SHORT).show();
+                                m.setVisible(false);
+                                double lat = user_hmp.get(u.getUid()).getLat();
+                                System.out.println(lat);
+                                double lng = user_hmp.get(u.getUid()).getLon();
+                                System.out.println(lng);
+                                LatLng pos = new LatLng(lat, lng);
+                                createMarker(gID, pos, 1);
                             }
                         });
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
@@ -468,7 +478,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 R.drawable.black);
 
         Integer iconExists; // value to check whether we loaded the icon or not
-        if(user_hmp.get(uid).get_bmp()!=null) {
+        if(user_hmp.get(uid) != null && user_hmp.get(uid).get_bmp()!=null) {
             resized = Bitmap.createScaledBitmap(user_hmp.get(uid).get_bmp(), 200, 200, true);
             iconExists = 1;
         }
