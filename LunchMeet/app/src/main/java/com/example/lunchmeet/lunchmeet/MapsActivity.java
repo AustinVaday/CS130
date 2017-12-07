@@ -168,7 +168,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void run(List<DBActive> list){
                 for(DBActive e : list){
-                    if(user_hmp.containsKey(e.getUid())==false){
+                    if(!user_hmp.containsKey(e.getUid())){
                         user_hmp.put(e.getUid(),new User("default",null,(float)e.getLat(),(float)e.getLng(),e.getUid(),e.getProfilePicURL()));
 
                     }
@@ -403,6 +403,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         text.setText(u.getName());
                         Button bt = (Button)container.findViewById(R.id.button2);
+                        bt.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(getApplicationContext(),"A Group is created\n The Id of Group is " + mManager.createGroup(u.getUid()), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
 
                         container.setOnTouchListener(new View.OnTouchListener() {
