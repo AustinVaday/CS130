@@ -254,6 +254,9 @@ public class DBManager{
         String key = ref.getKey();
         ref.child(uid).setValue(true);
 
+        updateGroupLeader(key,uid);
+        updateGroupSize(key,1);
+
         return key;
     }
 
