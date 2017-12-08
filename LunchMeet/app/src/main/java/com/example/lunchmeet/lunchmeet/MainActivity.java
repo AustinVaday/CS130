@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.continueWithFBProgressBar);
         progressBar.setVisibility(View.GONE);
         mAuth = FirebaseAuth.getInstance();
-        LogOut();
+        //LogOut();
         ///////////////////////////////////
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
