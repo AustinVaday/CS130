@@ -416,7 +416,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 double lng = user_hmp.get(u.getUid()).getLon();
                                 System.out.println(lng);
                                 LatLng pos = new LatLng(lat, lng);
-                                createMarker(gID, pos, 1);
+                                uid_loc_hm.remove(u.getUid());
+                                markerHashMap.remove(u.getUid());
+                                counterMarkerHashMap.remove(u.getUid());
+                                createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
                             }
                         });
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
