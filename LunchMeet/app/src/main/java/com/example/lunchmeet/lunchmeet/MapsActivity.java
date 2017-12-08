@@ -404,6 +404,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         System.out.println("name = " + u.getName());
 
                         text.setText(u.getName());
+                        /*
                         Button bt = (Button)container.findViewById(R.id.button2);
                         bt.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -421,7 +422,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 counterMarkerHashMap.remove(u.getUid());
                                 createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
                             }
-                        });
+                        }); */
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
 
                         container.setOnTouchListener(new View.OnTouchListener() {
@@ -435,6 +436,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 //}
                 return true;
+            }
+        });
+
+        final Button createGroupButton = (Button)findViewById(R.id.groupButton);
+
+        // check state and if it's not in a state where it can create, set visibility to false
+
+
+        createGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String gID =  mManager.createGroup(u.getUid());
+                Toast.makeText(getApplicationContext(),"A Group is created", Toast.LENGTH_SHORT).show();
+                Marker m = markerHashMap.get(u.getUid());
+                m.setVisible(false);
+                double lat = user_hmp.get(u.getUid()).getLat();
+                System.out.println(lat);
+                double lng = user_hmp.get(u.getUid()).getLon();
+                System.out.println(lng);
+                LatLng pos = new LatLng(lat, lng);
+                uid_loc_hm.remove(u.getUid());
+                markerHashMap.remove(u.getUid());
+                counterMarkerHashMap.remove(u.getUid());
+                createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
+                createGroupButton.setVisibility(View.GONE);
             }
         });
     }
