@@ -160,6 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
 
+        user_hmp.put(u.getUid(),new User(u.getName(),null,0,0,u.getUid(),u.getPhotoUrl()));
         mManager.addUser(u);
         mManager.updateActiveUser(u, 0, 0);
 
