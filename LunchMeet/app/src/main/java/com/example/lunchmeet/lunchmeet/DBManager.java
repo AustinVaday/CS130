@@ -325,16 +325,30 @@ public class DBManager{
     /**
      * Dissolves a group, removing all information about it from the database.
      *
+     * It will also automatically add information to the database for users within the group to
+     * learn that they were within a group that was just dissolved.
+     *
      * @param gid The ID of the group being dissolved.
      * @param uid The ID of the user doing the dissolving.
      */
     public void dissolveGroup(String gid, String uid){
-        database.child("groups").child(gid).removeValue();
-        database.child("members").child(gid).removeValue();
+        final String groupID = gid;
+        final String userID = uid;
+        getMembers(new DBListener<List<String>>() {
+            @Override
+            public void run(List<String> param) {
+                for(String id : param){
+                    database.child("dissolve").child(id).setValue(true);
+                }
 
-        database.child("active").child(uid).child("gid").setValue(null);
+                database.child("groups").child(groupID).removeValue();
+                database.child("members").child(groupID).removeValue();
 
-        database.removeEventListener(requestListener);
+                database.child("active").child(userID).child("gid").setValue(null);
+
+                database.removeEventListener(requestListener);
+            }
+        }, gid);
     }
 
     /**
@@ -444,4 +458,32 @@ public class DBManager{
         database.child("invites").child(gid).addChildEventListener(requestListener);
     }
 
+    /**
+     * Attaches a listener to a "dissolve group" database section to inform members of a group
+     * when the group gets dissolved.
+     *
+     * When a group is dissolved, an entry containing the user's ID is created, which is caught by
+     * the listener formed in this method. The behavior of the DBListener passed into the method
+     * can then be called, and then the user's ID will be removed from the database section.
+     *
+     * This method should be called at the very beginning, probably.
+     * @param o The DBListener that runs as a result of a group being dissolved.
+     * @param uid The ID of the user.
+     */
+    public void listenForDissolveGroup(DBListener<Object> o, String uid){
+        final DBListener<Object> obs = o;
+        final String userID = uid;
+        database.child("dissolve").child(uid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                obs.run(null);
+                database.child("dissolve").child(userID).removeValue();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "listenForDissolveGroup:onCancelled", databaseError.toException());
+            }
+        });
+    }
 }
