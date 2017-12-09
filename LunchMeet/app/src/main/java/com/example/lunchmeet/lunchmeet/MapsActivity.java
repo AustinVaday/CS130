@@ -103,6 +103,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private HashMap<String,Tuple<Double,Double>> uid_loc_hm = new HashMap<String,Tuple<Double,Double>>();
     //private HashMap<String,String> uid_profilePicURL_hm = new HashMap<String,String>();
     private HashMap<String,Thread> uid_threads = new HashMap<String,Thread>();
+
+    /**
+     * HashMap to store (User Id, Group Id) pairs of active groups.
+     */
+    private HashMap<String, String> leaders = new HashMap<String, String>();
     private int idx_1=0;
     /**
      * Bitmap Hashmap used to draw the user and counter markers on the map.
@@ -216,6 +221,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                    uid_loc_hm.put(e.getUid(),coord);
                     System.out.println(e.getLat());
                     System.out.println(e.getPhotoUrl());
+                }
+            }
+        });
+
+        mManager.attachListenerForGroups(new DBListener<List<DBGroup>>(){
+            @Override
+            public void run(List<DBGroup> list){
+                for(DBGroup g : list) {
+                    leaders.put(g.getLeader(), g.getGid());
                 }
             }
         });
@@ -440,10 +454,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        final Button createGroupButton = (Button)findViewById(R.id.groupButton);
+        final Button createGroupButton = (Button)findViewById(R.id.createGroupButton);
+        final Button dissolveGroupButton = (Button)findViewById(R.id.dissolveGroupButton);
+        // visibility set to false by default
+        // if in creator state, set visiblity to true
+        // need to check the state here
+        dissolveGroupButton.setVisibility(View.GONE);
 
-        // check state and if it's not in a state where it can create, set visibility to false
-
+        // check state for create group button and if it's not in a state where it can create, set visibility to false
 
         createGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -457,11 +475,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double lng = user_hmp.get(u.getUid()).getLon();
                 System.out.println(lng);
                 LatLng pos = new LatLng(lat, lng);
+                /*
                 uid_loc_hm.remove(u.getUid());
                 markerHashMap.remove(u.getUid());
                 counterMarkerHashMap.remove(u.getUid());
+                */
                 createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
+
+                leaders.put(u.getUid(), gID);
+
                 createGroupButton.setVisibility(View.GONE);
+                dissolveGroupButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        dissolveGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Marker m = markerHashMap.get(u.getUid());
+                Marker counter = counterMarkerHashMap.get(u.getUid());
+                m.setVisible(false);
+                counter.setVisible(false);
+
+                // repopulate markers for all members of the group
+                mManager.getMembers(new DBListener<List<String>>() {
+                    @Override
+                    public void run(List<String> param) {
+                        for (String id : param) {
+                            double lat = user_hmp.get(id).getLat();
+                            System.out.println(lat);
+                            double lng = user_hmp.get(id).getLon();
+                            System.out.println(lng);
+                            LatLng pos = new LatLng(lat, lng);
+
+                            createMarker(id, pos, 0);
+                        }
+                    }
+                }, leaders.get(u.getUid()));
+
+                mManager.dissolveGroup(leaders.get(u.getUid()), u.getUid());
+                Toast.makeText(getApplicationContext(),"A Group is deleted", Toast.LENGTH_SHORT).show();
+
+                createGroupButton.setVisibility(View.VISIBLE);
+                dissolveGroupButton.setVisibility(View.GONE);
             }
         });
     }

@@ -346,7 +346,9 @@ public class DBManager{
 
                 database.child("active").child(userID).child("gid").setValue(null);
 
-                database.removeEventListener(requestListener);
+                if (requestListener != null) {
+                    database.removeEventListener(requestListener);
+                }
             }
         }, gid);
     }

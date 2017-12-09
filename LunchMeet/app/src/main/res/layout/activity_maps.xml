@@ -8,7 +8,7 @@
     tools:context="com.example.lunchmeet.lunchmeet.MapsActivity" >
 
     <Button
-        android:id="@+id/groupButton"
+        android:id="@+id/createGroupButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
@@ -18,6 +18,20 @@
         android:background="@android:color/holo_green_dark"
         android:padding="10dp"
         android:text="@string/createGroup"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/dissolveGroupButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@android:color/holo_red_dark"
+        android:padding="10dp"
+        android:text="@string/dissolveGroup"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
 
