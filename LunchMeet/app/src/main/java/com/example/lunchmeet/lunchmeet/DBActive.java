@@ -15,7 +15,7 @@ public class DBActive {
     private double lng;
     private String photoUrl;
     private String name;
-
+    private String gid;
 
     /**
      * Gets the UID of the user.
@@ -56,4 +56,16 @@ public class DBActive {
     public void setUid(String uid){
         this.uid = uid;
     }
+
+    /**
+     * Gets the ID of the group that the user is in.
+     * @return The ID of the group; returns null if no group
+     */
+    public String getGid(){ return gid; }
+
+    /**
+     * Sets the ID of the group that the user is in.
+     * @param gid The ID of the group; null if no group
+     */
+    public void setGid(String gid) { this.gid = gid; }
 }

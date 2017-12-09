@@ -30,6 +30,8 @@ public class DBManager{
     private DatabaseReference database;
     private String TAG = "DBManager";
 
+    private ChildEventListener requestListener;
+
     private DBManager(){
         database = FirebaseDatabase.getInstance().getReference();
     }
@@ -260,6 +262,8 @@ public class DBManager{
         updateGroupLeader(key,uid);
         updateGroupSize(key,1);
 
+        database.child("active").child(uid).child("gid").setValue(key);
+
         return key;
     }
 
@@ -274,6 +278,7 @@ public class DBManager{
     public void joinGroup(String gid, String uid, int size){
         database.child("members").child(gid).child(uid).setValue(true);
         database.child("groups").child(gid).child("size").setValue(size + 1);
+        database.child("active").child(uid).child("gid").setValue(gid);
     }
 
     /**
@@ -313,16 +318,23 @@ public class DBManager{
     public void leaveGroup(String gid, String uid, int size){
         database.child("members").child(gid).child(uid).removeValue();
         database.child("groups").child(gid).child("size").setValue(size - 1);
+
+        database.child("active").child(uid).child("gid").setValue(null);
     }
 
     /**
      * Dissolves a group, removing all information about it from the database.
      *
      * @param gid The ID of the group being dissolved.
+     * @param uid The ID of the user doing the dissolving.
      */
-    public void dissolveGroup(String gid){
+    public void dissolveGroup(String gid, String uid){
         database.child("groups").child(gid).removeValue();
         database.child("members").child(gid).removeValue();
+
+        database.child("active").child(uid).child("gid").setValue(null);
+
+        database.removeEventListener(requestListener);
     }
 
     /**
@@ -399,7 +411,8 @@ public class DBManager{
      */
     public void waitForRequests(DBListener<String> o, String gid){
         final DBListener obs = o;
-        database.child("invites").child(gid).addChildEventListener(new ChildEventListener() {
+
+        requestListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String uid = dataSnapshot.getKey();
@@ -426,7 +439,9 @@ public class DBManager{
                 Log.w(TAG, "waitForRequests:onCancelled", databaseError.toException());
 
             }
-        });
+        };
+
+        database.child("invites").child(gid).addChildEventListener(requestListener);
     }
 
 }
