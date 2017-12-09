@@ -27,7 +27,7 @@
         android:layout_weight="5"
         />
         <!--app:srcCompat="@drawable/file" /> -->
-
+<!--
     <Button
         android:id="@+id/button2"
 
@@ -37,6 +37,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/white"
-        android:text="Create Group" />
+        android:text="Create Group" /> -->
 
 </LinearLayout>
