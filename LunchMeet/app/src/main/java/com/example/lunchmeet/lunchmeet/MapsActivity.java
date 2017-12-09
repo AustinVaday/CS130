@@ -501,6 +501,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         popupwindow.showAtLocation(findViewById(R.id.map),Gravity.NO_GRAVITY,p.x-350,p.y-300);
 
                         LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
+                         
                         ImageView imb=new ImageView(getApplicationContext());
                     ImageButton imb2=new ImageButton(getApplicationContext());
 
@@ -508,6 +509,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.file);
+
                         if(user_hmp.get(marker_uid).get_bmp()!=null) {
                            // Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
                             Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(marker_uid).get_bmp(), 200, 200, true);
@@ -595,14 +597,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     createMarker(uid, pos, 0);
 
                 }
-                else if(leaders.containsKey(uid)){
-                    markerHashMap.get(uid).remove();
-                    counterMarkerHashMap.get(uid).remove();
-                    
-                        createMarker(uid, pos, groupSize.get(leaders.get(uid)));
 
-
-                }
 
                 updateMarker(uid, pos);
             }
@@ -701,6 +696,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 counter.setIcon(BitmapDescriptorFactory
                         .fromBitmap(getCircleBitmap(r_black, 1, Integer.toString(groupSize.get(uid)))));
+                counter.setVisible(true);
             }
         }
     }
