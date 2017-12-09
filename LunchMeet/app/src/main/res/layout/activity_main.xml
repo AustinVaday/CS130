@@ -48,8 +48,8 @@
 
         android:layout_width="207dp"
         android:layout_height="wrap_content"
-        android:onClick="goToDBTest"
-        android:text="Go to DBTest"
+        android:onClick="goToMessaging"
+        android:text="Go to Message Test"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"

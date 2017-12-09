@@ -488,4 +488,62 @@ public class DBManager{
             }
         });
     }
+
+    public void sendMessage(String gid, DBMessage message){
+        DatabaseReference ref = database.child("messages").child(gid).push();
+        ref.setValue(message.toMap());
+    }
+
+    public void getAllMessages(String gid, DBListener<List<DBMessage>> o){
+        final DBListener<List<DBMessage>> obs = o;
+        database.child("messages").child(gid).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<DBMessage> result = new ArrayList<>();
+                for(DataSnapshot child : dataSnapshot.getChildren()) {
+                    DBMessage message = child.getValue(DBMessage.class);
+
+                    result.add(message);
+                }
+                obs.run(result);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void attachListenerForNewMessages(String gid, DBListener<DBMessage> o){
+        final DBListener<DBMessage> obs = o;
+        database.child("messages").child(gid).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                DBMessage result = dataSnapshot.getValue(DBMessage.class);
+                Log.i(TAG,"" + dataSnapshot);
+                obs.run(result);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
