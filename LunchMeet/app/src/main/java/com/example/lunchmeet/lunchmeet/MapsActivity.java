@@ -91,6 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * the free agent state cannot).
      */
     private User user;
+     List<String> members;
     /**
      * Marker used to show the user's image and location on the map.
      */
@@ -527,15 +528,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         popupwindow.showAtLocation(findViewById(R.id.map),Gravity.NO_GRAVITY,p.x-350,p.y-300);
 
                         LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
+
+
+
+
+
                         ImageView imb=new ImageView(getApplicationContext());
                     ImageButton imb2=new ImageButton(getApplicationContext());
 
 
 
 
+
                     Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.file);
-                        if(user_hmp.get(marker_uid).get_bmp()!=null) {
-                           // Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
+                    if(leaders.get(marker_uid)==null) {
+                        if (user_hmp.get(marker_uid).get_bmp() != null) {
+                            // Bitmap resized = Bitmap.createScaledBitmap(uid_bitmaps.get(marker_uid), 200, 200, true);
                             Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(marker_uid).get_bmp(), 200, 200, true);
                             //ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
                             imb.setImageBitmap(getCircleBitmap(resized, 0, "0"));
@@ -544,9 +552,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             ib.addView(imb);
 
 
-
-
                         }
+                    }
+                    else {
+
+//                        mManager.getMembers(new DBListener<List<String>>() {
+//                            @Override
+//                            public void run(List<String> param) {
+//                                members = param;
+//
+//                            }
+//                        }, leaders.get(marker_uid));
+//                        Bitmap resized;
+//                        ImageView iv = new ImageView(getApplicationContext());
+//
+//                        for (int i = 0; i < members.size(); i++) {
+//                            if (user_hmp.get(members.get(i)) != null && user_hmp.get(members.get(i)).get_bmp() != null) {
+//                                resized = Bitmap.createScaledBitmap(user_hmp.get(members.get(i)).get_bmp(), 200, 200, true);
+//                                iv.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+//
+//                                ib.addView(iv);
+//                            }
+//
+//
+//                        }
+                    }
+
                         TextView text = (TextView) container.findViewById(R.id.textView);
                         System.out.println("name = " + u.getName());
 
@@ -644,10 +675,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (markerHashMap.get(uid) == null) {
                 if (leaders.containsKey(uid))
                     createMarker(uid, pos, groupSize.get(leaders.get(uid)));
-                else
+                else if(user_hmp.get(key).getGid()==null)
                     createMarker(uid, pos, 0);
             }
             else {
+                if( leaders.get(key)!=null && user_hmp.get(key).getGid() == null){
+                    leaders.remove(uid);
+                    markerHashMap.get(uid).remove();
+                    counterMarkerHashMap.get(uid).remove();
+                    createMarker(uid, pos, 0);
+
+                }
+
+
                 updateMarker(uid, pos);
             }
         }
@@ -724,6 +764,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     public void updateMarker(String uid, LatLng loc){
         Marker currentMarker = markerHashMap.get(uid);
+        Marker counter= counterMarkerHashMap.get(uid);
         currentMarker.setPosition(loc);
         counterMarkerHashMap.get(uid).setPosition(loc);
 
@@ -737,6 +778,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentMarker.setIcon(BitmapDescriptorFactory
                     .fromBitmap(getCircleBitmap(resized, 0, "5")));
             currentMarker.setTag(1);
+
+        }
+        if(leaders.get(uid)!=null && groupSize.get(uid)!=null){
+            Bitmap black = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.black);
+            Bitmap r_black = Bitmap.createScaledBitmap(black, 75, 75, true);
+
+            counter.setIcon(BitmapDescriptorFactory
+                    .fromBitmap(getCircleBitmap(r_black, 1, Integer.toString(groupSize.get(uid)))));
+            counter.setVisible(true);
         }
     }
 
