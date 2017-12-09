@@ -4,7 +4,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/rounded"
-    android:weightSum="7">
+    android:weightSum="7" >
 
     <TextView
         android:id="@+id/textView"
@@ -27,16 +27,22 @@
         android:layout_weight="5"
         />
         <!--app:srcCompat="@drawable/file" /> -->
-<!--
+
     <Button
         android:id="@+id/button2"
 
-        android:layout_width="150dp"
-        android:layout_gravity="center"
-        android:backgroundTint="@color/com_facebook_button_background_color"
+        android:layout_width="fill_parent"
+        android:layout_gravity="center|bottom"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="@color/white"
-        android:text="Create Group" /> -->
+        android:textSize="16dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@android:color/holo_purple"
+        android:text="Join Group" />
+    <!--android:backgroundTint="@color/com_facebook_button_background_color"
+    /> -->
 
 </LinearLayout>

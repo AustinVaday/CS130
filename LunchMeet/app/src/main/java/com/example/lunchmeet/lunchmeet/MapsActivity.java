@@ -422,11 +422,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         System.out.println("name = " + u.getName());
 
                         text.setText(user_hmp.get(marker_uid).getName());
-                        /*
+
                         Button bt = (Button)container.findViewById(R.id.button2);
                         bt.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                Toast.makeText(getApplicationContext(),user_hmp.get(marker_uid).getName(), Toast.LENGTH_SHORT).show();
+                                /*
                                 String gID =  mManager.createGroup(u.getUid());
                                 Toast.makeText(getApplicationContext(),"A Group is created", Toast.LENGTH_SHORT).show();
                                 m.setVisible(false);
@@ -439,8 +441,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 markerHashMap.remove(u.getUid());
                                 counterMarkerHashMap.remove(u.getUid());
                                 createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
+                                */
                             }
-                        }); */
+                        });
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
 
                         container.setOnTouchListener(new View.OnTouchListener() {
@@ -525,6 +528,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 createGroupButton.setVisibility(View.VISIBLE);
                 dissolveGroupButton.setVisibility(View.GONE);
+                updateMap();
             }
         });
     }
