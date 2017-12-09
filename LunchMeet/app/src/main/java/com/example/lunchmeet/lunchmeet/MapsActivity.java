@@ -108,6 +108,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * HashMap to store (User Id, Group Id) pairs of active groups.
      */
     private HashMap<String, String> leaders = new HashMap<String, String>();
+
+    private HashMap<String, Integer> groupSize = new HashMap<String, Integer>();
     private int idx_1=0;
     /**
      * Bitmap Hashmap used to draw the user and counter markers on the map.
@@ -171,6 +173,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         ImageView image = new ImageView(this);
 
+        final Button createGroupButton = (Button)findViewById(R.id.createGroupButton);
+        final Button dissolveGroupButton = (Button)findViewById(R.id.dissolveGroupButton);
+
+        /*
+        System.out.println("leaders size" + leaders.size());
+
+        // check if the user is a creator. if they are, display the dissolve group button instead of create group
+        if (leaders.containsKey(u.getUid())) {
+            System.out.println("leader");
+            dissolveGroupButton.setVisibility(View.VISIBLE);
+            createGroupButton.setVisibility(View.GONE);
+        }
+        else { // still need to check if the user is a member of a group
+            createGroupButton.setVisibility(View.VISIBLE);
+            dissolveGroupButton.setVisibility(View.GONE);
+        }
+        */
+
         //uid_profilePicURL_hm = (HashMap<String, String>) getIntent().getSerializableExtra("uid_profilePicURL_hm");
         mManager.attachListenerForActiveUsers(new DBListener<List<DBActive>>(){
             @Override
@@ -233,7 +253,87 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void run(List<DBGroup> list){
                 for(DBGroup g : list) {
                     leaders.put(g.getLeader(), g.getGid());
+                    System.out.println("added to leaders: " + g.getLeader() + " " + g.getGid());
+                    groupSize.put(g.getGid(), g.getSize());
+
+                    if (g.getLeader().equals(u.getUid())) {
+                        createGroupButton.setVisibility(View.GONE);
+                        dissolveGroupButton.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        createGroupButton.setVisibility(View.VISIBLE);
+                        dissolveGroupButton.setVisibility(View.GONE);
+                    }
                 }
+            }
+        });
+
+        createGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String gID =  mManager.createGroup(u.getUid());
+                Toast.makeText(getApplicationContext(),"A Group is created", Toast.LENGTH_SHORT).show();
+                Marker m = markerHashMap.get(u.getUid());
+                m.remove();
+                markerHashMap.remove(u.getUid());
+                //m.setVisible(false);
+                double lat = user_hmp.get(u.getUid()).getLat();
+                System.out.println(lat);
+                double lng = user_hmp.get(u.getUid()).getLon();
+                System.out.println(lng);
+                LatLng pos = new LatLng(lat, lng);
+                /*
+                uid_loc_hm.remove(u.getUid());
+                markerHashMap.remove(u.getUid());
+                counterMarkerHashMap.remove(u.getUid());
+                */
+                createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
+
+                leaders.put(u.getUid(), gID);
+
+                createGroupButton.setVisibility(View.GONE);
+                dissolveGroupButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        dissolveGroupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Marker m = markerHashMap.get(u.getUid());
+                Marker counter = counterMarkerHashMap.get(u.getUid());
+                m.remove();
+                counter.remove();
+                markerHashMap.remove(u.getUid());
+                counterMarkerHashMap.remove(u.getUid());
+                //m.setVisible(false);
+                //counter.setVisible(false);
+
+                /*
+                // repopulate markers for all members of the group
+                mManager.getMembers(new DBListener<List<String>>() {
+                    @Override
+                    public void run(List<String> param) {
+                        for (String id : param) {
+
+                            double lat = user_hmp.get(id).getLat();
+                            System.out.println(lat);
+                            double lng = user_hmp.get(id).getLon();
+                            System.out.println(lng);
+                            LatLng pos = new LatLng(lat, lng);
+
+                            createMarker(id, pos, 0);
+                        }
+                    }
+                }, leaders.get(u.getUid()));
+                */
+
+                mManager.dissolveGroup(leaders.get(u.getUid()), u.getUid());
+                Toast.makeText(getApplicationContext(),"A Group is deleted", Toast.LENGTH_SHORT).show();
+                leaders.remove(u.getUid());
+
+                createGroupButton.setVisibility(View.VISIBLE);
+                dissolveGroupButton.setVisibility(View.GONE);
+                updateMap();
             }
         });
 
@@ -327,7 +427,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (loc != null) {
             LatLng currLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
             if (markerHashMap.get(u.getUid()) == null) {
-                createMarker(u.getUid(), currLoc, 0);
+                if (leaders.containsKey(u.getUid()))
+                    createMarker(u.getUid(), currLoc, groupSize.get(leaders.get(u.getUid())));
+                else
+                    createMarker(u.getUid(), currLoc, 0);
             }
             else{
                 updateMarker(u.getUid(),currLoc);
@@ -459,78 +562,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return true;
             }
         });
-
-        final Button createGroupButton = (Button)findViewById(R.id.createGroupButton);
-        final Button dissolveGroupButton = (Button)findViewById(R.id.dissolveGroupButton);
-        // visibility set to false by default
-        // if in creator state, set visiblity to true
-        // need to check the state here
-        dissolveGroupButton.setVisibility(View.GONE);
-
-        // check state for create group button and if it's not in a state where it can create, set visibility to false
-
-        createGroupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String gID =  mManager.createGroup(u.getUid());
-                Toast.makeText(getApplicationContext(),"A Group is created", Toast.LENGTH_SHORT).show();
-                Marker m = markerHashMap.get(u.getUid());
-                m.setVisible(false);
-                double lat = user_hmp.get(u.getUid()).getLat();
-                System.out.println(lat);
-                double lng = user_hmp.get(u.getUid()).getLon();
-                System.out.println(lng);
-                LatLng pos = new LatLng(lat, lng);
-                /*
-                uid_loc_hm.remove(u.getUid());
-                markerHashMap.remove(u.getUid());
-                counterMarkerHashMap.remove(u.getUid());
-                */
-                createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
-
-                leaders.put(u.getUid(), gID);
-
-                createGroupButton.setVisibility(View.GONE);
-                dissolveGroupButton.setVisibility(View.VISIBLE);
-            }
-        });
-
-        dissolveGroupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Marker m = markerHashMap.get(u.getUid());
-                Marker counter = counterMarkerHashMap.get(u.getUid());
-                counterMarkerHashMap.remove(u.getUid());
-                m.setVisible(false);
-                counter.setVisible(false);
-
-                /*
-                // repopulate markers for all members of the group
-                mManager.getMembers(new DBListener<List<String>>() {
-                    @Override
-                    public void run(List<String> param) {
-                        for (String id : param) {
-
-                            double lat = user_hmp.get(id).getLat();
-                            System.out.println(lat);
-                            double lng = user_hmp.get(id).getLon();
-                            System.out.println(lng);
-                            LatLng pos = new LatLng(lat, lng);
-
-                            createMarker(id, pos, 0);
-                        }
-                    }
-                }, leaders.get(u.getUid()));
-                */
-
-                mManager.dissolveGroup(leaders.get(u.getUid()), u.getUid());
-                Toast.makeText(getApplicationContext(),"A Group is deleted", Toast.LENGTH_SHORT).show();
-
-                createGroupButton.setVisibility(View.VISIBLE);
-                dissolveGroupButton.setVisibility(View.GONE);
-                updateMap();
-            }
-        });
     }
 
 
@@ -550,10 +581,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double lng = user_hmp.get(key).getLon();
             String uid = user_hmp.get(key).getuid();
             LatLng pos = new LatLng(lat, lng);
-            if (markerHashMap.get(uid) == null || user_hmp.get(uid).getGid() == null) {
-                createMarker(uid,pos,0);
+            if (markerHashMap.get(uid) == null) {
+                if (leaders.containsKey(uid))
+                    createMarker(uid, pos, groupSize.get(leaders.get(uid)));
+                else
+                    createMarker(uid, pos, 0);
             }
-            updateMarker(uid,pos);
+            else {
+                updateMarker(uid, pos);
+            }
         }
         LatLng currPos = new LatLng(user_hmp.get(u.getUid()).getLat(),user_hmp.get(u.getUid()).getLon());
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPos, 17));
