@@ -68,4 +68,12 @@ public class DBActive {
      * @param gid The ID of the group; null if no group
      */
     public void setGid(String gid) { this.gid = gid; }
+
+    /**
+     * Gets the name of the user.
+     * @return The name of the user
+     */
+    public String getName(){
+        return name;
+    }
 }
