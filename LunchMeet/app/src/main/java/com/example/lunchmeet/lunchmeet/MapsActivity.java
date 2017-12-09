@@ -501,7 +501,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         popupwindow.showAtLocation(findViewById(R.id.map),Gravity.NO_GRAVITY,p.x-350,p.y-300);
 
                         LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
-                         
+
                         ImageView imb=new ImageView(getApplicationContext());
                     ImageButton imb2=new ImageButton(getApplicationContext());
 
@@ -689,15 +689,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             currentMarker.setIcon(BitmapDescriptorFactory
                     .fromBitmap(getCircleBitmap(resized, 0, "5")));
             currentMarker.setTag(1);
-            if(leaders.get(uid)!=null){
-                Bitmap black = BitmapFactory.decodeResource(getResources(),
-                        R.drawable.black);
-                Bitmap r_black = Bitmap.createScaledBitmap(black, 75, 75, true);
 
-                counter.setIcon(BitmapDescriptorFactory
-                        .fromBitmap(getCircleBitmap(r_black, 1, Integer.toString(groupSize.get(uid)))));
-                counter.setVisible(true);
-            }
+        }
+        if(leaders.get(uid)!=null){
+            Bitmap black = BitmapFactory.decodeResource(getResources(),
+                    R.drawable.black);
+            Bitmap r_black = Bitmap.createScaledBitmap(black, 75, 75, true);
+
+            counter.setIcon(BitmapDescriptorFactory
+                    .fromBitmap(getCircleBitmap(r_black, 1, Integer.toString(groupSize.get(uid)))));
+            counter.setVisible(true);
         }
     }
 
