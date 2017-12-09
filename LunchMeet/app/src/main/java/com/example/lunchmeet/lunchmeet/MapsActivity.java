@@ -598,9 +598,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 else if(leaders.containsKey(uid)){
                     markerHashMap.get(uid).remove();
                     counterMarkerHashMap.get(uid).remove();
-                    if(leaders.containsKey(uid)){
+                    
                         createMarker(uid, pos, groupSize.get(leaders.get(uid)));
-                    }
+
 
                 }
 
