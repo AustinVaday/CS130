@@ -161,7 +161,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
 
         mManager.addUser(u);
-        mManager.updateActiveUser(u, 0, 0, u.getPhotoUrl());
+        mManager.updateActiveUser(u, 0, 0);
 
         ImageView image = new ImageView(this);
 
@@ -171,7 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void run(List<DBActive> list){
                 for(DBActive e : list){
                     if(!user_hmp.containsKey(e.getUid())){
-                        user_hmp.put(e.getUid(),new User("default",null,(float)e.getLat(),(float)e.getLng(),e.getUid(),e.getProfilePicURL()));
+                        user_hmp.put(e.getUid(),new User("default",null,(float)e.getLat(),(float)e.getLng(),e.getUid(),e.getPhotoUrl()));
 
                     }
                     Log.d("USERS",user_hmp.get(e.getUid()).geturl());
@@ -214,7 +214,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                    Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
 //                    uid_loc_hm.put(e.getUid(),coord);
                     System.out.println(e.getLat());
-                    System.out.println(e.getProfilePicURL());
+                    System.out.println(e.getPhotoUrl());
                 }
             }
         });
@@ -590,7 +590,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         System.out.println(markerHashMap.size());
         System.out.println(uid_loc_hm.size());
 //        updateMap(m_marker, m_counterMarker, location.getLatitude(), location.getLongitude());
-        mManager.updateActiveUser(u.getUid(), location.getLatitude(), location.getLongitude(), u.getPhotoUrl());
+        mManager.updateActiveUser(u.getUid(), location.getLatitude(), location.getLongitude());
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);

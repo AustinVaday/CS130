@@ -30,7 +30,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void run(List<DBActive> list){
                 for(DBActive e : list){
-                    uid_profilePicURL_hm.put(e.getUid(),e.getProfilePicURL());
+                    uid_profilePicURL_hm.put(e.getUid(),e.getPhotoUrl());
                 }
             }
         });
@@ -38,7 +38,7 @@ public class Dashboard extends AppCompatActivity {
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
         mManager.addUser(u);
-        mManager.updateActiveUser(u, 0, 1, u.getPhotoUrl());
+        mManager.updateActiveUser(u, 0, 1);
         setContentView(R.layout.activity_dashboard);
         b=(Button)findViewById(R.id.button3);
         b.setOnClickListener(new View.OnClickListener() {

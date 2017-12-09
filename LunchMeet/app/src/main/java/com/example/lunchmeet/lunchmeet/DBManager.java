@@ -102,14 +102,18 @@ public class DBManager{
     }
 
     /**
-     * Updates an active user's location in the database.
+     * Updates an active user's location in the database, as well as their name and photo URL.
      *
      * @param u The user whose location should be updated.
      * @param lat The latitude of the user.
      * @param lng The longitude of the user.
      */
-    public void updateActiveUser(DBUser u, double lat, double lng, String profilePicURL){
-        updateActiveUser(u.getUid(),lat,lng, profilePicURL);
+    public void updateActiveUser(DBUser u, double lat, double lng){
+        DatabaseReference ref = database.child("active").child(u.getUid());
+        ref.child("lat").setValue(lat);
+        ref.child("lng").setValue(lng);
+        ref.child("photoUrl").setValue(u.getPhotoUrl());
+        ref.child("name").setValue(u.getName());
     }
 
     /**
@@ -119,11 +123,10 @@ public class DBManager{
      * @param lat The latitude of the user.
      * @param lng The longitude of the user.
      */
-    public void updateActiveUser(String uid, double lat, double lng, String profilePicURL){
+    public void updateActiveUser(String uid, double lat, double lng){
         DatabaseReference ref = database.child("active").child(uid);
         ref.child("lat").setValue(lat);
         ref.child("lng").setValue(lng);
-        ref.child("profilePicURL").setValue(profilePicURL);
     }
 
     /**
