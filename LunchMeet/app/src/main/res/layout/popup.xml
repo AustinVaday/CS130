@@ -29,7 +29,24 @@
         <!--app:srcCompat="@drawable/file" /> -->
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/joinGroupButton"
+
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1"
+        android:background="@android:color/holo_purple"
+        android:text="Join Group"
+        android:textColor="@color/white"
+        android:textSize="16dp" />
+    <!--android:backgroundTint="@color/com_facebook_button_background_color"
+    /> -->
+
+    <Button
+        android:id="@+id/inviteToGroupButton"
 
         android:layout_width="fill_parent"
         android:layout_gravity="center|bottom"
@@ -40,9 +57,7 @@
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@android:color/holo_purple"
-        android:text="Join Group" />
-    <!--android:backgroundTint="@color/com_facebook_button_background_color"
-    /> -->
+        android:background="@android:color/holo_blue_light"
+        android:text="Invite To Lunch" />
 
 </LinearLayout>

@@ -203,7 +203,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Log.d("USERS","PhotoURL: " + user_hmp.get(e.getUid()).geturl());
 
                     user_hmp.get(e.getUid()).setCoordinates(e.getLat(),e.getLng());
-                    user_hmp.get(e.getUid()).setgid(e.getGid());
+
+                    System.out.println(e.getName() + " gid " + e.getGid());
+
+                    if (e.getGid() == null) {
+                        user_hmp.get(e.getUid()).setgid("default");
+                    }
+                    else {
+                        user_hmp.get(e.getUid()).setgid(e.getGid());
+                    }
+
+                    System.out.println("user " + user_hmp.get(e.getUid()).getName() + " gid " + user_hmp.get(e.getUid()).getGid());
 
 
                     final int idx = 1;
@@ -268,6 +278,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        mManager.waitForInvites(new DBListener<String>() {
+            // still need to implement some form of notifications to process these
+            @Override
+            public void run(String user) {
+                Toast.makeText(getApplicationContext(), "You were added to a group", Toast.LENGTH_SHORT).show();
+            }
+        }, u.getUid());
+
         createGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -290,6 +308,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
 
                 leaders.put(u.getUid(), gID);
+/*
+                mManager.waitForRequests(new DBListener<String>() {
+                    @Override
+                    public void run(String user) {
+                        Toast.makeText(getApplicationContext(), user + " requested to join group", Toast.LENGTH_SHORT).show();
+                    }
+                }, gID);
+                */
 
                 createGroupButton.setVisibility(View.GONE);
                 dissolveGroupButton.setVisibility(View.VISIBLE);
@@ -526,27 +552,61 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         text.setText(user_hmp.get(marker_uid).getName());
 
-                        Button bt = (Button)container.findViewById(R.id.button2);
-                        bt.setOnClickListener(new View.OnClickListener() {
+                        final Button invite = (Button) container.findViewById(R.id.inviteToGroupButton);
+                        final Button joinGroup = (Button) container.findViewById(R.id.joinGroupButton);
+
+                        if (leaders.containsKey(u.getUid())) {
+                            System.out.println("you are a leader");
+                            if (!user_hmp.get(marker_uid).getGid().equals("default")) {
+                                // clicked marker already in a group
+                                // can't invite or join their group
+                                invite.setVisibility(View.GONE);
+                                joinGroup.setVisibility(View.GONE);
+                            }
+                            else {
+                                // clicked marker not in a group
+                                invite.setVisibility(View.VISIBLE);
+                                joinGroup.setVisibility(View.GONE);
+                            }
+                        }
+                        else if (user_hmp.get(u.getUid()).getGid().equals("default")) {
+                            // current user not a member of a group
+                            System.out.println("you are not a member of a group");
+                            if (!user_hmp.get(marker_uid).getGid().equals("default")) {
+                                // clicked marker in a group
+                                invite.setVisibility(View.GONE);
+                                joinGroup.setVisibility(View.VISIBLE);
+                            }
+                            else {
+                                // clicked marker not in a group so don't display any actions
+                                invite.setVisibility(View.GONE);
+                                joinGroup.setVisibility(View.GONE);
+                            }
+                        }
+                        else {
+                            // current user is a member of some group
+                            System.out.println("you are a member of a group");
+                            // no actions for members, only leaders can invite people
+                            invite.setVisibility(View.GONE);
+                            joinGroup.setVisibility(View.GONE);
+                        }
+
+                        invite.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                Toast.makeText(getApplicationContext(),user_hmp.get(marker_uid).getName(), Toast.LENGTH_SHORT).show();
-                                /*
-                                String gID =  mManager.createGroup(u.getUid());
-                                Toast.makeText(getApplicationContext(),"A Group is created", Toast.LENGTH_SHORT).show();
-                                m.setVisible(false);
-                                double lat = user_hmp.get(u.getUid()).getLat();
-                                System.out.println(lat);
-                                double lng = user_hmp.get(u.getUid()).getLon();
-                                System.out.println(lng);
-                                LatLng pos = new LatLng(lat, lng);
-                                uid_loc_hm.remove(u.getUid());
-                                markerHashMap.remove(u.getUid());
-                                counterMarkerHashMap.remove(u.getUid());
-                                createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
-                                */
+                                mManager.inviteUser(leaders.get(u.getUid()), user_hmp.get(marker_uid).getuid());
+                                Toast.makeText(getApplicationContext(), "Invited " + user_hmp.get(marker_uid).getName(), Toast.LENGTH_SHORT).show();
                             }
                         });
+
+                        joinGroup.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mManager.requestToJoinGroup(leaders.get(user_hmp.get(marker_uid).getuid()), u.getUid());
+                                Toast.makeText(getApplicationContext(), "Requested to join " + user_hmp.get(marker_uid).getName() + "'s group", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.CENTER, 0, 150);
 
                         container.setOnTouchListener(new View.OnTouchListener() {
