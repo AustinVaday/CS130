@@ -160,7 +160,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
 
-        user_hmp.put(u.getUid(),new User(u.getName(),null,0,0,u.getUid(),u.getPhotoUrl()));
+        user_hmp.put(u.getUid(),new User(u.getName(),null,0,0,u.getUid(),u.getPhotoUrl(),"default"));
         mManager.addUser(u);
         mManager.updateActiveUser(u, 0, 0);
 
@@ -172,11 +172,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void run(List<DBActive> list){
                 for(DBActive e : list){
                     if(!user_hmp.containsKey(e.getUid())){
-                        user_hmp.put(e.getUid(),new User("default",null,(float)e.getLat(),(float)e.getLng(),e.getUid(),e.getPhotoUrl()));
+                        user_hmp.put(e.getUid(),new User(e.getName(),null,(float)e.getLat(),(float)e.getLng(),e.getUid(),e.getPhotoUrl(),e.getGid()));
 
                     }
                     Log.d("USERS","PhotoURL: " + user_hmp.get(e.getUid()).geturl());
+
                     user_hmp.get(e.getUid()).setCoordinates(e.getLat(),e.getLng());
+                    user_hmp.get(e.getUid()).setgid(e.getGid());
+
 
                     final int idx = 1;
                     final String uid=e.getUid();
@@ -404,7 +407,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         TextView text = (TextView) container.findViewById(R.id.textView);
                         System.out.println("name = " + u.getName());
 
-                        text.setText(u.getName());
+                        text.setText(user_hmp.get(marker_uid).getName());
                         /*
                         Button bt = (Button)container.findViewById(R.id.button2);
                         bt.setOnClickListener(new View.OnClickListener() {

@@ -15,6 +15,7 @@ public class User {
     private String url;
     private double lat;
     private double lon;
+    private String gid;
     private Group group;
     private State state;
     private Free_agent free_agent;
@@ -27,12 +28,13 @@ public class User {
      * @param profile_pic user's profile picture URL from Facebook
 
      */
-    public User(String name, Bitmap profile_pic, float lat, float lon, String uid,String bmp_url){
+    public User(String name, Bitmap profile_pic, float lat, float lon, String uid,String bmp_url,String gid){
         free_agent=new Free_agent();
         member=new Member();
         creator=new Creator();
         this.uid=uid;
         this.url=bmp_url;
+        this.gid=gid;
         this.name=name;
         this.profile_pic=profile_pic;
         this.lat=lat;
@@ -54,6 +56,13 @@ public class User {
      */
     public void setState(State s) {
         state = s;
+    }
+
+    public void setgid(String s){
+        this.gid=s;
+    }
+    public String getGid(){
+        return gid;
     }
 
     /**
