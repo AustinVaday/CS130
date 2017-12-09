@@ -497,14 +497,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 Marker m = markerHashMap.get(u.getUid());
                 Marker counter = counterMarkerHashMap.get(u.getUid());
+                counterMarkerHashMap.remove(u.getUid());
                 m.setVisible(false);
                 counter.setVisible(false);
 
+                /*
                 // repopulate markers for all members of the group
                 mManager.getMembers(new DBListener<List<String>>() {
                     @Override
                     public void run(List<String> param) {
                         for (String id : param) {
+
                             double lat = user_hmp.get(id).getLat();
                             System.out.println(lat);
                             double lng = user_hmp.get(id).getLon();
@@ -515,6 +518,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     }
                 }, leaders.get(u.getUid()));
+                */
 
                 mManager.dissolveGroup(leaders.get(u.getUid()), u.getUid());
                 Toast.makeText(getApplicationContext(),"A Group is deleted", Toast.LENGTH_SHORT).show();
@@ -542,7 +546,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double lng = user_hmp.get(key).getLon();
             String uid = user_hmp.get(key).getuid();
             LatLng pos = new LatLng(lat, lng);
-            if (markerHashMap.get(uid) == null) {
+            if (markerHashMap.get(uid) == null || user_hmp.get(uid).getGid() == null) {
                 createMarker(uid,pos,0);
             }
             updateMarker(uid,pos);
