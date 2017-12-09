@@ -174,7 +174,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         user_hmp.put(e.getUid(),new User("default",null,(float)e.getLat(),(float)e.getLng(),e.getUid(),e.getPhotoUrl()));
 
                     }
-                    Log.d("USERS",user_hmp.get(e.getUid()).geturl());
+                    Log.d("USERS","PhotoURL: " + user_hmp.get(e.getUid()).geturl());
                     user_hmp.get(e.getUid()).setCoordinates(e.getLat(),e.getLng());
 
                     final int idx = 1;
@@ -621,7 +621,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         double lng = location.getLongitude();
         Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
         //uid_loc_hm.put(u.getUid(),coord);
-        user_hmp.get(u.getUid()).setCoordinates(lat,lng);
+
+        User tempUser = user_hmp.get(u.getUid());
+        if(tempUser != null) {
+            user_hmp.get(u.getUid()).setCoordinates(lat, lng);
+        }
 
         //for testing only
         //create test coordinates and update all the other users
