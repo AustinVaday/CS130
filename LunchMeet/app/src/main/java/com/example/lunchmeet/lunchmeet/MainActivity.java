@@ -199,12 +199,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void goToDBTest(View view){
+    public void goToMessaging(View view){
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(currentUser == null) {
             Toast.makeText(getApplicationContext(),"Please log in via Facebook", Toast.LENGTH_SHORT).show();
         } else {
-            Intent intent = new Intent(this, DBTestActivity.class);
+            Intent intent = new Intent(this, MessageTestActivity.class);
             startActivity(intent);
         }
     }
