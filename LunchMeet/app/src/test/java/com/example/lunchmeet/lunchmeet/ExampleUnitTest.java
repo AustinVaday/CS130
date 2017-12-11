@@ -16,7 +16,7 @@ public class ExampleUnitTest {
      */
     @Test
     public void userTest() throws Exception{
-        User temp = new User("name","male", "profile_pic", 0,0);
+        User temp = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
         assertEquals("name", temp.getName());
     }
 
@@ -27,7 +27,7 @@ public class ExampleUnitTest {
      */
     @Test
     public void groupTest() throws Exception{
-        User temp = new User("name","male", "profile_pic", 0,0);
+        User temp = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
         Group group = new Group(temp);
         assertEquals(1, group.getCurr_size());
     }
@@ -39,9 +39,9 @@ public class ExampleUnitTest {
      */
     @Test
     public void addUserToGroupTest()throws Exception{
-        User user1 = new User("name","male", "profile_pic", 0,0);
+        User user1 = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
         Group group = new Group(user1);
-        User user2 = new User("name2","male", "profile_pic2", 10,10);
+        User user2 = new User("name2",null, (float).45,(float).55,"male", "profile_pic2", "0");
         group.add_user(user2);
         assertEquals(2, group.getCurr_size());
     }
@@ -53,9 +53,9 @@ public class ExampleUnitTest {
      */
     @Test
     public void removeUserToGroupTest()throws Exception{
-        User user1 = new User("name","male", "profile_pic", 0,0);
+        User user1 = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
         Group group = new Group(user1);
-        User user2 = new User("name2","male", "profile_pic2", 10,10);
+        User user2 = new User("name2",null, (float).45,(float).55,"male", "profile_pic2", "0");
         group.add_user(user2);
         assertEquals(2, group.getCurr_size());
         group.remove_user(user2);
@@ -68,7 +68,7 @@ public class ExampleUnitTest {
      */
     @Test
     public void freestateUserTest() throws Exception{
-        User temp = new User("name","male", "profile_pic", 0,0);
+        User temp = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
         assertEquals("Free_agent", temp.getCurrentState().getClass().getSimpleName());
     }
 
@@ -78,7 +78,7 @@ public class ExampleUnitTest {
      */
     @Test
     public void userCreatesGroupTest() throws Exception{
-        User user1 = new User("name","male", "profile_pic", 0,0);
+        User user1 = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
         user1.createGroup();
         assertEquals("Creator", user1.getCurrentState().getClass().getSimpleName());
     }
@@ -89,9 +89,9 @@ public class ExampleUnitTest {
      */
     @Test
     public void memberTest()throws Exception{
-        User user1 = new User("name","male", "profile_pic", 0,0);
+        User user1 = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
         user1.createGroup();
-        User user2 = new User("name2","male", "profile_pic2", 10,10);
+        User user2 = new User("name2",null, (float).45,(float).55,"male", "profile_pic2", "0");
         user2.joinAGroup(user1.getGroup());
         assertEquals("Member", user2.getCurrentState().getClass().getSimpleName());
     }

@@ -85,6 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private ImageView[] group_images = new ImageView[10];
     /**
      * User object that keeps track of the current user's state. Different actions are available to the
      * user based on what state they are in (eg a user in creator state can dissolve a group, but a user in
@@ -556,26 +557,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     else {
 
-//                        mManager.getMembers(new DBListener<List<String>>() {
-//                            @Override
-//                            public void run(List<String> param) {
-//                                members = param;
-//
-//                            }
-//                        }, leaders.get(marker_uid));
-//                        Bitmap resized;
-//                        ImageView iv = new ImageView(getApplicationContext());
-//
-//                        for (int i = 0; i < members.size(); i++) {
-//                            if (user_hmp.get(members.get(i)) != null && user_hmp.get(members.get(i)).get_bmp() != null) {
-//                                resized = Bitmap.createScaledBitmap(user_hmp.get(members.get(i)).get_bmp(), 200, 200, true);
-//                                iv.setImageBitmap(getCircleBitmap(resized, 0, "0"));
-//
-//                                ib.addView(iv);
-//                            }
-//
+
+
+                         final LinearLayout tempo=(LinearLayout) container.findViewById(R.id.linear);
+                        mManager.getMembers(new DBListener<List<String>>() {
+                            @Override
+                            public void run(List<String> param) {
+                                    for(int i=0;i<param.size();i++){
+                                        Log.d(leaders.get(marker_uid)+ " members: ",param.get(i));
+                                        Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(param.get(i)).get_bmp(), 200, 200, true);
+                                        group_images[i]= new ImageView(getApplicationContext());
+                                        group_images[i].setImageBitmap(getCircleBitmap(resized, 0, "0"));
+
+                                       tempo.addView(group_images[i]);
+
+//                                        if(i==(param.size()-1)){
+//                                            group_images[i+1]=null;
+//                                        }
+
+
+
+
+                                    }
+
+
+                            }
+                        }, leaders.get(marker_uid));
+
+                  //  if(groupSize.get(marker_uid)!=null) {
+//                        int i=0;
+//                        while(group_images[i]!=null) {
+//                            ib.addView(group_images[i]);
+//                            i++;
 //
 //                        }
+                  //  }
+
+
+
+
                     }
 
                         TextView text = (TextView) container.findViewById(R.id.textView);
@@ -653,6 +673,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 return true;
             }
         });
+    }
+
+    public void addtopop(LinearLayout l,int i){
+
     }
 
 
