@@ -32,7 +32,7 @@
         android:id="@+id/joinGroupButton"
 
         android:layout_width="fill_parent"
-        android:layout_height="1dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
