@@ -314,9 +314,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 markerHashMap.remove(u.getUid());
                 counterMarkerHashMap.remove(u.getUid());
                 */
-                createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
+                //createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
 
                 leaders.put(u.getUid(), gID);
+                groupSize.put(gID, 1);
 /*
                 mManager.waitForRequests(new DBListener<String>() {
                     @Override
@@ -329,6 +330,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 createGroupButton.setVisibility(View.GONE);
                 dissolveGroupButton.setVisibility(View.VISIBLE);
                 leaveGroupButton.setVisibility(View.GONE);
+                updateMap();
             }
         });
 
@@ -366,10 +368,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mManager.dissolveGroup(leaders.get(u.getUid()), u.getUid());
                 Toast.makeText(getApplicationContext(),"A Group is deleted", Toast.LENGTH_SHORT).show();
                 leaders.remove(u.getUid());
+                groupSize.remove(u.getUid());
 
                 createGroupButton.setVisibility(View.VISIBLE);
                 dissolveGroupButton.setVisibility(View.GONE);
                 leaveGroupButton.setVisibility(View.GONE);
+                System.out.println("dissolve update map");
                 updateMap();
             }
         });
@@ -490,12 +494,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (loc != null) {
             LatLng currLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
             if (markerHashMap.get(u.getUid()) == null) {
-                if (leaders.containsKey(u.getUid()))
+                System.out.println("set up location request, no marker hash map entry");
+                if (leaders.containsKey(u.getUid())) {
+                    System.out.println(u.getUid() + " is a leader, creating marker w gropu size");
                     createMarker(u.getUid(), currLoc, groupSize.get(leaders.get(u.getUid())));
-                else
+                }
+                else {
+                    System.out.println(u.getUid() + " is not a leader, create marker w group size 0");
                     createMarker(u.getUid(), currLoc, 0);
+                }
             }
             else{
+                System.out.println("set up location request, already has a marker hash map entry");
                 updateMarker(u.getUid(),currLoc);
             }
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
@@ -732,21 +742,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             double lng = user_hmp.get(key).getLon();
             String uid = user_hmp.get(key).getuid();
             LatLng pos = new LatLng(lat, lng);
+            System.out.println("uid = " + uid);
             if (markerHashMap.get(uid) == null) {
-                if (leaders.containsKey(uid))
+                System.out.println("no entry in marker hash map");
+                if (leaders.containsKey(uid)) {
+                    System.out.println("update map, " + uid + " is a leader, creating marker with group size");
                     createMarker(uid, pos, groupSize.get(leaders.get(uid)));
-                else if(user_hmp.get(key).getGid() == null)
+                }
+                else if(user_hmp.get(key).getGid() == null) {
+                    System.out.println("update map, " + uid + " isn't in a group, creating marker with 0 size");
                     createMarker(uid, pos, 0);
+                }
             }
             else {
-                if (user_hmp.get(key).getGid() == null){
+                System.out.println("marker hash map has entry");
+                /*
+                if (user_hmp.get(key).getGid() == null) {
+                    System.out.println("no group");
                     markerHashMap.get(uid).remove();
                     counterMarkerHashMap.get(uid).remove();
                     createMarker(uid, pos, 0);
-
-                }
-
-
+                } */
                 updateMarker(uid, pos);
             }
         }
