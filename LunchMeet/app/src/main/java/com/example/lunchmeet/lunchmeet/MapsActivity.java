@@ -308,6 +308,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         createGroupButton.setVisibility(View.GONE);
                         dissolveGroupButton.setVisibility(View.VISIBLE);
                         leaveGroupButton.setVisibility(View.GONE);
+
+                        mManager.waitForRequests(new DBListener<String>() {
+                            @Override
+                            public void run(String user) {
+                                System.out.println("waiting for requests");
+                                Toast toast = Toast.makeText(getApplicationContext(), user_hmp.get(user).getName() + " requested to join group", Toast.LENGTH_LONG);
+                                TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+                                if( v != null) v.setGravity(Gravity.CENTER);
+                                toast.show();
+                            }
+                        }, g.getGid());
                     }
                 }
             }
@@ -333,6 +344,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }, u.getUid());
 
+        System.out.println("are you a leader? " + leaders.containsKey(u.getUid()));
 
         createGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -367,8 +379,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public void run(String user) {
                         Toast.makeText(getApplicationContext(), user + " requested to join group", Toast.LENGTH_SHORT).show();
                     }
-                }, gID);
-                */
+                }, gID); */
+
 
                 createGroupButton.setVisibility(View.GONE);
                 dissolveGroupButton.setVisibility(View.VISIBLE);

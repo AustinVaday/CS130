@@ -456,7 +456,7 @@ public class DBManager{
             }
         };
 
-        database.child("invites").child(gid).addChildEventListener(requestListener);
+        database.child("requests").child(gid).addChildEventListener(requestListener);
     }
 
     /**
