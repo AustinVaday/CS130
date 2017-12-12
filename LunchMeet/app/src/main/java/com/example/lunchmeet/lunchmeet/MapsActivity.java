@@ -317,8 +317,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // still need to implement some form of notifications to process these
             @Override
             public void run(String gid) {
-                Toast.makeText(getApplicationContext(), "You were added to " +
-                        user_hmp.get(group_hmp.get(gid).getLeader()).getName() + "'s group", Toast.LENGTH_SHORT).show();
+                Toast toast = Toast.makeText(getApplicationContext(), "You were added to " +
+                        user_hmp.get(group_hmp.get(gid).getLeader()).getName() + "'s group", Toast.LENGTH_LONG);
+                TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+                if( v != null) v.setGravity(Gravity.CENTER);
+                toast.show();
+
                 System.out.println("added to " + gid);
                 if (user_hmp.get(u.getUid()).getGid() == null) {
                     mManager.joinGroup(gid, u.getUid(), groupSize.get(gid)); // automatically join groups you're added to for now
