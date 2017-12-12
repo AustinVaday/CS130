@@ -750,7 +750,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     TextView text = (TextView) container.findViewById(R.id.textView);
                     System.out.println("name = " + u.getName());
 
-                    text.setText(user_hmp.get(marker_uid).getName());
+                    if (user_hmp.get(marker_uid).getGid() != null) {
+                        text.setText(user_hmp.get(marker_uid).getName() + "'s Group");
+                    }
+                    else {
+                        text.setText(user_hmp.get(marker_uid).getName());
+                    }
 
                     final Button invite = (Button) container.findViewById(R.id.inviteToGroupButton);
                     final Button joinGroup = (Button) container.findViewById(R.id.joinGroupButton);
@@ -1030,7 +1035,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         paint.setTextSize(50);
         //paint.setColor(Color.BLACK);
         if(subcircle==1)
-        canvas.drawText(num, (float)25, (float)55, paint );
+            canvas.drawText(num, (float)25, (float)55, paint );
 
         bitmap.recycle();
 
