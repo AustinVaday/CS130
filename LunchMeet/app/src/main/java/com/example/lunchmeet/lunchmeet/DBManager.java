@@ -339,12 +339,11 @@ public class DBManager{
             public void run(List<String> param) {
                 for(String id : param){
                     database.child("dissolve").child(id).setValue(true);
+                    database.child("active").child(id).child("gid").setValue(null);
                 }
 
                 database.child("groups").child(groupID).removeValue();
                 database.child("members").child(groupID).removeValue();
-
-                database.child("active").child(userID).child("gid").setValue(null);
 
                 if (requestListener != null) {
                     database.removeEventListener(requestListener);
