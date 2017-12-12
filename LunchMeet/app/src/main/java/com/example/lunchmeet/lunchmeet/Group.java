@@ -8,6 +8,7 @@ package com.example.lunchmeet.lunchmeet;
 
 public class Group {
     private User[] members;
+    private String leaderId;
     private int capacity;
     private int curr_size;
     private double lat,lon;
@@ -19,6 +20,7 @@ public class Group {
     public Group(User user){
         members = new User[6]; // default capacity of 6 group members
         members[0] = user;
+        leaderId = user.getuid();
         capacity = 6;
         curr_size = 1;
         lat = user.getLat();
@@ -33,6 +35,7 @@ public class Group {
     public Group(User user, int c) {
         members = new User[c]; // capacity set by parameter c
         members[0] = user;
+        leaderId = user.getuid();
         capacity = c;
         curr_size = 1;
         lat = user.getLat();
@@ -113,6 +116,14 @@ public class Group {
     }
 
     /**
+     * Sets the current size of the group.
+     * @param size the new size of the group
+     */
+    public void setSize(int size) {
+        curr_size = size;
+    }
+
+    /**
      * Sets the group's location to the latitude and longitude specified by the parameters.
      * @param latitude new group location latitude
      * @param longitude new group location longitude
@@ -136,6 +147,22 @@ public class Group {
      */
     public double getGroupLong() {
         return lon;
+    }
+
+    /**
+     * Gets the group leader's user id.
+     * @return group leader's user id
+     */
+    public String getLeader() {
+        return leaderId;
+    }
+
+    /**
+     * Sets the group leader's user id to the passed in parameter.
+     * @param lID user id of the user to be the group leader
+     */
+    public void setLeader(String lID) {
+        leaderId = lID;
     }
 
 }

@@ -111,6 +111,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     private HashMap<String, String> leaders = new HashMap<String, String>();
 
+    private HashMap<String, Group> group_hmp = new HashMap<String, Group>();
+
     private HashMap<String, Integer> groupSize = new HashMap<String, Integer>();
     private int idx_1=0;
     /**
@@ -199,6 +201,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     else {
                         user_hmp.get(e.getUid()).setgid(e.getGid());
+                        if (!group_hmp.containsKey(e.getGid())) {
+                            group_hmp.put(e.getGid(), new Group(user_hmp.get(e.getUid())));
+                        }
                     }
 
                     if (e.getUid().equals(u.getUid()) && e.getGid() != null && !leaders.containsKey(e.getUid())) {
@@ -286,9 +291,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mManager.attachListenerForGroups(new DBListener<List<DBGroup>>(){
             @Override
             public void run(List<DBGroup> list){
+                System.out.println("in groups listener");
                 for(DBGroup g : list) {
                     leaders.put(g.getLeader(), g.getGid());
                     System.out.println("added to leaders: " + g.getLeader() + " " + g.getGid());
+                    if (!group_hmp.containsKey(g.getGid())) {
+                        group_hmp.put(g.getGid(), new Group(user_hmp.get(g.getLeader())));
+                    }
+                    group_hmp.get(g.getGid()).setGroupLoc(g.getLat(), g.getLng());
+                    group_hmp.get(g.getGid()).setLeader(g.getLeader());
+                    group_hmp.get(g.getGid()).setSize(g.getSize());
                     groupSize.put(g.getGid(), g.getSize());
 
                     if (g.getLeader().equals(u.getUid())) {
@@ -305,10 +317,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // still need to implement some form of notifications to process these
             @Override
             public void run(String gid) {
-                Toast.makeText(getApplicationContext(), "You were added to a group", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "You were added to " +
+                        user_hmp.get(group_hmp.get(gid).getLeader()).getName() + "'s group", Toast.LENGTH_SHORT).show();
                 System.out.println("added to " + gid);
                 if (user_hmp.get(u.getUid()).getGid() == null) {
                     mManager.joinGroup(gid, u.getUid(), groupSize.get(gid)); // automatically join groups you're added to for now
+                    user_hmp.get(u.getUid()).setgid(gid);
+                    groupSize.put(gid, groupSize.get(gid) + 1);
+                    group_hmp.get(gid).setSize(group_hmp.get(gid).getCurr_size() + 1);
                 }
             }
         }, u.getUid());
@@ -338,6 +354,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 leaders.put(u.getUid(), gID);
                 user_hmp.get(u.getUid()).setgid(gID);
                 groupSize.put(gID, 1);
+                group_hmp.put(gID, new Group(user_hmp.get(u.getUid())));
 
                 mManager.updateGroupLocation(gID, lat, lng);
 /*
@@ -366,6 +383,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 markerHashMap.remove(u.getUid());
                 counterMarkerHashMap.remove(u.getUid());
                 user_hmp.get(u.getUid()).setgid(null);
+                group_hmp.remove(leaders.get(u.getUid()));
 
                 //m.setVisible(false);
                 //counter.setVisible(false);
@@ -573,7 +591,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             */
             updateMap();
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
+            if (user_hmp.get(u.getUid()).getGid() == null) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
+            }
+            else {
+                double groupLat = group_hmp.get(user_hmp.get(u.getUid()).getGid()).getGroupLat();
+                double groupLon = group_hmp.get(user_hmp.get(u.getUid()).getGid()).getGroupLong();
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(groupLat, groupLon), 17));
+            }
             // ideally want to display group leader's location if in a group?
         }
     }
@@ -799,6 +824,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      //* @param lon user's new longitude
      */
     public void updateMap() {
+        System.out.println("group hmp contents");
+        Iterator it2 = group_hmp.entrySet().iterator();
+        while (it2.hasNext()) {
+            Map.Entry entry = (Map.Entry) it2.next();
+            String key = (String) entry.getKey();
+
+            String lid = group_hmp.get(key).getLeader();
+            double lat = group_hmp.get(key).getGroupLat();
+            double lon = group_hmp.get(key).getGroupLong();
+            int size = group_hmp.get(key).getCurr_size();
+
+            System.out.println("group: " + key + " leader " + lid + " lat " + lat + " lon " + lon + " size " + size);
+        }
+
+
+
         // set marker at the user's new position specified by lat and lon
         Iterator it=user_hmp.entrySet().iterator();
         while(it.hasNext()) {
