@@ -304,8 +304,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mManager.waitForInvites(new DBListener<String>() {
             // still need to implement some form of notifications to process these
             @Override
-            public void run(String user) {
+            public void run(String gid) {
                 Toast.makeText(getApplicationContext(), "You were added to a group", Toast.LENGTH_SHORT).show();
+                System.out.println("added to " + gid);
+                if (user_hmp.get(u.getUid()).getGid() == null) {
+                    mManager.joinGroup(gid, u.getUid(), groupSize.get(gid)); // automatically join groups you're added to for now
+                }
             }
         }, u.getUid());
 
