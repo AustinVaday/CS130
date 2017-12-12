@@ -103,7 +103,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private HashMap<String,Marker> counterMarkerHashMap = new HashMap<String,Marker>();
     private HashMap<String,User> user_hmp = new HashMap<String,User>();
     private HashMap<String,Tuple<Double,Double>> uid_loc_hm = new HashMap<String,Tuple<Double,Double>>();
-    private HashMap<String, Tuple<Double,Double>> gid_loc_hm = new HashMap<String, Tuple<Double,Double>>();
+    //private HashMap<String, Tuple<Double,Double>> gid_loc_hm = new HashMap<String, Tuple<Double,Double>>();
     //private HashMap<String,String> uid_profilePicURL_hm = new HashMap<String,String>();
     private HashMap<String,Thread> uid_threads = new HashMap<String,Thread>();
 
@@ -215,6 +215,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         leaveGroupButton.setVisibility(View.GONE);
                     }
 
+                    /*
+                    if (leaders.containsKey(e.getUid())) {
+                        gid_loc_hm.put(e.getGid(), new Tuple<>(e.getLat(), e.getLng()));
+                    }
+                    */
+
                     System.out.println("user " + user_hmp.get(e.getUid()).getName() + " gid " + user_hmp.get(e.getUid()).getGid());
 
 
@@ -291,7 +297,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     leaders.put(g.getLeader(), g.getGid());
                     System.out.println("added to leaders: " + g.getLeader() + " " + g.getGid());
                     groupSize.put(g.getGid(), g.getSize());
-                    gid_loc_hm.put(g.getGid(), new Tuple<>(g.getLat(), g.getLng()));
+                    //gid_loc_hm.put(g.getGid(), new Tuple<>(g.getLat(), g.getLng()));
 
                     if (g.getLeader().equals(u.getUid())) {
                         System.out.println("creator");
@@ -410,11 +416,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 Marker m = markerHashMap.get(u.getUid());
                 Marker counter = counterMarkerHashMap.get(u.getUid());
+                Marker leader = null;
+                Marker leaderCounter = null;
+
+                markerHashMap.remove(u.getUid());
+                counterMarkerHashMap.remove(u.getUid());
+
+                // need to delete the leader's counter marker to reflect new count
+                Iterator it=user_hmp.entrySet().iterator();
+                while(it.hasNext()) {
+                    Map.Entry entry = (Map.Entry) it.next();
+                    String key = (String) entry.getKey();
+                    if (user_hmp.get(key).getGid() != null && user_hmp.get(u.getUid()).getGid() != null &&
+                            user_hmp.get(key).getGid().equals(user_hmp.get(u.getUid()).getGid())
+                            && leaders.containsKey(key)) {
+                        System.out.println("found leader " + key);
+                        leader = markerHashMap.get(key);
+                        leaderCounter = counterMarkerHashMap.get(key);
+                        markerHashMap.remove(key);
+                        counterMarkerHashMap.remove(key);
+                        break;
+                    }
+                }
+
                 if (m != null) {
                     m.remove();
                 }
                 if (counter != null) {
                     counter.remove();
+                }
+                if (leader != null) {
+                    System.out.println("remove leader marker");
+                    leader.remove();
+                }
+                if (leaderCounter != null) {
+                    System.out.println("remove leader counter marker");
+                    leaderCounter.remove();
                 }
                 markerHashMap.remove(u.getUid());
                 counterMarkerHashMap.remove(u.getUid());
@@ -432,6 +469,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 createGroupButton.setVisibility(View.VISIBLE);
                 dissolveGroupButton.setVisibility(View.GONE);
                 leaveGroupButton.setVisibility(View.GONE);
+                System.out.println("leave group update");
                 updateMap();
             }
         });
@@ -549,9 +587,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
             }
             else {
+                /*
                 LatLng groupLeaderLoc = new LatLng(gid_loc_hm.get(user_hmp.get(u.getUid()).getGid()).getLat(), gid_loc_hm.get(user_hmp.get(u.getUid()).getGid()).getLng());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(groupLeaderLoc, 17));
+                */
             }
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
         }
     }
 
@@ -791,24 +832,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (leaders.containsKey(uid)) {
                     System.out.println("update map, " + uid + " is a leader, creating marker with group size");
                     createMarker(uid, pos, groupSize.get(leaders.get(uid)));
+                    /*
                     if (uid.equals(u.getUid())) {
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 17));
                     }
+                    */
                 }
                 else if(user_hmp.get(key).getGid() == null) {
                     System.out.println("update map, " + uid + " isn't in a group, creating marker with 0 size");
                     createMarker(uid, pos, 0);
+                    /*
                     if (uid.equals(u.getUid())) {
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 17));
                     }
+                    */
                 }
                 else {
                     System.out.println("update map, " + uid + " is already in a group");
                     if (uid.equals(u.getUid())) {
                         String gid = user_hmp.get(key).getGid();
+                        /*
                         Double groupLat = gid_loc_hm.get(gid).getLat();
                         Double groupLon = gid_loc_hm.get(gid).getLng();
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(groupLat, groupLon), 17));
+                        */
                     }
                 }
             }
