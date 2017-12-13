@@ -344,8 +344,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }, u.getUid());
 
-        System.out.println("are you a leader? " + leaders.containsKey(u.getUid()));
-
         createGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -607,12 +605,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             */
             updateMap();
-            if (user_hmp.get(u.getUid()).getGid() == null) {
+            if (user_hmp.get(u.getUid()).getGid() == null || leaders.containsKey(u.getUid())) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
             }
             else {
                 double groupLat = group_hmp.get(user_hmp.get(u.getUid()).getGid()).getGroupLat();
                 double groupLon = group_hmp.get(user_hmp.get(u.getUid()).getGid()).getGroupLong();
+                System.out.println("group lat " + groupLat + " group lon " + groupLon);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(groupLat, groupLon), 17));
             }
             // ideally want to display group leader's location if in a group?
