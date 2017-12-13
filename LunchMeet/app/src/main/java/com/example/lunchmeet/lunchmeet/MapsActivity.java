@@ -20,6 +20,7 @@ import android.media.Image;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
@@ -80,7 +81,7 @@ import static com.facebook.internal.Utility.logd;
  * The map is shown upon the user successfully logging into the app via Facebook.
  * From here, the user can choose to invite others to their group, join a group, or create a group.
  */
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private static final String TAG1 = "MapsActivity";
@@ -166,6 +167,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         Log.d(TAG1, "test");
         setContentView(R.layout.activity_maps);
+
         if(mUser == null) {
             return;
         }
@@ -324,16 +326,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                                     ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
                                     popupwindow = new PopupWindow(container, 700, 600, true);
-                                    if (markerHashMap.containsKey(u.getUid())) {
-                                        Point p = mMap.getProjection().toScreenLocation(markerHashMap.get(u.getUid()).getPosition());
+                                    //if (markerHashMap.containsKey(u.getUid())) {
+                                    //System.out.println("display at " + user_hmp.get(u.getUid()).getLat() + " " + user_hmp.get(u.getUid()).getLon());
+                                        Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
                                         popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
-                                    }
+                                    //}
                                     final String userr = user;
                                     LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
                                     ImageView imagev = (ImageView) container.findViewById(R.id.image);
                                     TextView tv = (TextView) container.findViewById(R.id.requesttext) ;
                                     Button accept = (Button) container.findViewById(R.id.acceptbutton);
                                     Button reject = (Button) container.findViewById(R.id.rejectbutton);
+
+                                    // wait for bitmap to be loaded, needed to ensure that the right text displays
+                                    while (user_hmp.get(user).get_bmp() == null) {
+
+                                    }
                                     if(user_hmp.get(user)!=null && user_hmp.get(user).get_bmp()!=null){
                                         Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(user).get_bmp(), 200, 200, true);
                                         //ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
@@ -345,12 +353,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         @Override
                                         public void onClick(View view) {
                                             String gid= leaders.get(u.getUid());
-                                            markerHashMap.get(userr).setVisible(false);
+                                            //markerHashMap.get(userr).setVisible(false);
                                             mManager.joinGroup(gid,userr,groupSize.get(gid));
                                             user_hmp.get(userr).setgid(gid);
                                             groupSize.put(gid, groupSize.get(gid) + 1);
                                             group_hmp.get(gid).setSize(group_hmp.get(gid).getCurr_size() + 1);
+                                            if (markerHashMap.containsKey(leaders.get(u.getUid()))) {
+                                                markerHashMap.get(leaders.get(u.getUid())).remove();
+                                            }
                                             markerHashMap.remove(leaders.get(u.getUid()));
+                                            if (counterMarkerHashMap.containsKey(leaders.get(u.getUid()))) {
+                                                counterMarkerHashMap.get(leaders.get(u.getUid()));
+                                            }
                                             counterMarkerHashMap.remove(leaders.get(u.getUid()));
 
                                             // clear the invite
