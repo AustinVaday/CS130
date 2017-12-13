@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rounded"
+    android:weightSum="7" >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:id="@+id/image"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+
+
+
+        />
+
+    <TextView
+        android:id="@+id/requesttext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:textColor="#000000"
+        android:text="hello"
+        android:textSize="15dp" />
+
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_weight="3"
+        android:backgroundTint="@color/white"
+
+
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/acceptbutton"
+
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_purple"
+            android:text="Accept"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
+
+        <Button
+            android:id="@+id/rejectbutton"
+
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_blue_light"
+            android:text="Deny"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
+    </LinearLayout>
+    <!--app:srcCompat="@drawable/file" /> -->
+
+    <!--android:backgroundTint="@color/com_facebook_button_background_color"
+    /> -->
+
+</LinearLayout>
