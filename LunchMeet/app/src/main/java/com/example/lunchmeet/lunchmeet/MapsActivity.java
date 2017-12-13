@@ -16,6 +16,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.media.Image;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -55,6 +56,8 @@ import com.squareup.picasso.Picasso;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Target;
 
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -312,11 +315,62 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         mManager.waitForRequests(new DBListener<String>() {
                             @Override
                             public void run(String user) {
-                                System.out.println("waiting for requests");
-                                Toast toast = Toast.makeText(getApplicationContext(), user_hmp.get(user).getName() + " requested to join group", Toast.LENGTH_LONG);
-                                TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-                                if( v != null) v.setGravity(Gravity.CENTER);
-                                toast.show();
+//                                System.out.println("waiting for requests");
+//                                Toast toast = Toast.makeText(getApplicationContext(), user_hmp.get(user).getName() + " requested to join group", Toast.LENGTH_LONG);
+//                                TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
+//                                if( v != null) v.setGravity(Gravity.CENTER);
+//                                toast.show();
+                                if(user!=null && user_hmp.get(u.getUid()) != null && user_hmp.get(u.getUid()).getGid()!=null  ) {
+                                    layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                                    ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
+                                    popupwindow = new PopupWindow(container, 700, 600, true);
+                                    Point p = mMap.getProjection().toScreenLocation(markerHashMap.get(u.getUid()).getPosition());
+                                    popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
+                                    final String userr = user;
+                                    LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
+                                    ImageView imagev = (ImageView) container.findViewById(R.id.image);
+                                    TextView tv = (TextView) container.findViewById(R.id.requesttext) ;
+                                    Button accept = (Button) container.findViewById(R.id.acceptbutton);
+                                    Button reject = (Button) container.findViewById(R.id.rejectbutton);
+                                    if(user_hmp.get(user)!=null && user_hmp.get(user).get_bmp()!=null){
+                                        Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(user).get_bmp(), 200, 200, true);
+                                        //ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+                                        imagev.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+                                        tv.setText(user_hmp.get(user).getName()+ " wants to join your group!\n");
+                                    }
+
+                                    accept.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                           String gid= leaders.get(u.getUid());
+                                         groupSize.put(gid,groupSize.get(gid)+1);
+                                         markerHashMap.get(userr).setVisible(false);
+                                         mManager.joinGroup(gid,userr,groupSize.get(gid));
+                                            user_hmp.get(userr).setgid(gid);
+                                            groupSize.put(gid, groupSize.get(gid) + 1);
+                                            group_hmp.get(gid).setSize(group_hmp.get(gid).getCurr_size() + 1);
+
+                                        }
+                                    });
+
+                                    reject.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            //clear invites from DB
+
+                                        }
+                                    });
+
+                                    container.setOnTouchListener(new View.OnTouchListener() {
+                                        @Override
+                                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                                            popupwindow.dismiss();
+                                            return false;
+                                        }
+                                    });
+
+                                }
+
                             }
                         }, g.getGid());
                     }
@@ -807,6 +861,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         }
                     });
 
+
+
                     joinGroup.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -832,9 +888,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    public void addtopop(LinearLayout l,int i){
 
-    }
 
 
     /**
