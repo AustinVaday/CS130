@@ -41,16 +41,6 @@ public class MessageTestActivity extends AppCompatActivity {
 
         mGid = "TESTING";
 
-//        final LinearLayout linearLayout = findViewById(R.id.messages);
-//        mManager.getAllMessages(mGid, new DBListener<List<DBMessage>>() {
-//            @Override
-//            public void run(List<DBMessage> param) {
-//                linearLayout.removeAllViews();
-//                for(DBMessage message : param){
-//                    linearLayout.addView(addMessage(message));
-//                }
-//            }
-//        });
 
         mManager.attachListenerForNewMessages(mGid, new DBListener<DBMessage>() {
             @Override

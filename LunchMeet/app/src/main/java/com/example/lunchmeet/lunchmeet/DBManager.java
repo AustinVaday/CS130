@@ -348,6 +348,7 @@ public class DBManager{
 
                 if (requestListener != null) {
                     database.removeEventListener(requestListener);
+                    requestListener = null;
                 }
             }
         }, gid);
@@ -365,10 +366,9 @@ public class DBManager{
     }
 
     /**
-     * Attaches a listener to a user ID for invites to a group.
-     *
-     * IMPORTANT: The associated DBListener will run on an individual group ID when it is added to
-     * the invite list. It does NOT get a full list of every invite on the list.
+     * Attaches a listener to a user ID for invites to join a group. When called, it will run
+     * individually on every ID in the list, then will run on every new ID as it is added (without
+     * touching the older ones.)
      *
      * @param o The DBListener that processes a group ID as it is added to the invite list.
      * @param uid The ID of the current user, listening for invites.
@@ -406,6 +406,17 @@ public class DBManager{
     }
 
     /**
+     * Removes an invite from the database, regardless of whether the invite is accepted
+     * or rejected.
+     *
+     * @param gid The ID of the group whose invite is being handled.
+     * @param uid The ID of the user with the invite.
+     */
+    public void handleInvite(String gid, String uid){
+        database.child("invites").child(uid).child(gid).removeValue();
+    }
+
+    /**
      * Sends a request to the leader of the group for the user to join the group. Similar to
      * invites.
      *
@@ -417,10 +428,9 @@ public class DBManager{
     }
 
     /**
-     * Attaches a listener to a group ID for requests to join the group
-     *
-     * IMPORTANT: The associated DBListener will run on an individual user ID when it is added to
-     * the request list. It does NOT get a full list of every request on the list.
+     * Attaches a listener to a group ID for requests to join the group. When called, it will run
+     * individually on every ID in the list, then will run on every new ID as it is added (without
+     * touching the older ones.)
      *
      * @param o The DBListener that processes a user ID as it is added to the request list.
      * @param gid The ID of the group, whose leader is listening for requests.
@@ -461,6 +471,17 @@ public class DBManager{
     }
 
     /**
+     * Removes a request from the database, regardless of whether the request was accepted or
+     * rejected.
+     *
+     * @param gid The ID of the group that handling the request.
+     * @param uid The ID of the user whose request is being handled.
+     */
+    public void handleJoinRequest(String gid, String uid){
+        database.child("requests").child(gid).child(uid).removeValue();
+    }
+
+    /**
      * Attaches a listener to a "dissolve group" database section to inform members of a group
      * when the group gets dissolved.
      *
@@ -489,39 +510,31 @@ public class DBManager{
         });
     }
 
+    /**
+     * Adds a message to the database to the chat corresponding to the given group ID.
+     *
+     * @param gid The ID of the group whose chat is being messaged.
+     * @param message The content of the message.
+     */
     public void sendMessage(String gid, DBMessage message){
         DatabaseReference ref = database.child("messages").child(gid).push();
         ref.setValue(message.toMap());
     }
 
-    public void getAllMessages(String gid, DBListener<List<DBMessage>> o){
-        final DBListener<List<DBMessage>> obs = o;
-        database.child("messages").child(gid).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<DBMessage> result = new ArrayList<>();
-                for(DataSnapshot child : dataSnapshot.getChildren()) {
-                    DBMessage message = child.getValue(DBMessage.class);
-
-                    result.add(message);
-                }
-                obs.run(result);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
+    /**
+     * Attaches a listener for new messages to the chatroom. In the beginning, it reads all the
+     * existing messages at once, then handles each new message separately as they arrive.
+     *
+     * @param gid The ID of the group whose chat is being red.
+     * @param o The DBListener to handle each message that is read.
+     */
     public void attachListenerForNewMessages(String gid, DBListener<DBMessage> o){
         final DBListener<DBMessage> obs = o;
         database.child("messages").child(gid).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 DBMessage result = dataSnapshot.getValue(DBMessage.class);
-                Log.i(TAG,"" + dataSnapshot);
+                //Log.i(TAG,"" + dataSnapshot);
                 obs.run(result);
             }
 
