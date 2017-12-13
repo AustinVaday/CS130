@@ -320,7 +320,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                                TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
 //                                if( v != null) v.setGravity(Gravity.CENTER);
 //                                toast.show();
-                                if(user!=null && user_hmp.get(u.getUid()) != null && user_hmp.get(u.getUid()).getGid()!=null && leaders.get(u.getUid())!=null) {
+                                if(user!=null && user_hmp.get(u.getUid()) != null && user_hmp.get(u.getUid()).getGid()!=null  ) {
                                     layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                                     ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
                                     popupwindow = new PopupWindow(container, 700, 600, true);
@@ -336,7 +336,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(user).get_bmp(), 200, 200, true);
                                         //ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
                                         imagev.setImageBitmap(getCircleBitmap(resized, 0, "0"));
-                                        tv.setText(user_hmp.get(user).getName()+ " wants you to join their group!\n");
+                                        tv.setText(user_hmp.get(user).getName()+ " wants to join your group!\n");
                                     }
 
                                     accept.setOnClickListener(new View.OnClickListener() {
