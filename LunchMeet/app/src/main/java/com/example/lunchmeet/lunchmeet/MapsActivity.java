@@ -361,6 +361,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         }
                                     });
 
+                                    container.setOnTouchListener(new View.OnTouchListener() {
+                                        @Override
+                                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                                            popupwindow.dismiss();
+                                            return false;
+                                        }
+                                    });
+
                                 }
 
                             }
