@@ -387,15 +387,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
         mManager.waitForInvites(new DBListener<String>() {
-            // still need to implement some form of notifications to process these
             @Override
             public void run(String gid) {
+                /*
                 Toast toast = Toast.makeText(getApplicationContext(), "You were added to " +
                         user_hmp.get(group_hmp.get(gid).getLeader()).getName() + "'s group", Toast.LENGTH_LONG);
                 TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
                 if( v != null) v.setGravity(Gravity.CENTER);
                 toast.show();
-                /*
 
                 System.out.println("added to " + gid);
                 if (user_hmp.get(u.getUid()).getGid() == null) {
@@ -407,7 +406,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 */
                 final String gid_final = gid;
                 if(gid !=null && user_hmp.get(u.getUid()) != null && user_hmp.get(u.getUid()).getGid()==null  ) {
-                    System.out.println("create popup");
                     layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                     ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
                     popupwindow = new PopupWindow(container, 700, 600, true);
@@ -458,8 +456,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                         }
                     });
-
-                    updateMap();
                 }
             }
         }, u.getUid());

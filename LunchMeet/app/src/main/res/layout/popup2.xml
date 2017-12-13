@@ -10,11 +10,7 @@
         android:layout_width="wrap_content"
         android:id="@+id/image"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-
-
-
-        />
+        android:layout_weight="2" />
 
     <TextView
         android:id="@+id/requesttext"
@@ -24,9 +20,46 @@
         android:gravity="center"
         android:textColor="#000000"
         android:text="hello"
-        android:textSize="15dp" />
+        android:textSize="20dp" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="6dp"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/acceptbutton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="left|bottom"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_purple"
+            android:text="Accept"
+            android:textColor="@color/white"
+            android:textSize="16dp" />
+
+        <Button
+            android:id="@+id/rejectbutton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right|bottom"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@android:color/holo_blue_light"
+            android:text="Deny"
+            android:textColor="@color/white"
+            android:textSize="16dp"/>
+
+    </LinearLayout>
 
 
+    <!--
     <LinearLayout
         android:id="@+id/linear"
         android:layout_width="match_parent"
@@ -67,7 +100,7 @@
             android:text="Deny"
             android:textColor="@color/white"
             android:textSize="16dp" />
-    </LinearLayout>
+    </LinearLayout> -->
     <!--app:srcCompat="@drawable/file" /> -->
 
     <!--android:backgroundTint="@color/com_facebook_button_background_color"
