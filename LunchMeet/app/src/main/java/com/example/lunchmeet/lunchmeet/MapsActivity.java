@@ -324,8 +324,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                                     ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
                                     popupwindow = new PopupWindow(container, 700, 600, true);
-                                    Point p = mMap.getProjection().toScreenLocation(markerHashMap.get(u.getUid()).getPosition());
-                                    popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
+                                    if (markerHashMap.containsKey(u.getUid())) {
+                                        Point p = mMap.getProjection().toScreenLocation(markerHashMap.get(u.getUid()).getPosition());
+                                        popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
+                                    }
                                     final String userr = user;
                                     LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
                                     ImageView imagev = (ImageView) container.findViewById(R.id.image);
@@ -342,14 +344,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     accept.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
-                                           String gid= leaders.get(u.getUid());
-                                         groupSize.put(gid,groupSize.get(gid)+1);
-                                         markerHashMap.get(userr).setVisible(false);
-                                         mManager.joinGroup(gid,userr,groupSize.get(gid));
+                                            String gid= leaders.get(u.getUid());
+                                            markerHashMap.get(userr).setVisible(false);
+                                            mManager.joinGroup(gid,userr,groupSize.get(gid));
                                             user_hmp.get(userr).setgid(gid);
                                             groupSize.put(gid, groupSize.get(gid) + 1);
                                             group_hmp.get(gid).setSize(group_hmp.get(gid).getCurr_size() + 1);
+                                            markerHashMap.remove(leaders.get(u.getUid()));
+                                            counterMarkerHashMap.remove(leaders.get(u.getUid()));
 
+                                            // clear the invite
+
+                                            popupwindow.dismiss();
                                         }
                                     });
 
@@ -357,10 +363,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                         @Override
                                         public void onClick(View view) {
                                             //clear invites from DB
+                                            popupwindow.dismiss();
 
                                         }
                                     });
-
+/*
                                     container.setOnTouchListener(new View.OnTouchListener() {
                                         @Override
                                         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -368,6 +375,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                             return false;
                                         }
                                     });
+                                    */
 
                                 }
 
@@ -387,6 +395,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
                 if( v != null) v.setGravity(Gravity.CENTER);
                 toast.show();
+                /*
 
                 System.out.println("added to " + gid);
                 if (user_hmp.get(u.getUid()).getGid() == null) {
@@ -394,6 +403,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     user_hmp.get(u.getUid()).setgid(gid);
                     groupSize.put(gid, groupSize.get(gid) + 1);
                     group_hmp.get(gid).setSize(group_hmp.get(gid).getCurr_size() + 1);
+                }
+                */
+                final String gid_final = gid;
+                if(gid !=null && user_hmp.get(u.getUid()) != null && user_hmp.get(u.getUid()).getGid()==null  ) {
+                    System.out.println("create popup");
+                    layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                    ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
+                    popupwindow = new PopupWindow(container, 700, 600, true);
+                    //if (markerHashMap.containsKey(u.getUid())) {
+                        Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
+                        popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
+                    //}
+                    LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
+                    ImageView imagev = (ImageView) container.findViewById(R.id.image);
+                    TextView tv = (TextView) container.findViewById(R.id.requesttext);
+                    Button accept = (Button) container.findViewById(R.id.acceptbutton);
+                    Button reject = (Button) container.findViewById(R.id.rejectbutton);
+                    if (group_hmp.get(gid) != null && user_hmp.get(group_hmp.get(gid).getLeader()).get_bmp() != null) {
+                        Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(group_hmp.get(gid).getLeader()).get_bmp(), 200, 200, true);
+                        //ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+                        imagev.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+                        tv.setText(user_hmp.get(group_hmp.get(gid).getLeader()).getName() + " invited you to their group!\n");
+                    }
+
+                    accept.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            mManager.joinGroup(gid_final, u.getUid(), groupSize.get(gid_final)); // automatically join groups you're added to for now
+                            user_hmp.get(u.getUid()).setgid(gid_final);
+                            groupSize.put(gid_final, groupSize.get(gid_final) + 1);
+                            group_hmp.get(gid_final).setSize(group_hmp.get(gid_final).getCurr_size() + 1);
+                            markerHashMap.remove(group_hmp.get(gid_final).getLeader());
+                            counterMarkerHashMap.remove(group_hmp.get(gid_final).getLeader());
+                            markerHashMap.remove(u.getUid());
+                            counterMarkerHashMap.remove(u.getUid());
+
+                            popupwindow.dismiss();
+                        }
+                    });
+
+                    reject.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //clear invites from DB
+                            popupwindow.dismiss();
+
+                        }
+                    });
+
+                    updateMap();
                 }
             }
         }, u.getUid());
@@ -803,7 +862,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     TextView text = (TextView) container.findViewById(R.id.textView);
                     System.out.println("name = " + u.getName());
 
-                    if (user_hmp.get(marker_uid).getGid() != null) {
+                    if (user_hmp.get(marker_uid).getGid() != null && leaders.containsKey(marker_uid)) {
                         text.setText(user_hmp.get(marker_uid).getName() + "'s Group");
                     }
                     else {
@@ -981,6 +1040,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @return the marker of the user's current location
      */
     public void createMarker(String uid, LatLng loc,int counter) {
+        System.out.println("creating marker for " + uid);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
         Bitmap resized;
