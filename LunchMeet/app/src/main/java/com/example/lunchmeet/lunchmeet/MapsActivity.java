@@ -420,6 +420,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     TextView tv = (TextView) container.findViewById(R.id.requesttext);
                     Button accept = (Button) container.findViewById(R.id.acceptbutton);
                     Button reject = (Button) container.findViewById(R.id.rejectbutton);
+
+                    // need to wait for leader's bitmap to get populated to display popup
+                    while (user_hmp.get(group_hmp.get(gid).getLeader()).get_bmp() == null) {
+
+                    }
                     if (group_hmp.get(gid) != null && user_hmp.get(group_hmp.get(gid).getLeader()).get_bmp() != null) {
                         Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(group_hmp.get(gid).getLeader()).get_bmp(), 200, 200, true);
                         //ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
@@ -436,7 +441,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             group_hmp.get(gid_final).setSize(group_hmp.get(gid_final).getCurr_size() + 1);
                             markerHashMap.remove(group_hmp.get(gid_final).getLeader());
                             counterMarkerHashMap.remove(group_hmp.get(gid_final).getLeader());
+                            markerHashMap.get(u.getUid()).remove();
                             markerHashMap.remove(u.getUid());
+                            counterMarkerHashMap.get(u.getUid()).remove();
                             counterMarkerHashMap.remove(u.getUid());
 
                             popupwindow.dismiss();
