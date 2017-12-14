@@ -2,6 +2,7 @@ package com.example.lunchmeet.lunchmeet;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
@@ -90,6 +92,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private ImageView[] group_images = new ImageView[10];
+    private Toolbar toolBar;
+    private ImageButton goToMessages;
+
     /**
      * User object that keeps track of the current user's state. Different actions are available to the
      * user based on what state they are in (eg a user in creator state can dissolve a group, but a user in
@@ -181,6 +186,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mManager.updateActiveUser(u, 0, 0);
 
         ImageView image = new ImageView(this);
+
+        toolBar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(toolBar);
+        goToMessages = (ImageButton) findViewById(R.id.go_to_messages);
+        addMessageListener();
 
         final Button createGroupButton = (Button)findViewById(R.id.createGroupButton);
         final Button dissolveGroupButton = (Button)findViewById(R.id.dissolveGroupButton);
@@ -452,7 +462,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Button reject = (Button) container.findViewById(R.id.rejectbutton);
 
                     // need to wait for leader's bitmap to get populated to display popup
-                    while (user_hmp.get(group_hmp.get(gid).getLeader()).get_bmp() == null) {
+                    while (group_hmp.get(gid) != null && user_hmp.get(group_hmp.get(gid).getLeader()).get_bmp() == null) {
 
                     }
                     if (group_hmp.get(gid) != null && user_hmp.get(group_hmp.get(gid).getLeader()).get_bmp() != null) {
@@ -1234,6 +1244,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        }
 
         updateMap();
+    }
+
+    public void goToMessaging(View view){
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUser == null) {
+            Toast.makeText(getApplicationContext(),"Please log in via Facebook", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent(this, MessageTestActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    public void addMessageListener() {
+        goToMessages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                goToMessaging(arg0);
+            }
+        });
     }
 
     /**
