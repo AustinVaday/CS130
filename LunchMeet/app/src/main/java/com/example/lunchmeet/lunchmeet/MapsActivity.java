@@ -226,12 +226,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         createGroupButton.setVisibility(View.GONE);
                         dissolveGroupButton.setVisibility(View.GONE);
                         leaveGroupButton.setVisibility(View.VISIBLE);
+                        goToMessages.setVisibility(View.VISIBLE);
                     }
                     else if (e.getUid().equals(u.getUid()) && e.getGid() == null) {
                         System.out.println("free agent");
                         createGroupButton.setVisibility(View.VISIBLE);
                         dissolveGroupButton.setVisibility(View.GONE);
                         leaveGroupButton.setVisibility(View.GONE);
+                        goToMessages.setVisibility(View.GONE);
                     }
 
                     System.out.println("user " + user_hmp.get(e.getUid()).getName() + " gid " + user_hmp.get(e.getUid()).getGid());
@@ -323,6 +325,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         createGroupButton.setVisibility(View.GONE);
                         dissolveGroupButton.setVisibility(View.VISIBLE);
                         leaveGroupButton.setVisibility(View.GONE);
+                        goToMessages.setVisibility(View.VISIBLE);
 
                         mManager.waitForRequests(new DBListener<String>() {
                             @Override
@@ -544,6 +547,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 createGroupButton.setVisibility(View.GONE);
                 dissolveGroupButton.setVisibility(View.VISIBLE);
                 leaveGroupButton.setVisibility(View.GONE);
+                goToMessages.setVisibility(View.VISIBLE);
                 updateMap();
             }
         });
@@ -595,6 +599,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 createGroupButton.setVisibility(View.VISIBLE);
                 dissolveGroupButton.setVisibility(View.GONE);
                 leaveGroupButton.setVisibility(View.GONE);
+                goToMessages.setVisibility(View.GONE);
                 System.out.println("dissolve update map");
                 updateMap();
             }
@@ -653,6 +658,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 createGroupButton.setVisibility(View.VISIBLE);
                 dissolveGroupButton.setVisibility(View.GONE);
                 leaveGroupButton.setVisibility(View.GONE);
+                goToMessages.setVisibility(View.GONE);
                 updateMap();
             }
         });
@@ -1257,6 +1263,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void addMessageListener() {
+        goToMessages.setVisibility(View.GONE);
         goToMessages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
