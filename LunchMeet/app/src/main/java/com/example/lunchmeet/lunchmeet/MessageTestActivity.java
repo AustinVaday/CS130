@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.IOException;
 import java.net.URL;
@@ -95,13 +97,10 @@ public class MessageTestActivity extends AppCompatActivity {
 
     }
 
+
+
     public void loadImage(String photoUrl, ImageView imageView){
-        // placeholder code to put in the image
-        // ideally i'd like to use the circle bitmap stuff that we do in map activity but I have no
-        // idea how that works at all lol
-        Picasso.with(this)
-                .load(photoUrl)
-                .into(imageView);
+        new ImageDownloaderTask(imageView).execute(photoUrl);
     }
 
     public void sendMessage(View view){
