@@ -11,11 +11,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
 
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -50,8 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private Button b;
     private Button b2;
-    private Toolbar toolBar;
-    private ImageButton goToMessages;
 
     ///////////////
 
@@ -80,10 +76,6 @@ public class MainActivity extends AppCompatActivity {
         //b2=(Button)findViewById(R.id.dbtestbutton);
         progressBar = (ProgressBar) findViewById(R.id.continueWithFBProgressBar);
         progressBar.setVisibility(View.GONE);
-        toolBar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolBar);
-        goToMessages = (ImageButton) findViewById(R.id.go_to_messages);
-        addMessageListener();
         mAuth = FirebaseAuth.getInstance();
         //LogOut();
         ///////////////////////////////////
@@ -225,15 +217,6 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MessageTestActivity.class);
             startActivity(intent);
         }
-    }
-
-    public void addMessageListener() {
-        goToMessages.setOnClickListener(new View.OnClickListener() {
-           @Override
-            public void onClick(View arg0) {
-               goToMessaging(arg0);
-           }
-        });
     }
 
 }

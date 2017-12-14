@@ -6,10 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.lunchmeet.lunchmeet.MapsActivity" >
-    <include
-        layout = "@layout/app_bar"
-        android:id="@+id/app_bar">
-    </include>
+
     <Button
         android:id="@+id/createGroupButton"
         android:layout_width="fill_parent"
