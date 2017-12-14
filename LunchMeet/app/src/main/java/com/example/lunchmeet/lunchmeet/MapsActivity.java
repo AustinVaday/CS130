@@ -331,12 +331,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                             }
                                             counterMarkerHashMap.remove(u.getUid());
 
+                                            if (markerHashMap.containsKey(userr)) {
+                                                markerHashMap.get(userr).remove();
+                                            }
+                                            markerHashMap.remove(userr);
+                                            if (counterMarkerHashMap.containsKey(userr)) {
+                                                counterMarkerHashMap.get(userr).remove();
+                                            }
+                                            counterMarkerHashMap.remove(userr);
+
                                             // clear the invite
                                             mManager.handleJoinRequest(gid, userr);
-                                            updateMap();
-
 
                                             popupwindow.dismiss();
+                                            updateMap();
                                         }
                                     });
 
