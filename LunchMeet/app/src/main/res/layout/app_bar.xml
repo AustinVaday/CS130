@@ -14,5 +14,7 @@
         android:background="@null"
         tools:ignore="ContentDescription"
         android:id="@+id/go_to_messages"
+        android:tint="@color/white"
+        android:paddingRight="10dp"
         />
 </android.support.v7.widget.Toolbar>
