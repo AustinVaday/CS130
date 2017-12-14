@@ -322,6 +322,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                                TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
 //                                if( v != null) v.setGravity(Gravity.CENTER);
 //                                toast.show();
+                                if (user_hmp.get(user).getGid() != null) {
+                                    // the requested user already joined some other group, so just get rid of their request
+                                    mManager.handleJoinRequest(leaders.get(u.getUid()), user);
+                                }
+
                                 if(user!=null && user_hmp.get(u.getUid()) != null && user_hmp.get(u.getUid()).getGid()!=null  ) {
                                     layoutinflater = (LayoutInflater) (MapsActivity.this).getSystemService(LAYOUT_INFLATER_SERVICE);
                                     ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
@@ -330,9 +335,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     //System.out.println("display at " + user_hmp.get(u.getUid()).getLat() + " " + user_hmp.get(u.getUid()).getLon());
                                     Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
                                     popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
-                                    popupwindow.setFocusable(false);
-                                    popupwindow.setOutsideTouchable(false);
-                                    popupwindow.update();
+                                    //popupwindow.setFocusable(false);
+                                    //popupwindow.setOutsideTouchable(false);
+                                    //popupwindow.update();
                                     //}
                                     final String userr = user;
                                     LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
@@ -423,6 +428,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 */
                 final String gid_final = gid;
+
+                if (user_hmp.get(u.getUid()).getGid() != null) {
+                    // user already joined some other group, clear the invite
+                    mManager.handleInvite(gid, u.getUid());
+                }
+
                 if(gid !=null && user_hmp.get(u.getUid()) != null && user_hmp.get(u.getUid()).getGid()==null  ) {
                     layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                     ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
