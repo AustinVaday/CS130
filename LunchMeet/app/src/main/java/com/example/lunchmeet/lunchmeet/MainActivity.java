@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     private long count = 0;
     private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     private final DBManager mManager = DBManager.getInstance();
-    private int loginTracker = 0;
     DBUser u;
 
 
@@ -70,10 +69,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"hello");
         setContentView(R.layout.activity_main);
-        //mStatusTextView = (TextView) findViewById(R.id.status);
-        //mDetailTextView = (TextView) findViewById(R.id.detail);
-        //b=(Button)findViewById(R.id.button);
-        //b2=(Button)findViewById(R.id.dbtestbutton);
+        mStatusTextView = (TextView) findViewById(R.id.status);
+        mDetailTextView = (TextView) findViewById(R.id.detail);
+        b=(Button)findViewById(R.id.button);
+        b2=(Button)findViewById(R.id.dbtestbutton);
         progressBar = (ProgressBar) findViewById(R.id.continueWithFBProgressBar);
         progressBar.setVisibility(View.GONE);
         mAuth = FirebaseAuth.getInstance();
@@ -110,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        /*
         b.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -119,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        */
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -169,31 +166,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
     }
 
     private void updateUI(FirebaseUser user) {
         if(user == null)
         {
-            loginTracker = 0;
-            //b.setEnabled(false);
-            //b2.setEnabled(false);
+            b.setEnabled(false);
+            b2.setEnabled(false);
         }
         else
         {
-            if (loginTracker == 0) {
-                loginTracker = 1;
-                gotoDashBoard();
-            }
-            //b.setEnabled(true);
-            //b2.setEnabled(true);
+            b.setEnabled(true);
+            b2.setEnabled(true);
         }
     }
 
     private void LogOut() {
         mAuth.signOut();
         LoginManager.getInstance().logOut();
-        loginTracker = 0;
         updateUI(null);
     }
 

@@ -35,15 +35,11 @@ public class Dashboard extends AppCompatActivity {
             }
         });
         super.onCreate(savedInstanceState);
-
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         u = new DBUser(mUser.getUid(), mUser.getDisplayName(), mUser.getPhotoUrl().toString());
         mManager.addUser(u);
         mManager.updateActiveUser(u, 0, 1);
         setContentView(R.layout.activity_dashboard);
-
-        gotoMaps();
-
         b=(Button)findViewById(R.id.button3);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
