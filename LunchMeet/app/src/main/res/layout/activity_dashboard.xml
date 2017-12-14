@@ -11,22 +11,27 @@
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go to Maps"
+        android:text="Continue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.414" />
+        app:layout_constraintVertical_bias="0.414"
+        android:textSize="18sp"
+        android:padding="16dp"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
+        android:stateListAnimator="@null"
+        />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="The map is ready."
-        android:textSize="16dp"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="282dp"
+        android:layout_height="89dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.31" />
+        app:layout_constraintVertical_bias="0.253"
+        app:srcCompat="@drawable/lunchmeetlogo" />
 </android.support.constraint.ConstraintLayout>
