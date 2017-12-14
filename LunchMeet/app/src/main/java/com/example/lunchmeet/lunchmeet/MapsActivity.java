@@ -323,13 +323,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                                if( v != null) v.setGravity(Gravity.CENTER);
 //                                toast.show();
                                 if(user!=null && user_hmp.get(u.getUid()) != null && user_hmp.get(u.getUid()).getGid()!=null  ) {
-                                    layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                                    layoutinflater = (LayoutInflater) (MapsActivity.this).getSystemService(LAYOUT_INFLATER_SERVICE);
                                     ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
                                     popupwindow = new PopupWindow(container, 700, 600, true);
                                     //if (markerHashMap.containsKey(u.getUid())) {
                                     //System.out.println("display at " + user_hmp.get(u.getUid()).getLat() + " " + user_hmp.get(u.getUid()).getLon());
-                                        Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
-                                        popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
+                                    Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
+                                    popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
+                                    popupwindow.setFocusable(false);
+                                    popupwindow.setOutsideTouchable(false);
+                                    popupwindow.update();
                                     //}
                                     final String userr = user;
                                     LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
@@ -358,16 +361,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                             user_hmp.get(userr).setgid(gid);
                                             groupSize.put(gid, groupSize.get(gid) + 1);
                                             group_hmp.get(gid).setSize(group_hmp.get(gid).getCurr_size() + 1);
-                                            if (markerHashMap.containsKey(leaders.get(u.getUid()))) {
-                                                markerHashMap.get(leaders.get(u.getUid())).remove();
+                                            if (markerHashMap.containsKey(u.getUid())) {
+                                                markerHashMap.get(u.getUid()).remove();
                                             }
-                                            markerHashMap.remove(leaders.get(u.getUid()));
-                                            if (counterMarkerHashMap.containsKey(leaders.get(u.getUid()))) {
-                                                counterMarkerHashMap.get(leaders.get(u.getUid()));
+                                            markerHashMap.remove(u.getUid());
+                                            if (counterMarkerHashMap.containsKey(u.getUid())) {
+                                                counterMarkerHashMap.get(u.getUid()).remove();
                                             }
-                                            counterMarkerHashMap.remove(leaders.get(u.getUid()));
+                                            counterMarkerHashMap.remove(u.getUid());
 
                                             // clear the invite
+                                            mManager.handleJoinRequest(gid, userr);
+                                            updateMap();
+
 
                                             popupwindow.dismiss();
                                         }
@@ -377,22 +383,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         @Override
                                         public void onClick(View view) {
                                             //clear invites from DB
+                                            mManager.handleJoinRequest(leaders.get(u.getUid()), userr);
                                             popupwindow.dismiss();
 
                                         }
                                     });
-/*
+
                                     container.setOnTouchListener(new View.OnTouchListener() {
-                                        @Override
-                                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                                         @Override
+                                         public boolean onTouch(View view, MotionEvent motionEvent) {
                                             popupwindow.dismiss();
                                             return false;
-                                        }
+                                         }
                                     });
-                                    */
-
                                 }
-
                             }
                         }, g.getGid());
                     }
@@ -423,10 +427,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
                     ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
                     popupwindow = new PopupWindow(container, 700, 600, true);
-                    //if (markerHashMap.containsKey(u.getUid())) {
-                        Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
-                        popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
-                    //}
+
+                    Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
+                    popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
+                    popupwindow.setFocusable(false);
+                    popupwindow.setOutsideTouchable(false);
+                    popupwindow.update();
+
                     LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
                     ImageView imagev = (ImageView) container.findViewById(R.id.image);
                     TextView tv = (TextView) container.findViewById(R.id.requesttext);
@@ -458,6 +465,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             counterMarkerHashMap.get(u.getUid()).remove();
                             counterMarkerHashMap.remove(u.getUid());
 
+                            mManager.handleInvite(gid_final, u.getUid());
+
                             popupwindow.dismiss();
                         }
                     });
@@ -466,6 +475,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         @Override
                         public void onClick(View view) {
                             //clear invites from DB
+                            mManager.handleInvite(gid_final, u.getUid());
                             popupwindow.dismiss();
 
                         }
@@ -1003,7 +1013,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (markerHashMap.get(uid) == null) {
                 System.out.println("no entry in marker hash map");
                 if (leaders.containsKey(uid)) {
-                    System.out.println("update map, " + uid + " is a leader, creating marker with group size");
+                    System.out.println("update map, " + uid + " is a leader, creating marker with group size" + groupSize.get(leaders.get(uid)));
                     createMarker(uid, pos, groupSize.get(leaders.get(uid)));
                     /*
                     if (uid.equals(u.getUid())) {
