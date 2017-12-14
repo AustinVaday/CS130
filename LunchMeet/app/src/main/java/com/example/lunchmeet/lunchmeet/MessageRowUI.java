@@ -40,6 +40,15 @@ public class MessageRowUI extends LinearLayout {
         inflateLayout(context);
     }
 
+
+    public MessageRowUI(Context context, boolean self) {
+        super(context);
+        inflateLayout(context);
+        if(self){
+            setFromSelf();
+        }
+    }
+
     public void setFromSelf(){
         messageBg.setBackgroundResource(R.drawable.message_self);
         content.setHorizontalGravity(Gravity.RIGHT);

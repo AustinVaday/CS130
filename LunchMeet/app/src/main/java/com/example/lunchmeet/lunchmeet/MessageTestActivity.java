@@ -41,7 +41,7 @@ public class MessageTestActivity extends AppCompatActivity {
     private final String TAG = "MessageActivity";
 
     private final DBManager mManager = DBManager.getInstance();
-    private final String mUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private String mUid;
     private String mGid;
 
     @Override
@@ -49,9 +49,11 @@ public class MessageTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_test);
 
-        if(mUid == null) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseUser == null) {
             return;
         }
+        mUid = firebaseUser.getUid();
 
         mGid = "TESTING";
 
@@ -72,7 +74,8 @@ public class MessageTestActivity extends AppCompatActivity {
         LinearLayout table = findViewById(R.id.messages);
         //table.setPadding(16,2,16,2);
         LayoutInflater layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        final MessageRowUI row = new MessageRowUI(this);
+        final boolean self = message.getUid().equals(mUid);
+        final MessageRowUI row = new MessageRowUI(this, self);
 
         final ImageView imageView = row.imageView;
         final TextView name = row.name;
@@ -81,9 +84,7 @@ public class MessageTestActivity extends AppCompatActivity {
         mManager.getUserFromUid(new DBListener<DBUser>() {
             @Override
             public void run(DBUser param) {
-                if(mUid.equals(param.getUid())){
-                    row.setFromSelf();
-                } else{
+                if(!self){
                     loadImage( param.getPhotoUrl(), imageView);
                 }
                 name.setText(param.getName());
