@@ -1,7 +1,6 @@
 package com.example.lunchmeet.lunchmeet;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -14,17 +13,12 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.media.Image;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,9 +28,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.PopupWindow;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,33 +40,23 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.squareup.picasso.Picasso;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.squareup.picasso.Target;
 
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static com.facebook.internal.Utility.logd;
 
 /**
@@ -564,32 +546,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 user_hmp.get(u.getUid()).setgid(null);
                 group_hmp.remove(leaders.get(u.getUid()));
 
-                //m.setVisible(false);
-                //counter.setVisible(false);
-
-                /*
-                // update user_hmp for all members: set gid to null
-                mManager.getMembers(new DBListener<List<String>>() {
-                    @Override
-                    public void run(List<String> param) {
-                        for (String id : param) {
-                            double lat = user_hmp.get(id).getLat();
-                            System.out.println(lat);
-                            double lng = user_hmp.get(id).getLon();
-                            System.out.println(lng);
-                            LatLng pos = new LatLng(lat, lng);
-
-                            createMarker(id, pos, 0);
-
-                            System.out.println("removing marker for " + id);
-                            //System.out.println(user_hmp.get(id).getName());
-
-                            //user_hmp.get(id).setgid(null);
-
-                        }
+                Iterator it=user_hmp.entrySet().iterator();
+                while(it.hasNext()) {
+                    Map.Entry entry = (Map.Entry) it.next();
+                    String key = (String) entry.getKey();
+                    if (user_hmp.get(key) != null) {
+                        // delete any pending invites to the group we're deleting
+                        mManager.handleInvite(leaders.get(u.getUid()), key);
                     }
-                }, leaders.get(u.getUid()));
-                */
+                }
 
                 mManager.dissolveGroup(leaders.get(u.getUid()), u.getUid());
                 Toast.makeText(getApplicationContext(),"A Group is deleted", Toast.LENGTH_SHORT).show();
@@ -1257,7 +1222,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(currentUser == null) {
             Toast.makeText(getApplicationContext(),"Please log in via Facebook", Toast.LENGTH_SHORT).show();
         } else {
-            Intent intent = new Intent(this, MessageTestActivity.class);
+            Intent intent = new Intent(this, MessageActivity.class);
+            intent.putExtra("gid", user_hmp.get(u.getUid()).getGid());
             startActivity(intent);
         }
     }

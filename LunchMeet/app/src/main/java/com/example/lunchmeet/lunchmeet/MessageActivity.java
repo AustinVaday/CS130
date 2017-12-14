@@ -1,5 +1,6 @@
 package com.example.lunchmeet.lunchmeet;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -39,7 +40,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
-public class MessageTestActivity extends AppCompatActivity {
+public class MessageActivity extends AppCompatActivity {
     private final String TAG = "MessageActivity";
 
     private final DBManager mManager = DBManager.getInstance();
@@ -51,13 +52,17 @@ public class MessageTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_test);
 
+        Intent i = getIntent();
+        mGid = i.getExtras().getString("gid");
+
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseUser == null) {
             return;
         }
         mUid = firebaseUser.getUid();
 
-        mGid = "TESTING";
+        //mGid = "TESTING";
+        System.out.println("passed gid = " + mGid);
 
 
         mManager.attachListenerForNewMessages(mGid, new DBListener<DBMessage>() {

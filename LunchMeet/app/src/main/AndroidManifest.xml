@@ -68,7 +68,7 @@
         </activity>
         <activity android:name=".DBTestActivity" />
         <activity android:name=".Dashboard" />
-        <activity android:name=".MessageTestActivity"></activity>
+        <activity android:name=".MessageActivity"></activity>
     </application>
 
 </manifest>

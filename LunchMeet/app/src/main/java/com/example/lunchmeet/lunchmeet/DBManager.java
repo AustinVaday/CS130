@@ -345,6 +345,7 @@ public class DBManager{
                 database.child("groups").child(groupID).removeValue();
                 database.child("members").child(groupID).removeValue();
                 database.child("requests").child(groupID).removeValue();
+                database.child("messages").child(groupID).removeValue();
 
                 if (requestListener != null) {
                     database.removeEventListener(requestListener);

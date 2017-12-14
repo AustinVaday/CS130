@@ -28,14 +28,8 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.facebook.CallbackManager;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class handles the Facebook login authentication as well as set up the elements on the front page of the app
@@ -212,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
         if(currentUser == null) {
             Toast.makeText(getApplicationContext(),"Please log in via Facebook", Toast.LENGTH_SHORT).show();
         } else {
-            Intent intent = new Intent(this, MessageTestActivity.class);
+            Intent intent = new Intent(this, MessageActivity.class);
             startActivity(intent);
         }
     }
