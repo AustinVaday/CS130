@@ -109,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Handles the Facebook login logic using an access token and the Facebook API.
+     * @param token Facebook access token
+     */
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
@@ -182,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Logs the user out of both Firebase and Facebook.
+     */
     private void LogOut() {
         mAuth.signOut();
         LoginManager.getInstance().logOut();
@@ -189,6 +196,9 @@ public class MainActivity extends AppCompatActivity {
         updateUI(null);
     }
 
+    /**
+     * Starts the Dashboard activity.
+     */
     private void gotoDashBoard() {
         Intent intent = new Intent(this, Dashboard.class);
         startActivity(intent);

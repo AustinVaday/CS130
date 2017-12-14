@@ -130,8 +130,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public Marker m;
 
-//    Thread thread;
-
     private long count = 0;
 
     /**
@@ -252,40 +250,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             thread.start();
                             idx_1++;
                     }
-//                    uids.add(e.getUid());
-//                    double lat = e.getLat();
-//                    double lng = e.getLng();
-//                    Tuple <Double,Double> coord = new Tuple <Double, Double> (lat,lng);
-//                    uid_loc_hm.put(e.getUid(),coord);
+
                     System.out.println(e.getLat());
                     System.out.println(e.getPhotoUrl());
                 }
             }
         });
-
-        //System.out.println("current gid is" + user_hmp.get(u.getUid()).getGid());
-
-        // check if the user is a creator. if they are, display the dissolve group button instead of create group
-        /*
-        if (leaders.containsKey(u.getUid())) {
-            System.out.println("leader");
-            dissolveGroupButton.setVisibility(View.VISIBLE);
-            createGroupButton.setVisibility(View.GONE);
-            leaveGroupButton.setVisibility(View.GONE);
-        }
-        else if (user_hmp.get(u.getUid()).getGid() != null) { // user is a member of a group, display leave group
-            System.out.println("member");
-            createGroupButton.setVisibility(View.GONE);
-            dissolveGroupButton.setVisibility(View.GONE);
-            leaveGroupButton.setVisibility(View.VISIBLE);
-        }
-        else { // user not in a group, display create group button
-            System.out.println("free agent");
-            createGroupButton.setVisibility(View.VISIBLE);
-            dissolveGroupButton.setVisibility(View.GONE);
-            leaveGroupButton.setVisibility(View.GONE);
-        }
-        */
 
         mManager.attachListenerForGroups(new DBListener<List<DBGroup>>(){
             @Override
@@ -312,11 +282,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         mManager.waitForRequests(new DBListener<String>() {
                             @Override
                             public void run(String user) {
-//                                System.out.println("waiting for requests");
-//                                Toast toast = Toast.makeText(getApplicationContext(), user_hmp.get(user).getName() + " requested to join group", Toast.LENGTH_LONG);
-//                                TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-//                                if( v != null) v.setGravity(Gravity.CENTER);
-//                                toast.show();
                                 if (user_hmp.get(user).getGid() != null) {
                                     // the requested user already joined some other group, so just get rid of their request
                                     mManager.handleJoinRequest(leaders.get(u.getUid()), user);
@@ -326,14 +291,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     layoutinflater = (LayoutInflater) (MapsActivity.this).getSystemService(LAYOUT_INFLATER_SERVICE);
                                     ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
                                     popupwindow = new PopupWindow(container, 700, 600, true);
-                                    //if (markerHashMap.containsKey(u.getUid())) {
-                                    //System.out.println("display at " + user_hmp.get(u.getUid()).getLat() + " " + user_hmp.get(u.getUid()).getLon());
+
                                     Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
                                     popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
-                                    //popupwindow.setFocusable(false);
-                                    //popupwindow.setOutsideTouchable(false);
-                                    //popupwindow.update();
-                                    //}
+
                                     final String userr = user;
                                     LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
                                     ImageView imagev = (ImageView) container.findViewById(R.id.image);
@@ -347,7 +308,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     }
                                     if(user_hmp.get(user)!=null && user_hmp.get(user).get_bmp()!=null){
                                         Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(user).get_bmp(), 200, 200, true);
-                                        //ib.setImageBitmap(getCircleBitmap(resized, 0, "0"));
                                         imagev.setImageBitmap(getCircleBitmap(resized, 0, "0"));
                                         tv.setText(user_hmp.get(user).getName()+ " wants to join your group!\n");
                                     }
@@ -356,7 +316,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                         @Override
                                         public void onClick(View view) {
                                             String gid= leaders.get(u.getUid());
-                                            //markerHashMap.get(userr).setVisible(false);
                                             mManager.joinGroup(gid,userr,groupSize.get(gid));
                                             user_hmp.get(userr).setgid(gid);
                                             groupSize.put(gid, groupSize.get(gid) + 1);
@@ -407,21 +366,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mManager.waitForInvites(new DBListener<String>() {
             @Override
             public void run(String gid) {
-                /*
-                Toast toast = Toast.makeText(getApplicationContext(), "You were added to " +
-                        user_hmp.get(group_hmp.get(gid).getLeader()).getName() + "'s group", Toast.LENGTH_LONG);
-                TextView v = (TextView) toast.getView().findViewById(android.R.id.message);
-                if( v != null) v.setGravity(Gravity.CENTER);
-                toast.show();
-
-                System.out.println("added to " + gid);
-                if (user_hmp.get(u.getUid()).getGid() == null) {
-                    mManager.joinGroup(gid, u.getUid(), groupSize.get(gid)); // automatically join groups you're added to for now
-                    user_hmp.get(u.getUid()).setgid(gid);
-                    groupSize.put(gid, groupSize.get(gid) + 1);
-                    group_hmp.get(gid).setSize(group_hmp.get(gid).getCurr_size() + 1);
-                }
-                */
                 final String gid_final = gid;
 
                 if (user_hmp.get(u.getUid()).getGid() != null) {
@@ -504,12 +448,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 double lng = user_hmp.get(u.getUid()).getLon();
                 System.out.println(lng);
                 LatLng pos = new LatLng(lat, lng);
-                /*
-                uid_loc_hm.remove(u.getUid());
-                markerHashMap.remove(u.getUid());
-                counterMarkerHashMap.remove(u.getUid());
-                */
-                //createMarker(u.getUid(), pos, 1); // create marker with group leader as picture
 
                 leaders.put(u.getUid(), gID);
                 user_hmp.get(u.getUid()).setgid(gID);
@@ -517,14 +455,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 group_hmp.put(gID, new Group(user_hmp.get(u.getUid())));
 
                 mManager.updateGroupLocation(gID, lat, lng);
-/*
-                mManager.waitForRequests(new DBListener<String>() {
-                    @Override
-                    public void run(String user) {
-                        Toast.makeText(getApplicationContext(), user + " requested to join group", Toast.LENGTH_SHORT).show();
-                    }
-                }, gID); */
-
 
                 createGroupButton.setVisibility(View.GONE);
                 dissolveGroupButton.setVisibility(View.VISIBLE);
@@ -610,9 +540,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 markerHashMap.remove(u.getUid());
                 counterMarkerHashMap.remove(u.getUid());
 
-                //mManager.dissolveGroup(leaders.get(u.getUid()), u.getUid());
-                // leaveGroup(String gid, String uid, int size
-
                 String currentGid = user_hmp.get(u.getUid()).getGid();
 
                 mManager.leaveGroup(currentGid, u.getUid(), groupSize.get(currentGid));
@@ -627,41 +554,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 updateMap();
             }
         });
-
-//        int idx_1 = 1;
-//        for(Map.Entry<String,String> entry : uid_profilePicURL_hm.entrySet()) {
-//            final int idx = idx_1;
-//            final String uid = entry.getKey();
-//            final String profilePicURL = entry.getValue();
-//            Thread thread = new Thread(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    try  {
-//                        try {
-//                            URL url = new URL(profilePicURL);
-//                            Bitmap bm = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-//
-//                            //uid_bitmaps.put(uid,bm);
-//                            user_hmp.get(uid).set_bmp(bm);
-//
-//
-//
-//                            System.out.println("thread " + idx + " created");
-//                        } catch(IOException e) {
-//                            System.out.println(e);
-//                        }
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//            uid_threads.put(uid,thread);
-//            thread.start();
-//            idx_1++;
-//        }
-
-        //bm=((BitmapDrawable)image.getDrawable()).getBitmap();
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -719,23 +611,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             LatLng currLoc = new LatLng(loc.getLatitude(), loc.getLongitude());
             mManager.updateActiveUser(u.getUid(), loc.getLatitude(), loc.getLongitude());
             user_hmp.get(u.getUid()).setCoordinates(loc.getLatitude(), loc.getLongitude());
-            /*
-            if (markerHashMap.get(u.getUid()) == null) {
-                System.out.println("set up location request, no marker hash map entry");
-                if (leaders.containsKey(u.getUid())) {
-                    System.out.println(u.getUid() + " is a leader, creating marker w gropu size");
-                    createMarker(u.getUid(), currLoc, groupSize.get(leaders.get(u.getUid())));
-                }
-                else {
-                    System.out.println(u.getUid() + " is not a leader, create marker w group size 0");
-                    createMarker(u.getUid(), currLoc, 0);
-                }
-            }
-            else{
-                System.out.println("set up location request, already has a marker hash map entry");
-                updateMarker(u.getUid(),currLoc);
-            }
-            */
+
             updateMap();
             if (user_hmp.get(u.getUid()).getGid() == null || leaders.containsKey(u.getUid())) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
@@ -801,23 +677,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             public boolean onMarkerClick(Marker marker) {
                 if (marker != null) {
                     m = marker;
-//                    if (marker.getTitle().equals("Current Location")) { // if marker source is clicked
-                        // Toast.makeText(getApplicationContext(), "sup bro, this is a test", Toast.LENGTH_SHORT).show();// display toast
-                        final String marker_uid = marker.getTitle();
-                       // if(marker_uid.equals(u.getUid())){
-                        layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                        ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null);
-                        popupwindow = new PopupWindow(container, 700, 600, true);
+                    final String marker_uid = marker.getTitle();
+
+                    layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+                    ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null);
+                    popupwindow = new PopupWindow(container, 700, 600, true);
                     Point p = mMap.getProjection().toScreenLocation(marker.getPosition());
-                        popupwindow.showAtLocation(findViewById(R.id.map),Gravity.NO_GRAVITY,p.x-350,p.y-300);
+                    popupwindow.showAtLocation(findViewById(R.id.map),Gravity.NO_GRAVITY,p.x-350,p.y-300);
 
-                        LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
+                    LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
 
-
-
-
-
-                        ImageView imb=new ImageView(getApplicationContext());
+                    ImageView imb=new ImageView(getApplicationContext());
                     ImageButton imb2=new ImageButton(getApplicationContext());
 
 
@@ -850,32 +720,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     group_images[i].setImageBitmap(getCircleBitmap(resized, 0, "0"));
 
                                     tempo.addView(group_images[i]);
-
-//                                        if(i==(param.size()-1)){
-//                                            group_images[i+1]=null;
-//                                        }
-
-
-
-
                                 }
-
-
                             }
                         }, leaders.get(marker_uid));
-
-                  //  if(groupSize.get(marker_uid)!=null) {
-//                        int i=0;
-//                        while(group_images[i]!=null) {
-//                            ib.addView(group_images[i]);
-//                            i++;
-//
-//                        }
-                  //  }
-
-
-
-
                     }
 
                     TextView text = (TextView) container.findViewById(R.id.textView);
@@ -1007,48 +854,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (leaders.containsKey(uid)) {
                     System.out.println("update map, " + uid + " is a leader, creating marker with group size" + groupSize.get(leaders.get(uid)));
                     createMarker(uid, pos, groupSize.get(leaders.get(uid)));
-                    /*
-                    if (uid.equals(u.getUid())) {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 17));
-                    }
-                    */
                 }
                 else if(user_hmp.get(key).getGid() == null) {
                     System.out.println("update map, " + uid + " isn't in a group, creating marker with 0 size");
                     createMarker(uid, pos, 0);
-                    /*
-                    if (uid.equals(u.getUid())) {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 17));
-                    }
-                    */
                 }
                 else {
                     System.out.println("update map, " + uid + " is already in a group");
-                    /*
-                    if (uid.equals(u.getUid())) {
-                        String gid = user_hmp.get(key).getGid();
-                        Double groupLat = gid_loc_hm.get(gid).getLat();
-                        Double groupLon = gid_loc_hm.get(gid).getLng();
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(groupLat, groupLon), 17));
-                    }
-                    */
                 }
             }
             else {
                 System.out.println("marker hash map has entry");
-                /*
-                if (user_hmp.get(key).getGid() == null) {
-                    System.out.println("no group");
-                    markerHashMap.get(uid).remove();
-                    counterMarkerHashMap.get(uid).remove();
-                    createMarker(uid, pos, 0);
-                } */
                 updateMarker(uid, pos);
             }
         }
         LatLng currPos = new LatLng(user_hmp.get(u.getUid()).getLat(),user_hmp.get(u.getUid()).getLon());
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currPos, 17));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(currPos));
     }
 
     /**
@@ -1197,22 +1017,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(tempUser != null) {
             user_hmp.get(u.getUid()).setCoordinates(lat, lng);
         }
-
-        //for testing only
-        //create test coordinates and update all the other users
-//        for(String uid : uids) {
-//            if(uid != u.getUid()) {
-//                double lat_lowerbound = location.getLatitude()-0.0005;
-//                double lat_upperbound = location.getLatitude()+0.0005;
-//                double lng_lowerbound = location.getLongitude()-0.0005;
-//                double lng_upperbound = location.getLongitude()+0.0005;
-//                double randomlat = lat_lowerbound + (lat_upperbound - lat_lowerbound) * r.nextDouble();
-//                double randomlng = lng_lowerbound + (lng_upperbound - lng_lowerbound) * r.nextDouble();
-//                mManager.updateActiveUser(uid, randomlat, randomlng, uid_profilePicURL_hm.get(uid));
-//                Tuple <Double,Double> randomCoord = new Tuple <Double, Double> (randomlat,randomlng);
-//                uid_loc_hm.put(uid,randomCoord);
-//            }
-//        }
 
         updateMap();
     }
