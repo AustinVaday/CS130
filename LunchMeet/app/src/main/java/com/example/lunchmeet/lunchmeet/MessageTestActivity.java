@@ -69,7 +69,7 @@ public class MessageTestActivity extends AppCompatActivity {
 
     public void addMessage(DBMessage message){
         final DBMessage msg = message;
-        TableLayout table = findViewById(R.id.messages);
+        LinearLayout table = findViewById(R.id.messages);
         //table.setPadding(16,2,16,2);
         LayoutInflater layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         final MessageRowUI row = new MessageRowUI(this);
@@ -81,10 +81,13 @@ public class MessageTestActivity extends AppCompatActivity {
         mManager.getUserFromUid(new DBListener<DBUser>() {
             @Override
             public void run(DBUser param) {
-                name.setText(param.getName()+": ");
+                if(mUid.equals(param.getUid())){
+                    row.setFromSelf();
+                } else{
+                    loadImage( param.getPhotoUrl(), imageView);
+                }
+                name.setText(param.getName());
                 text.setText(msg.getMessage());
-
-                loadImage( param.getPhotoUrl(), imageView);
             }
         }, message.getUid());
         table.addView(row);

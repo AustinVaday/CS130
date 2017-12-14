@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="bottom"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp">
 
     <ImageView
         android:id="@+id/imageView"
@@ -12,23 +15,38 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/content">
+        android:id="@+id/content"
+        android:paddingLeft="8dp">
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:textColor="#aaaaaa"
+            android:textSize="12sp"
+            android:paddingRight="2dp"
+            android:paddingBottom="1dp"
+            android:paddingLeft="2dp">
 
         </TextView>
 
-        <TextView
-            android:id="@+id/message"
+        <LinearLayout
+            android:id="@+id/messageBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            >
+            android:background="@drawable/message_other"
+            android:padding="8dp">
 
-        </TextView>
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                >
+
+            </TextView>
+        </LinearLayout>
 
     </LinearLayout>
 
-</TableRow>
+</LinearLayout>
