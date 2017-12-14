@@ -11,11 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
 
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -39,13 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
     //for debugging
     private static final String TAG = "login";
-    private TextView mStatusTextView;
-    private TextView mDetailTextView;
     private ProgressBar progressBar;
-    private Button b;
-    private Button b2;
-    private Toolbar toolBar;
-    private ImageButton goToMessages;
+    private Button backtoDashboard;
 
     ///////////////
 
@@ -68,20 +60,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"hello");
         setContentView(R.layout.activity_main);
-        /*
-        mStatusTextView = (TextView) findViewById(R.id.status);
-        mDetailTextView = (TextView) findViewById(R.id.detail);
-        b=(Button)findViewById(R.id.button);
-        b2=(Button)findViewById(R.id.dbtestbutton);
-        */
         progressBar = (ProgressBar) findViewById(R.id.continueWithFBProgressBar);
         progressBar.setVisibility(View.GONE);
-        //toolBar = (Toolbar) findViewById(R.id.app_bar);
-        //setSupportActionBar(toolBar);
-        //goToMessages = (ImageButton) findViewById(R.id.go_to_messages);
-        //addMessageListener();
+        backtoDashboard = (Button) findViewById(R.id.backToDashboard);
+        backtoDashboard.setVisibility(View.GONE);
         mAuth = FirebaseAuth.getInstance();
-        //LogOut();
+
+        backtoDashboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getBaseContext(), Dashboard.class);
+                startActivity(intent);
+            }
+        });
+
         ///////////////////////////////////
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
@@ -109,19 +101,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
                                                        AccessToken currentAccessToken) {
-                if(currentAccessToken == null)
+                if(currentAccessToken == null) {
+                    LogOut();
                     updateUI(null);
+                }
             }
         };
-/*
-        b.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-               gotoMaps();
-
-            }
-        }); */
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -177,18 +162,22 @@ public class MainActivity extends AppCompatActivity {
     private void updateUI(FirebaseUser user) {
         if(user == null)
         {
-            //b.setEnabled(false);
-            //b2.setEnabled(false);
-            loginTracker = 0;
+            backtoDashboard.setVisibility(View.GONE);
         }
         else
         {
-            //b.setEnabled(true);
-            //b2.setEnabled(true);
-            if (loginTracker == 0) {
-                loginTracker = 1;
-                progressBar.setVisibility(View.GONE);
-                gotoDashBoard();
+            if (getIntent().hasExtra("back")) {
+                if (getIntent().getStringExtra("back").equals("dashboard")) {
+                    progressBar.setVisibility(View.GONE);
+                    backtoDashboard.setVisibility(View.VISIBLE);
+                }
+            }
+            else {
+                if (loginTracker == 0) {
+                    loginTracker = 1;
+                    progressBar.setVisibility(View.GONE);
+                    gotoDashBoard();
+                }
             }
         }
     }
@@ -200,35 +189,8 @@ public class MainActivity extends AppCompatActivity {
         updateUI(null);
     }
 
-
-    private void gotoMaps() {
-        Intent intent = new Intent(this, MapsActivity.class);
-        intent.putExtra("count", count);
-        startActivity(intent);
-    }
-
     private void gotoDashBoard() {
         Intent intent = new Intent(this, Dashboard.class);
         startActivity(intent);
     }
-
-    public void goToMessaging(View view){
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(currentUser == null) {
-            Toast.makeText(getApplicationContext(),"Please log in via Facebook", Toast.LENGTH_SHORT).show();
-        } else {
-            Intent intent = new Intent(this, MessageActivity.class);
-            startActivity(intent);
-        }
-    }
-/*
-    public void addMessageListener() {
-        goToMessages.setOnClickListener(new View.OnClickListener() {
-           @Override
-            public void onClick(View arg0) {
-               goToMessaging(arg0);
-           }
-        });
-    }
-*/
 }
