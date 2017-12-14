@@ -19,6 +19,11 @@ public class Dashboard extends AppCompatActivity {
     private Button b;
     private HashMap<String,String> uid_profilePicURL_hm = new HashMap<String,String>();
 
+    /**
+     * Called when the Dashboard activity is opened. Sets up a listener for user data to be populated into a HashMap
+     * and also adds the current user to the database.
+     * @param savedInstanceState A Bundle object containing the activity's previously saved state. Value is null upon when the app is first initialized
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mManager.attachListenerForActiveUsers(new DBListener<List<DBActive>>(){
@@ -44,6 +49,11 @@ public class Dashboard extends AppCompatActivity {
         });
     }
 
+    /**
+     * Opens the MainActivity with an extra string noting that the activity was opened from Dashboard.
+     * This is used to ensure that the "Back to Dashboard" button is only displayed on MainActivity
+     * when the user went to that page from the dashboard.
+     */
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(getBaseContext(), MainActivity.class);
@@ -51,6 +61,9 @@ public class Dashboard extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Opens the MapsActivity.
+     */
     private void gotoMaps() {
         Intent intent = new Intent(this, MapsActivity.class);
         intent.putExtra("uid_profilePicURL_hm",uid_profilePicURL_hm);
