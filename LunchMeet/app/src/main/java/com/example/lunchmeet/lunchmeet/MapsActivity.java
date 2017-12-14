@@ -142,7 +142,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Sets up the map and user/database instances so they can be used. Called upon starting the
      * maps activity. Also takes care of location permissions: if the user has not permitted the app
      * to access their location, they will be prompted to do so before being able to access any of the
-     * map features.
+     * map features. Sets up button listeners for the create/leave/dissolve group buttons. Additionally,
+     * if the user is a leader of a group, a listener for requests to join the group is set up. A listener
+     * for invites to groups is also set up in this function.
      *
      * @param savedInstanceState saved activity state, null upon first starting the activity
      */
@@ -664,6 +666,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      * Sets a listener to display a user's photo + info when their marker is clicked.
+     * Sets up button listeners for invite and join group buttons so that a free agent can join
+     * groups that already exist.
      *
      * @param googleMap the google map
      */
@@ -1021,6 +1025,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         updateMap();
     }
 
+    /**
+     * Opens MessageActivity, used for exchanging messages between group members.
+     * @param view
+     */
     public void goToMessaging(View view){
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if(currentUser == null) {
