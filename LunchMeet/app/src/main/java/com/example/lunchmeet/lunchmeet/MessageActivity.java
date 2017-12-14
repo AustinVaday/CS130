@@ -3,6 +3,7 @@ package com.example.lunchmeet.lunchmeet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -45,7 +46,28 @@ public class MessageActivity extends AppCompatActivity {
                 addMessage(param);
 
                 ScrollView scrollView = findViewById(R.id.scrollView);
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+                scrollView.scrollTo(0,scrollView.getBottom());
+            }
+        });
+
+
+        EditText editText = findViewById(R.id.messageText);
+        editText.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    switch (keyCode)
+                    {
+                        case KeyEvent.KEYCODE_DPAD_CENTER:
+                        case KeyEvent.KEYCODE_ENTER:
+                            sendMessage(view);
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+                return false;
             }
         });
     }
