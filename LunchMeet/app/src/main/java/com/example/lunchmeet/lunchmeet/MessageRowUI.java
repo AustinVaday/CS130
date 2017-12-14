@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -13,12 +14,14 @@ import android.widget.TextView;
  */
 
 public class MessageRowUI extends TableRow {
+    public ImageView imageView;
     public TextView name;
     public TextView message;
     private void inflateLayout(Context context) {
         LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.message_row, this);
 
+        this.imageView = view.findViewById(R.id.imageView);
         this.name = view.findViewById(R.id.name);
         this.message = view.findViewById(R.id.message);
     }

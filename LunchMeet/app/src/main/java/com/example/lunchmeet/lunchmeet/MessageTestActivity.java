@@ -1,6 +1,16 @@
 package com.example.lunchmeet.lunchmeet;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +32,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 
 public class MessageTestActivity extends AppCompatActivity {
@@ -59,8 +72,9 @@ public class MessageTestActivity extends AppCompatActivity {
         TableLayout table = findViewById(R.id.messages);
         //table.setPadding(16,2,16,2);
         LayoutInflater layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        MessageRowUI row = new MessageRowUI(this);
+        final MessageRowUI row = new MessageRowUI(this);
 
+        final ImageView imageView = row.imageView;
         final TextView name = row.name;
         final TextView text = row.message;
 
@@ -69,10 +83,21 @@ public class MessageTestActivity extends AppCompatActivity {
             public void run(DBUser param) {
                 name.setText(param.getName()+": ");
                 text.setText(msg.getMessage());
+
+                loadImage( param.getPhotoUrl(), imageView);
             }
         }, message.getUid());
         table.addView(row);
 
+    }
+
+    public void loadImage(String photoUrl, ImageView imageView){
+        // placeholder code to put in the image
+        // ideally i'd like to use the circle bitmap stuff that we do in map activity but I have no
+        // idea how that works at all lol
+        Picasso.with(this)
+                .load(photoUrl)
+                .into(imageView);
     }
 
     public void sendMessage(View view){
