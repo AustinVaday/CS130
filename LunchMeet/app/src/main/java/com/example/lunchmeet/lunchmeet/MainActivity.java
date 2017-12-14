@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     private final DBManager mManager = DBManager.getInstance();
     DBUser u;
+    private int loginTracker = 0;
 
 
     /**
@@ -67,10 +68,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG,"hello");
         setContentView(R.layout.activity_main);
+        /*
         mStatusTextView = (TextView) findViewById(R.id.status);
         mDetailTextView = (TextView) findViewById(R.id.detail);
         b=(Button)findViewById(R.id.button);
         b2=(Button)findViewById(R.id.dbtestbutton);
+        */
         progressBar = (ProgressBar) findViewById(R.id.continueWithFBProgressBar);
         progressBar.setVisibility(View.GONE);
         //toolBar = (Toolbar) findViewById(R.id.app_bar);
@@ -78,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         //goToMessages = (ImageButton) findViewById(R.id.go_to_messages);
         //addMessageListener();
         mAuth = FirebaseAuth.getInstance();
-        LogOut();
+        //LogOut();
         ///////////////////////////////////
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
@@ -110,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     updateUI(null);
             }
         };
-
+/*
         b.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -118,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                gotoMaps();
 
             }
-        });
+        }); */
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -168,24 +171,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        updateUI(currentUser);
     }
 
     private void updateUI(FirebaseUser user) {
         if(user == null)
         {
-            b.setEnabled(false);
-            b2.setEnabled(false);
+            //b.setEnabled(false);
+            //b2.setEnabled(false);
+            loginTracker = 0;
         }
         else
         {
-            b.setEnabled(true);
-            b2.setEnabled(true);
+            //b.setEnabled(true);
+            //b2.setEnabled(true);
+            if (loginTracker == 0) {
+                loginTracker = 1;
+                progressBar.setVisibility(View.GONE);
+                gotoDashBoard();
+            }
         }
     }
 
     private void LogOut() {
         mAuth.signOut();
         LoginManager.getInstance().logOut();
+        loginTracker = 0;
         updateUI(null);
     }
 

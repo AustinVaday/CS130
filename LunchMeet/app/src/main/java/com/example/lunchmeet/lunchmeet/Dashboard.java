@@ -24,6 +24,7 @@ public class Dashboard extends AppCompatActivity {
     private final DBManager mManager = DBManager.getInstance();
     private Button b;
     private HashMap<String,String> uid_profilePicURL_hm = new HashMap<String,String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mManager.attachListenerForActiveUsers(new DBListener<List<DBActive>>(){
