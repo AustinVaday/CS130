@@ -79,12 +79,12 @@ public class MainActivity extends AppCompatActivity {
         b2=(Button)findViewById(R.id.dbtestbutton);
         progressBar = (ProgressBar) findViewById(R.id.continueWithFBProgressBar);
         progressBar.setVisibility(View.GONE);
-        toolBar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(toolBar);
-        goToMessages = (ImageButton) findViewById(R.id.go_to_messages);
-        addMessageListener();
+        //toolBar = (Toolbar) findViewById(R.id.app_bar);
+        //setSupportActionBar(toolBar);
+        //goToMessages = (ImageButton) findViewById(R.id.go_to_messages);
+        //addMessageListener();
         mAuth = FirebaseAuth.getInstance();
-        //LogOut();
+        LogOut();
         ///////////////////////////////////
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
     }
-
+/*
     public void addMessageListener() {
         goToMessages.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -225,5 +225,5 @@ public class MainActivity extends AppCompatActivity {
            }
         });
     }
-
+*/
 }

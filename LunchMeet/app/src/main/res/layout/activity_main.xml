@@ -6,11 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.lunchmeet.lunchmeet.MainActivity">
-
+<!--
     <include
         layout = "@layout/app_bar"
         android:id="@+id/app_bar">
-    </include>
+    </include>-->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="282dp"
