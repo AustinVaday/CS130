@@ -112,11 +112,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private HashMap<String,Bitmap> uid_bitmaps = new HashMap<String,Bitmap>();
 
     /**
-     * Popup window used to display the user's name, picture, and action buttons (ex invite to group)
-     * when clicked on.
-     */
-    PopupWindow popupwindow;
-    /**
      * The Layoutinflater.
      */
     LayoutInflater layoutinflater;
@@ -152,7 +147,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        Log.d(TAG1, "test");
         setContentView(R.layout.activity_maps);
 
         if(mUser == null) {
@@ -187,11 +181,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         user_hmp.put(e.getUid(),new User(e.getName(),null,(float)e.getLat(),(float)e.getLng(),e.getUid(),e.getPhotoUrl(),e.getGid()));
 
                     }
-                    Log.d("USERS","PhotoURL: " + user_hmp.get(e.getUid()).geturl());
 
                     user_hmp.get(e.getUid()).setCoordinates(e.getLat(),e.getLng());
 
-                    System.out.println(e.getName() + " gid " + e.getGid());
+
 
                     if (e.getGid() == null) {
                         user_hmp.get(e.getUid()).setgid(null);
@@ -206,21 +199,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                     if (e.getUid().equals(u.getUid()) && e.getGid() != null && !leaders.containsKey(e.getUid())) {
-                        System.out.println("member");
                         createGroupButton.setVisibility(View.GONE);
                         dissolveGroupButton.setVisibility(View.GONE);
                         leaveGroupButton.setVisibility(View.VISIBLE);
                         goToMessages.setVisibility(View.VISIBLE);
                     }
                     else if (e.getUid().equals(u.getUid()) && e.getGid() == null) {
-                        System.out.println("free agent");
                         createGroupButton.setVisibility(View.VISIBLE);
                         dissolveGroupButton.setVisibility(View.GONE);
                         leaveGroupButton.setVisibility(View.GONE);
                         goToMessages.setVisibility(View.GONE);
                     }
 
-                    System.out.println("user " + user_hmp.get(e.getUid()).getName() + " gid " + user_hmp.get(e.getUid()).getGid());
 
 
                     final int idx = 1;
@@ -255,8 +245,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             idx_1++;
                     }
 
-                    System.out.println(e.getLat());
-                    System.out.println(e.getPhotoUrl());
                 }
             }
         });
@@ -264,10 +252,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mManager.attachListenerForGroups(new DBListener<List<DBGroup>>(){
             @Override
             public void run(List<DBGroup> list){
-                System.out.println("in groups listener");
                 for(DBGroup g : list) {
                     leaders.put(g.getLeader(), g.getGid());
-                    System.out.println("added to leaders: " + g.getLeader() + " " + g.getGid());
                     if (!group_hmp.containsKey(g.getGid())) {
                         group_hmp.put(g.getGid(), new Group(user_hmp.get(g.getLeader())));
                     }
@@ -277,102 +263,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     groupSize.put(g.getGid(), g.getSize());
 
                     if (g.getLeader().equals(u.getUid())) {
-                        System.out.println("creator");
                         createGroupButton.setVisibility(View.GONE);
                         dissolveGroupButton.setVisibility(View.VISIBLE);
                         leaveGroupButton.setVisibility(View.GONE);
                         goToMessages.setVisibility(View.VISIBLE);
-
-                        mManager.waitForRequests(new DBListener<String>() {
-                            @Override
-                            public void run(String user) {
-                                if (user_hmp.get(user).getGid() != null) {
-                                    // the requested user already joined some other group, so just get rid of their request
-                                    mManager.handleJoinRequest(leaders.get(u.getUid()), user);
-                                }
-
-                                if(user!=null && user_hmp.get(u.getUid()) != null && user_hmp.get(u.getUid()).getGid()!=null  ) {
-                                    layoutinflater = (LayoutInflater) (MapsActivity.this).getSystemService(LAYOUT_INFLATER_SERVICE);
-                                    ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
-                                    popupwindow = new PopupWindow(container, 700, 600, true);
-
-                                    Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
-                                    if(!isFinishing()){
-                                        popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
-                                    }
-
-
-                                    final String userr = user;
-                                    LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
-                                    ImageView imagev = (ImageView) container.findViewById(R.id.image);
-                                    TextView tv = (TextView) container.findViewById(R.id.requesttext) ;
-                                    Button accept = (Button) container.findViewById(R.id.acceptbutton);
-                                    Button reject = (Button) container.findViewById(R.id.rejectbutton);
-
-                                    // wait for bitmap to be loaded, needed to ensure that the right text displays
-                                    while (user_hmp.get(user).get_bmp() == null) {
-
-                                    }
-                                    if(user_hmp.get(user)!=null && user_hmp.get(user).get_bmp()!=null){
-                                        Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(user).get_bmp(), 200, 200, true);
-                                        imagev.setImageBitmap(getCircleBitmap(resized, 0, "0"));
-                                        tv.setText(user_hmp.get(user).getName()+ " wants to join your group!\n");
-                                    }
-
-                                    accept.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            String gid= leaders.get(u.getUid());
-                                            mManager.joinGroup(gid,userr,groupSize.get(gid));
-                                            user_hmp.get(userr).setgid(gid);
-                                            groupSize.put(gid, groupSize.get(gid) + 1);
-                                            group_hmp.get(gid).setSize(group_hmp.get(gid).getCurr_size() + 1);
-                                            if (markerHashMap.containsKey(u.getUid())) {
-                                                markerHashMap.get(u.getUid()).remove();
-                                            }
-                                            markerHashMap.remove(u.getUid());
-                                            if (counterMarkerHashMap.containsKey(u.getUid())) {
-                                                counterMarkerHashMap.get(u.getUid()).remove();
-                                            }
-                                            counterMarkerHashMap.remove(u.getUid());
-
-                                            if (markerHashMap.containsKey(userr)) {
-                                                markerHashMap.get(userr).remove();
-                                            }
-                                            markerHashMap.remove(userr);
-                                            if (counterMarkerHashMap.containsKey(userr)) {
-                                                counterMarkerHashMap.get(userr).remove();
-                                            }
-                                            counterMarkerHashMap.remove(userr);
-
-                                            // clear the invite
-                                            mManager.handleJoinRequest(gid, userr);
-
-                                            popupwindow.dismiss();
-                                            updateMap();
-                                        }
-                                    });
-
-                                    reject.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            //clear invites from DB
-                                            mManager.handleJoinRequest(leaders.get(u.getUid()), userr);
-                                            popupwindow.dismiss();
-
-                                        }
-                                    });
-
-                                    container.setOnTouchListener(new View.OnTouchListener() {
-                                         @Override
-                                         public boolean onTouch(View view, MotionEvent motionEvent) {
-                                            popupwindow.dismiss();
-                                            return false;
-                                         }
-                                    });
-                                }
-                            }
-                        }, g.getGid());
                     }
                 }
             }
@@ -390,8 +284,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 if(gid !=null && user_hmp.get(u.getUid()) != null && user_hmp.get(u.getUid()).getGid()==null  ) {
                     layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                    ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null);
-                    popupwindow = new PopupWindow(container, 700, 600, true);
+                    ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null, false);
+                    final PopupWindow popupwindow = new PopupWindow(container, 700, 600, true);
 
                     Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
                     popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
@@ -453,15 +347,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 String gID =  mManager.createGroup(u.getUid());
+
+                listenForRequests(gID);
+
                 Toast.makeText(getApplicationContext(),"A Group is created", Toast.LENGTH_SHORT).show();
                 Marker m = markerHashMap.get(u.getUid());
                 m.remove();
                 markerHashMap.remove(u.getUid());
                 //m.setVisible(false);
                 double lat = user_hmp.get(u.getUid()).getLat();
-                System.out.println(lat);
                 double lng = user_hmp.get(u.getUid()).getLon();
-                System.out.println(lng);
                 LatLng pos = new LatLng(lat, lng);
 
                 leaders.put(u.getUid(), gID);
@@ -510,7 +405,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 dissolveGroupButton.setVisibility(View.GONE);
                 leaveGroupButton.setVisibility(View.GONE);
                 goToMessages.setVisibility(View.GONE);
-                System.out.println("dissolve update map");
+
                 updateMap();
             }
         });
@@ -531,7 +426,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (user_hmp.get(key).getGid() != null && user_hmp.get(u.getUid()).getGid() != null &&
                             user_hmp.get(key).getGid().equals(user_hmp.get(u.getUid()).getGid())
                             && leaders.containsKey(key)) {
-                        System.out.println("found leader " + key);
                         leader = markerHashMap.get(key);
                         leaderCounter = counterMarkerHashMap.get(key);
                         markerHashMap.remove(key);
@@ -628,13 +522,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             user_hmp.get(u.getUid()).setCoordinates(loc.getLatitude(), loc.getLongitude());
 
             updateMap();
+
             if (user_hmp.get(u.getUid()).getGid() == null || leaders.containsKey(u.getUid())) {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currLoc, 17));
             }
             else {
                 double groupLat = group_hmp.get(user_hmp.get(u.getUid()).getGid()).getGroupLat();
                 double groupLon = group_hmp.get(user_hmp.get(u.getUid()).getGid()).getGroupLong();
-                System.out.println("group lat " + groupLat + " group lon " + groupLon);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(groupLat, groupLon), 17));
             }
             // ideally want to display group leader's location if in a group?
@@ -697,8 +591,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final String marker_uid = marker.getTitle();
 
                     layoutinflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                    ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null);
-                    popupwindow = new PopupWindow(container, 700, 600, true);
+                    ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup, null, false);
+                    final PopupWindow popupwindow = new PopupWindow(container, 700, 600, true);
                     Point p = mMap.getProjection().toScreenLocation(marker.getPosition());
                     popupwindow.showAtLocation(findViewById(R.id.map),Gravity.NO_GRAVITY,p.x-350,p.y-300);
 
@@ -743,7 +637,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
 
                     TextView text = (TextView) container.findViewById(R.id.textView);
-                    System.out.println("name = " + u.getName());
 
                     if (user_hmp.get(marker_uid).getGid() != null && leaders.containsKey(marker_uid)) {
                         text.setText(user_hmp.get(marker_uid).getName() + "'s Group");
@@ -760,7 +653,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //System.out.println("their gid " + user_hmp.get(marker_uid).getGid());
 
                     if (leaders.containsKey(u.getUid())) {
-                        System.out.println("you are a leader");
                         if (user_hmp.get(marker_uid).getGid() != null) {
                             // clicked marker already in a group
                             // can't invite or join their group
@@ -775,7 +667,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     else if (user_hmp.get(u.getUid()).getGid() == null) {
                         // current user not a member of a group
-                        System.out.println("you are not a member of a group");
                         if (user_hmp.get(marker_uid).getGid() != null) {
                             // clicked marker in a group
                             invite.setVisibility(View.GONE);
@@ -789,7 +680,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     else {
                         // current user is a member of some group
-                        System.out.println("you are a member of a group");
                         // no actions for members, only leaders can invite people
                         invite.setVisibility(View.GONE);
                         joinGroup.setVisibility(View.GONE);
@@ -830,6 +720,104 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    /**
+     * Method to set a listener to listen for requests from a group.
+     * @param gid The ID of the group whose requests will be listened to.
+     */
+    public void listenForRequests(String gid){
+
+        mManager.waitForRequests(new DBListener<String>() {
+            @Override
+            public void run(String user) {
+                if (user_hmp.get(user).getGid() != null) {
+                    // the requested user already joined some other group, so just get rid of their request
+                    mManager.handleJoinRequest(leaders.get(u.getUid()), user);
+                }
+
+                if(user!=null && user_hmp.get(u.getUid()) != null && user_hmp.get(u.getUid()).getGid()!=null  ) {
+                    layoutinflater = (LayoutInflater) (MapsActivity.this).getSystemService(LAYOUT_INFLATER_SERVICE);
+                    ViewGroup container = (ViewGroup) layoutinflater.inflate(R.layout.popup2, null, false);
+                    final PopupWindow popupwindow = new PopupWindow(container, 700, 600, true);
+
+                    Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
+                    if(!isFinishing()){
+                        popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
+                    }
+
+
+                    final String userr = user;
+                    LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
+                    ImageView imagev = (ImageView) container.findViewById(R.id.image);
+                    TextView tv = (TextView) container.findViewById(R.id.requesttext) ;
+                    Button accept = (Button) container.findViewById(R.id.acceptbutton);
+                    Button reject = (Button) container.findViewById(R.id.rejectbutton);
+
+                    // wait for bitmap to be loaded, needed to ensure that the right text displays
+                    while (user_hmp.get(user).get_bmp() == null) {
+
+                    }
+                    if(user_hmp.get(user)!=null && user_hmp.get(user).get_bmp()!=null){
+                        Bitmap resized = Bitmap.createScaledBitmap(user_hmp.get(user).get_bmp(), 200, 200, true);
+                        imagev.setImageBitmap(getCircleBitmap(resized, 0, "0"));
+                        tv.setText(user_hmp.get(user).getName()+ " wants to join your group!\n");
+                    }
+
+                    accept.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String gid= leaders.get(u.getUid());
+                            mManager.joinGroup(gid,userr,groupSize.get(gid));
+                            user_hmp.get(userr).setgid(gid);
+                            groupSize.put(gid, groupSize.get(gid) + 1);
+                            group_hmp.get(gid).setSize(group_hmp.get(gid).getCurr_size() + 1);
+                            if (markerHashMap.containsKey(u.getUid())) {
+                                markerHashMap.get(u.getUid()).remove();
+                            }
+                            markerHashMap.remove(u.getUid());
+                            if (counterMarkerHashMap.containsKey(u.getUid())) {
+                                counterMarkerHashMap.get(u.getUid()).remove();
+                            }
+                            counterMarkerHashMap.remove(u.getUid());
+
+                            if (markerHashMap.containsKey(userr)) {
+                                markerHashMap.get(userr).remove();
+                            }
+                            markerHashMap.remove(userr);
+                            if (counterMarkerHashMap.containsKey(userr)) {
+                                counterMarkerHashMap.get(userr).remove();
+                            }
+                            counterMarkerHashMap.remove(userr);
+
+                            // clear the invite
+                            mManager.handleJoinRequest(gid, userr);
+
+                            popupwindow.dismiss();
+                            updateMap();
+                        }
+                    });
+
+                    reject.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //clear invites from DB
+                            mManager.handleJoinRequest(leaders.get(u.getUid()), userr);
+                            popupwindow.dismiss();
+
+                        }
+                    });
+
+                    container.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            popupwindow.dismiss();
+                            return false;
+                        }
+                    });
+                }
+            }
+        }, gid);
+    }
+
 
 
 
@@ -840,7 +828,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      //* @param lon user's new longitude
      */
     public void updateMap() {
-        System.out.println("group hmp contents");
         Iterator it2 = group_hmp.entrySet().iterator();
         while (it2.hasNext()) {
             Map.Entry entry = (Map.Entry) it2.next();
@@ -851,7 +838,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             double lon = group_hmp.get(key).getGroupLong();
             int size = group_hmp.get(key).getCurr_size();
 
-            System.out.println("group: " + key + " leader " + lid + " lat " + lat + " lon " + lon + " size " + size);
         }
 
 
@@ -865,41 +851,30 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             double lng = user_hmp.get(key).getLon();
             String uid = user_hmp.get(key).getuid();
             LatLng pos = new LatLng(lat, lng);
-            System.out.println("uid = " + uid + " loc " + lat + " " + lng);
             if (markerHashMap.get(uid) == null) {
-                System.out.println("no entry in marker hash map");
                 if (leaders.containsKey(uid)) {
-                    System.out.println("update map, " + uid + " is a leader, creating marker with group size" + groupSize.get(leaders.get(uid)));
                     createMarker(uid, pos, groupSize.get(leaders.get(uid)));
                 }
                 else if(user_hmp.get(key).getGid() == null) {
-                    System.out.println("update map, " + uid + " isn't in a group, creating marker with 0 size");
                     createMarker(uid, pos, 0);
                 }
                 else {
-                    System.out.println("update map, " + uid + " is already in a group");
                 }
             }
             else {
-                System.out.println("marker hash map has entry");
                 Marker currentMarker = markerHashMap.get(uid);
                 Marker counter= counterMarkerHashMap.get(uid);
                 if (leaders.containsKey(uid)) {
-                    System.out.println("update map, " + uid + " is a leader, creating marker with group size" + groupSize.get(leaders.get(uid)));
-
                     currentMarker.setVisible(true);
                     counter.setVisible(true);
                     updateMarker(uid, pos, groupSize.get(leaders.get(uid)));
                 }
                 else if(user_hmp.get(key).getGid() == null) {
-                    System.out.println("update map, " + uid + " isn't in a group, creating marker with 0 size");
-
                     currentMarker.setVisible(true);
                     counter.setVisible(false);
                     updateMarker(uid, pos, 0);
                 }
                 else {
-                    System.out.println("update map, " + uid + " is already in a group");
                     currentMarker.setVisible(false);
                     counter.setVisible(false);
                 }
@@ -916,7 +891,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @return the marker of the user's current location
      */
     public void createMarker(String uid, LatLng loc,int counter) {
-        System.out.println("creating marker for " + uid);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.file);
         Bitmap resized;
@@ -1040,10 +1014,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     @Override
     public void onLocationChanged(Location location) {
-        System.out.println("location change");
-        System.out.println(counterMarkerHashMap.size());
-        System.out.println(markerHashMap.size());
-        System.out.println(uid_loc_hm.size());
 //        updateMap(m_marker, m_counterMarker, location.getLatitude(), location.getLongitude());
         mManager.updateActiveUser(u.getUid(), location.getLatitude(), location.getLongitude());
         double lat = location.getLatitude();
