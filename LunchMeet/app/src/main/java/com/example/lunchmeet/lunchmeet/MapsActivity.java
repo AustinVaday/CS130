@@ -195,6 +195,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     if (e.getGid() == null) {
                         user_hmp.get(e.getUid()).setgid(null);
+                        group_hmp.remove(e.getUid());
+                        leaders.remove(e.getUid());
                     }
                     else {
                         user_hmp.get(e.getUid()).setgid(e.getGid());
@@ -881,21 +883,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             else {
                 System.out.println("marker hash map has entry");
                 Marker currentMarker = markerHashMap.get(uid);
+                Marker counter= counterMarkerHashMap.get(uid);
                 if (leaders.containsKey(uid)) {
                     System.out.println("update map, " + uid + " is a leader, creating marker with group size" + groupSize.get(leaders.get(uid)));
 
                     currentMarker.setVisible(true);
+                    counter.setVisible(true);
                     updateMarker(uid, pos, groupSize.get(leaders.get(uid)));
                 }
                 else if(user_hmp.get(key).getGid() == null) {
                     System.out.println("update map, " + uid + " isn't in a group, creating marker with 0 size");
 
                     currentMarker.setVisible(true);
+                    counter.setVisible(false);
                     updateMarker(uid, pos, 0);
                 }
                 else {
                     System.out.println("update map, " + uid + " is already in a group");
                     currentMarker.setVisible(false);
+                    counter.setVisible(false);
                 }
             }
         }
