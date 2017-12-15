@@ -29,7 +29,7 @@
     * popup2.xml: Contains UI for popup window obtained when a user invites/requests to join a group. 
 * Test code can be found in LunchMeet/app/src/main/test/java/com.example.lunchmeet.lunchmeet
     * UserUnitTest.java contains several unit tests used to test the functionality of our User class. 
-      * userTest() tests whether a user was successfully created by checking that the User object's name is equal to the name we gave it. 
+      * userTest() tests whether a user was successfully created by checking that the User object's data is equal to the parameters passed into it.
       * DBUserTest() tests whether we can create a DBUser object and get the right information returned from it using the getter APIs. The DBUser class corresponds to a user in the Firebase database. 
     * GroupUnitTest.java contains several unit tests used to test the functionality of our Group class. 
       * groupTest() tests whether a group was successfully created by checking that its size upon creation is 1. 
