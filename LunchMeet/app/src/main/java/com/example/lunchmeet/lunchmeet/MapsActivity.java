@@ -423,7 +423,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             user_hmp.get(u.getUid()).setgid(gid_final);
                             groupSize.put(gid_final, groupSize.get(gid_final) + 1);
                             group_hmp.get(gid_final).setSize(group_hmp.get(gid_final).getCurr_size() + 1);
+                            markerHashMap.get(group_hmp.get(gid_final).getLeader()).remove();
                             markerHashMap.remove(group_hmp.get(gid_final).getLeader());
+                            counterMarkerHashMap.get(group_hmp.get(gid_final).getLeader()).remove();
                             counterMarkerHashMap.remove(group_hmp.get(gid_final).getLeader());
                             markerHashMap.get(u.getUid()).remove();
                             markerHashMap.remove(u.getUid());
