@@ -889,7 +889,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Create markers for the user and count of how many people are in their group (if any).
      * Markers are created using bitmaps.
      *
-     //* @param currLoc the current location of the user
+     * @param uid uid of the user we want to draw the marker for
+     * @param loc location of the user we want to draw the marker for
+     * @param counter represents the number of members in a group
      * @return the marker of the user's current location
      */
     public void createMarker(String uid, LatLng loc,int counter) {
@@ -980,7 +982,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             counter.setVisible(true);
         }
     }
-
+    /**
+     * Updates the location of the marker, as well as the marker's icon if it hadn't already been
+     * loaded.
+     *
+     * @param bitmap The bitmap that corresponds to the profile pic of a user
+     * @param subcircle The subcircle that displays the number of users in a group
+     * @param num The size of the group
+     */
     private Bitmap getCircleBitmap(Bitmap bitmap,int subcircle,String num) {
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -1045,7 +1054,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             startActivity(intent);
         }
     }
-
+    /**
+     * Listener to listen on user pressing on the button that takes them to messages
+     */
     public void addMessageListener() {
         goToMessages.setVisibility(View.GONE);
         goToMessages.setOnClickListener(new View.OnClickListener() {
@@ -1059,7 +1070,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * Called upon the app connecting to Google Play Services. Once this happens, checks that the user
      * has granted location permissions to the app.
-     *
      * @param bundle the application state
      */
     @Override
@@ -1070,7 +1080,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     /**
      * On connection suspended.
-     *
      * @param i the suspended code
      */
     @Override

@@ -83,8 +83,13 @@ public class User {
     public String getuid(){
         return uid;
     }
+    /*
+    * @return the bitmap which represents the profile pic of the user
+    * */
     public Bitmap get_bmp(){return profile_pic; }
-
+    /*
+    * @param bmp bitmap of the user's profile pic
+    * */
     public void set_bmp(Bitmap bmp){this.profile_pic=bmp; }
 
 
