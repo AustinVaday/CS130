@@ -15,7 +15,6 @@
     * Group.java: Contains methods to create, modify, and delete a lunch group.
     * User.java: Contains methods to get and modify user information, such as their name, Facebook profile picture, and what group they are in. Also contains class definitions of the different states a user can be in (free agent, creator, and member) based on whether they are in a group or not.
     * DBActive.java, DBGroup.java, DBListener.java, DBManager.java, DBMessage.java, DBUser.java: Classes containing backend APIs to access the data in the Firebase database.
-    * DBTestActivity.java: Temporary activity used to debug the backend APIs.
     * ImageDownloaderTask.java: Used to download bitmaps that are used to display the user's Facebook profile picture in the messaging screen.
     * MessageRowUI.java: Contains the UI for one chat message for use in MessageActivity.
     * Tuple.java: Contains code to store a tuple of variables (x1, x2). 
@@ -43,3 +42,10 @@
       * coordinatesTest() tests whether the group's coordinates are set to be the leader's latitude and longitude. 
 
 * Detailed class/API definitions can be viewed through our JavaDoc documentation, located at LunchMeet/index.html
+
+
+## Running the Code
+* Import the project into Android Studio.
+* Either download an Android emulator from Android Studio or plug in an Android phone in development mode and download the app to the phone.
+* Run the app either in the emulator or the phone. 
+* To run unit tests, navigate to the file in Android Studio, right click, and then press "Run" on that file. 
