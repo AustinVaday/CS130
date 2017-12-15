@@ -15,6 +15,11 @@ import android.widget.TextView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Activity that gets all the messages in a group and presents them beautifully.
+ *
+ * @author Brian Kwak
+ */
 public class MessageActivity extends AppCompatActivity {
     private final String TAG = "MessageActivity";
 
@@ -22,6 +27,10 @@ public class MessageActivity extends AppCompatActivity {
     private String mUid;
     private String mGid;
 
+    /**
+     * The behavior that runs when the activity is created.
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +81,11 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Creates a MessageRowUI object and adds it to the layout in the activity.
+     * @param message The DBMessage containing the ID of the author and the content of the
+     *                message.
+     */
     public void addMessage(DBMessage message){
         final DBMessage msg = message;
         LinearLayout table = findViewById(R.id.messages);
@@ -99,11 +113,19 @@ public class MessageActivity extends AppCompatActivity {
     }
 
 
-
+    /**
+     * Asynchronously loads the image from the URL and places it in the given ImageView.
+     * @param photoUrl The URL of the image to be loaded.
+     * @param imageView The ImageView.
+     */
     public void loadImage(String photoUrl, ImageView imageView){
         new ImageDownloaderTask(imageView).execute(photoUrl);
     }
 
+    /**
+     * Sends the content of the editText at the bottom to the database.
+     * @param view The view.
+     */
     public void sendMessage(View view){
 
         EditText editText = findViewById(R.id.messageText);

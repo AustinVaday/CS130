@@ -11,16 +11,25 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Created by Brian on 12/13/2017.
+ * Asynchronously downloads a URL from the Internet and executes the given behavior upon completion.
  */
-
 class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
     private final WeakReference<ImageView> imageViewReference;
 
+    /**
+     * The constructor that takes in an ImageView.
+     * @param imageView The ImageView.
+     */
     public ImageDownloaderTask(ImageView imageView) {
         imageViewReference = new WeakReference<ImageView>(imageView);
     }
 
+    /**
+     * The behavior to occur in the background, asynchronously. In this case, it downloads the
+     * image from the URL into a bitmap.
+     * @param params The URL(s) to download.
+     * @return
+     */
     @Override
     protected Bitmap doInBackground(String... params) {
         try {
@@ -32,6 +41,10 @@ class ImageDownloaderTask extends AsyncTask<String, Void, Bitmap> {
         return null;
     }
 
+    /** The behavior that occurs when the asynchronous task is finished executing. In this case,
+     * it modifies the bitmap and loads it into the given ImageView.
+     * @param bitmap The bitmap that was loaded asynchronously.
+     */
     @Override
     protected void onPostExecute(Bitmap bitmap) {
         if (isCancelled()) {

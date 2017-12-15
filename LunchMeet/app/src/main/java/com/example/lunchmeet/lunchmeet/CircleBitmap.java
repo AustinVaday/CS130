@@ -10,10 +10,18 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 /**
- * Created by Brian on 12/13/2017.
+ * A class that contains the static method that takes a bitmap and turns it into a circular
+ * bitmap.
  */
-
 public class CircleBitmap {
+    /**
+     * Takes a bitmap and turns it into a circular bitmap. Also adds a counter in the bottom right
+     * corner for group size when necessary.
+     * @param bitmap The bitmap to be processed.
+     * @param subcircle Whether or not the subcircle should exist.
+     * @param num The number that should appear in the subcircle.
+     * @return
+     */
     public static Bitmap getCircleBitmap(Bitmap bitmap, int subcircle, String num) {
         final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
                 bitmap.getHeight(), Bitmap.Config.ARGB_8888);
