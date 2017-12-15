@@ -15,12 +15,10 @@
     * Group.java: Contains methods to create, modify, and delete a lunch group.
     * User.java: Contains methods to get and modify user information, such as their name, Facebook profile picture, and what group they are in. Also contains class definitions of the different states a user can be in (free agent, creator, and member) based on whether they are in a group or not.
     * DBActive.java, DBGroup.java, DBListener.java, DBManager.java, DBMessage.java, DBUser.java: Classes containing backend APIs to access the data in the Firebase database.
-    * DBTestActivity.java: Temporary activity used to debug the backend APIs.
     * ImageDownloaderTask.java: Used to download bitmaps that are used to display the user's Facebook profile picture in the messaging screen.
     * MessageRowUI.java: Contains the UI for one chat message for use in MessageActivity.
     * Tuple.java: Contains code to store a tuple of variables (x1, x2). 
   * LunchMeet/app/src/main/res contains the XML files used for the app UI. 
-    * activity_dbtest.xml: Contains UI for DBTestActivity.java.
     * activity_main.xml: Contains UI for MainActivity.java.
     * activity_maps.xml: Contains UI for MapsActivity.java.
     * activity_dashboard.xml: Contains UI for Dashboard.java.
@@ -32,14 +30,20 @@
 * Test code can be found in LunchMeet/app/src/main/test/java/com.example.lunchmeet.lunchmeet
     * UserUnitTest.java contains several unit tests used to test the functionality of our User class. 
       * userTest() tests whether a user was successfully created by checking that the User object's name is equal to the name we gave it. 
-      * freestateUserTest() tests whether a user is put into the free agent state upon creation.
-      * userCreatestGroupTest() tests whether a user is put into the creator state upon creating a group. 
-      * memberTest() tests whether a user is put into the member state after joining a group. 
+      * DBUserTest() tests whether we can create a DBUser object and get the right information returned from it using the getter APIs. The DBUser class corresponds to a user in the Firebase database. 
     * GroupUnitTest.java contains several unit tests used to test the functionality of our Group class. 
       * groupTest() tests whether a group was successfully created by checking that its size upon creation is 1. 
       * addUserToGroupTest() tests whether a user was added to a group successfully. After creating the group, we add a member and check that the new group size is equal to 2. 
       * removeUserToGroupTest() tests whether a user was removed from a group successfully. After removing a member, we check that the new group size is equal to 1.
       * leaderTest() tests whether the User who created the group is set as the group's leader.
       * coordinatesTest() tests whether the group's coordinates are set to be the leader's latitude and longitude. 
+      * DBGroupTest() tests whether we can create a DBGroup object and get the right information returned from it using the getter APIs. The DBGroup class corresponds to a group in the Firebase database. 
 
 * Detailed class/API definitions can be viewed through our JavaDoc documentation, located at LunchMeet/index.html
+
+
+## Running the Code
+* Import the project into Android Studio.
+* Either download an Android emulator from Android Studio or plug in an Android phone in development mode and download the app to the phone.
+* Run the app either in the emulator or the phone. 
+* To run unit tests, navigate to the file in Android Studio, right click, and then press "Run" on that file. 

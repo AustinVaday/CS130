@@ -1,6 +1,12 @@
 package com.example.lunchmeet.lunchmeet;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +16,8 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class UserUnitTest {
+
+   // private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     /**
      * Tests whether a User object was successfully created by checking if their name matches the name provided.
      * @throws Exception on unsuccessful User object creation.
@@ -25,5 +33,15 @@ public class UserUnitTest {
         assertEquals("profile_pic", temp.geturl());
         assertEquals("0", temp.getGid());
     }
-
+    /**
+     * Tests that a DBUser is created.
+     * @throws Exception on the new user not being in the free agent state.
+     */
+    @Test
+    public void DBUserTest() throws Exception{
+        DBUser u = new DBUser("123", "name", "photo");
+        assertEquals("123", u.getUid());
+        assertEquals("name", u.getName());
+        assertEquals("photo",u.getPhotoUrl());
+    }
 }

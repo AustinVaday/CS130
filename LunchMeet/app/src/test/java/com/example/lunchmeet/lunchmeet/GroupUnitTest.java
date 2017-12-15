@@ -69,4 +69,16 @@ public class GroupUnitTest {
         assertEquals(.45, group.getGroupLat(), 1e-1);
         assertEquals(.55, group.getGroupLong(), 1e-1);
     }
+
+    /**
+     * Test for DBGroup creation. Also, it sets the DBGroup ID as Leader's group ID.
+     * @throws Exception
+     */
+    @Test
+    public void DBGroupTest() throws Exception{
+        DBUser u = new DBUser("123", "name", "photo");
+        DBGroup g = new DBGroup();
+        g.setGid(u.getUid());
+        assertEquals("123", g.getGid());
+    }
 }
