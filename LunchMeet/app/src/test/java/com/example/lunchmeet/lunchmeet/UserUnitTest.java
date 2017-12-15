@@ -17,7 +17,6 @@ import static org.junit.Assert.*;
  */
 public class UserUnitTest {
 
-    private HashMap<String,User> user_hmp = new HashMap<String,User>();
    // private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     /**
      * Tests whether a User object was successfully created by checking if their name matches the name provided.
@@ -37,5 +36,7 @@ public class UserUnitTest {
     public void DBUserTest() throws Exception{
         DBUser u = new DBUser("123", "name", "photo");
         assertEquals("123", u.getUid());
+        assertEquals("name", u.getName());
+        assertEquals("photo",u.getPhotoUrl());
     }
 }
