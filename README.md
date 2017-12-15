@@ -27,17 +27,19 @@
     * message_row.xml: Contains UI for one row of chat, used in MessageActivity.
     * popup.xml: Contains UI for popup window obtained by clicking on a user's marker.
     * popup2.xml: Contains UI for popup window obtained when a user invites/requests to join a group. 
-* Test code can be found in LunchMeet/app/src/main/test/java/com.example.lunchmeet.lunchmeet
-    * UserUnitTest.java contains several unit tests used to test the functionality of our User class. 
+* Test code can be found in LunchMeet/app/src/main/test
+    * In the subdirectory /java/com.example.lunchmeet.lunchmeet, UserUnitTest.java contains several unit tests used to test the functionality of our User class. 
       * userTest() tests whether a user was successfully created by checking that the User object's data is equal to the parameters passed into it.
       * DBUserTest() tests whether we can create a DBUser object and get the right information returned from it using the getter APIs. The DBUser class corresponds to a user in the Firebase database. 
-    * GroupUnitTest.java contains several unit tests used to test the functionality of our Group class. 
+    * In the subdirectory /java/com.example.lunchmeet.lunchmeet, GroupUnitTest.java contains several unit tests used to test the functionality of our Group class. 
       * groupTest() tests whether a group was successfully created by checking that its size upon creation is 1. 
       * addUserToGroupTest() tests whether a user was added to a group successfully. After creating the group, we add a member and check that the new group size is equal to 2. 
       * removeUserToGroupTest() tests whether a user was removed from a group successfully. After removing a member, we check that the new group size is equal to 1.
       * leaderTest() tests whether the User who created the group is set as the group's leader.
       * coordinatesTest() tests whether the group's coordinates are set to be the leader's latitude and longitude. 
       * DBGroupTest() tests whether we can create a DBGroup object and get the right information returned from it using the getter APIs. The DBGroup class corresponds to a group in the Firebase database. 
+    * Subdirectory /Firebase_testlab contains the test results of running automated tests from Firebase Test Lab for Android:
+      * Each subfolder contains the test results for each tested device, where instrumentation_results.txt indicates if our app passed all tests on that particular device
 
 * Detailed class/API definitions can be viewed through our JavaDoc documentation, located at LunchMeet/index.html
 
