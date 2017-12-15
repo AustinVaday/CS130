@@ -18,39 +18,12 @@ public class UserUnitTest {
     public void userTest() throws Exception{
         User temp = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
         assertEquals("name", temp.getName());
+        assertEquals(null, temp.get_bmp());
+        assertEquals(0.45, temp.getLat(),0.001);
+        assertEquals(0.55, temp.getLon(),0.001);
+        assertEquals("male", temp.getuid());
+        assertEquals("profile_pic", temp.geturl());
+        assertEquals("0", temp.getGid());
     }
 
-    /**
-     * Tests that a newly created user is in the free agent state by default.
-     * @throws Exception on the new user not being in the free agent state.
-     */
-    @Test
-    public void freestateUserTest() throws Exception{
-        User temp = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
-        assertEquals("Free_agent", temp.getCurrentState().getClass().getSimpleName());
-    }
-
-    /**
-     * Tests that a user who creates a group is in the creator state.
-     * @throws Exception on the user not being in the creator state after making a group.
-     */
-    @Test
-    public void userCreatesGroupTest() throws Exception{
-        User user1 = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
-        user1.createGroup();
-        assertEquals("Creator", user1.getCurrentState().getClass().getSimpleName());
-    }
-
-    /**
-     * Tests that a user who joins a group is in the member state.
-     * @throws Exception on the user not being in the member state after joining a group.
-     */
-    @Test
-    public void memberTest()throws Exception{
-        User user1 = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
-        user1.createGroup();
-        User user2 = new User("name2",null, (float).45,(float).55,"male", "profile_pic2", "0");
-        user2.joinAGroup(user1.getGroup());
-        assertEquals("Member", user2.getCurrentState().getClass().getSimpleName());
-    }
 }

@@ -16,8 +16,6 @@ public class User {
     private double lat;
     private double lon;
     private String gid;
-    private Group group;
-
 
     /**
      * Default constructor to initialize user information.
@@ -81,10 +79,6 @@ public class User {
     /*
      * @return the group object which the user is in.
      * */
-    public Group getGroup(){
-        return group;
-    }
-
 
     public String getuid(){
         return uid;
