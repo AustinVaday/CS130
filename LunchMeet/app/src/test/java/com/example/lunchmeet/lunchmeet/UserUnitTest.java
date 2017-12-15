@@ -26,8 +26,13 @@ public class UserUnitTest {
     public void userTest() throws Exception{
         User temp = new User("name",null, (float).45,(float).55,"male", "profile_pic", "0");
         assertEquals("name", temp.getName());
+        assertEquals(null, temp.get_bmp());
+        assertEquals(0.45, temp.getLat(),0.001);
+        assertEquals(0.55, temp.getLon(),0.001);
+        assertEquals("male", temp.getuid());
+        assertEquals("profile_pic", temp.geturl());
+        assertEquals("0", temp.getGid());
     }
-
     /**
      * Tests that a DBUser is created.
      * @throws Exception on the new user not being in the free agent state.
