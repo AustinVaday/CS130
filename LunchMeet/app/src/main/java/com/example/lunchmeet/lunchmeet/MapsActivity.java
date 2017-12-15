@@ -295,7 +295,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     popupwindow = new PopupWindow(container, 700, 600, true);
 
                                     Point p = mMap.getProjection().toScreenLocation(new LatLng(user_hmp.get(u.getUid()).getLat(), user_hmp.get(u.getUid()).getLon()));
-                                    popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
+                                    if(!isFinishing()){
+                                        popupwindow.showAtLocation(findViewById(R.id.map), Gravity.NO_GRAVITY, p.x - 350, p.y - 300);
+                                    }
+
 
                                     final String userr = user;
                                     LinearLayout ib = (LinearLayout) container.findViewById(R.id.linear);
