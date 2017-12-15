@@ -877,7 +877,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             else {
                 System.out.println("marker hash map has entry");
-                updateMarker(uid, pos);
+                Marker currentMarker = markerHashMap.get(uid);
+                if (leaders.containsKey(uid)) {
+                    System.out.println("update map, " + uid + " is a leader, creating marker with group size" + groupSize.get(leaders.get(uid)));
+
+                    currentMarker.setVisible(true);
+                    updateMarker(uid, pos, groupSize.get(leaders.get(uid)));
+                }
+                else if(user_hmp.get(key).getGid() == null) {
+                    System.out.println("update map, " + uid + " isn't in a group, creating marker with 0 size");
+
+                    currentMarker.setVisible(true);
+                    updateMarker(uid, pos, 0);
+                }
+                else {
+                    System.out.println("update map, " + uid + " is already in a group");
+                    currentMarker.setVisible(false);
+                }
             }
         }
         LatLng currPos = new LatLng(user_hmp.get(u.getUid()).getLat(),user_hmp.get(u.getUid()).getLon());
@@ -949,8 +965,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      *
      * @param uid The ID of the user that the marker corresponds to.
      * @param loc The new location of the marker.
+     * @param size The size of the group.
      */
-    public void updateMarker(String uid, LatLng loc){
+    public void updateMarker(String uid, LatLng loc, int size){
         Marker currentMarker = markerHashMap.get(uid);
         Marker counter= counterMarkerHashMap.get(uid);
         currentMarker.setPosition(loc);
@@ -968,13 +985,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             currentMarker.setTag(1);
 
         }
-        if(leaders.get(uid)!=null && groupSize.get(uid)!=null){
+        if(leaders.get(uid)!=null){
             Bitmap black = BitmapFactory.decodeResource(getResources(),
                     R.drawable.black);
             Bitmap r_black = Bitmap.createScaledBitmap(black, 75, 75, true);
 
             counter.setIcon(BitmapDescriptorFactory
-                    .fromBitmap(getCircleBitmap(r_black, 1, Integer.toString(groupSize.get(uid)))));
+                    .fromBitmap(getCircleBitmap(r_black, 1, Integer.toString(size))));
             counter.setVisible(true);
         }
     }
