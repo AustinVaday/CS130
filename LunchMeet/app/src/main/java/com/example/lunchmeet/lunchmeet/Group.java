@@ -76,12 +76,7 @@ public class Group {
      * Disbands a group by setting all members to the free agent state.
      * @return true if the group was successfully disbanded, false otherwise.
      */
-    public boolean dissolveGroup() {
-        for (int i = 0; i < curr_size; i++) {
-            members[i].setState(members[i].getState("freeagent")); // set all members to free agent state
-        }
-        return true;
-    }
+
 
     /**
      * Gets the members of the group.
