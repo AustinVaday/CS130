@@ -19,7 +19,6 @@
     * MessageRowUI.java: Contains the UI for one chat message for use in MessageActivity.
     * Tuple.java: Contains code to store a tuple of variables (x1, x2). 
   * LunchMeet/app/src/main/res contains the XML files used for the app UI. 
-    * activity_dbtest.xml: Contains UI for DBTestActivity.java.
     * activity_main.xml: Contains UI for MainActivity.java.
     * activity_maps.xml: Contains UI for MapsActivity.java.
     * activity_dashboard.xml: Contains UI for Dashboard.java.
