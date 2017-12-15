@@ -31,6 +31,7 @@ public class DBManager{
     private String TAG = "DBManager";
 
     private ChildEventListener requestListener;
+    private ChildEventListener messageListener;
 
     private DBManager(){
         database = FirebaseDatabase.getInstance().getReference();
@@ -351,6 +352,10 @@ public class DBManager{
                     database.removeEventListener(requestListener);
                     requestListener = null;
                 }
+                if(messageListener != null){
+                    database.removeEventListener(messageListener);
+                    messageListener = null;
+                }
             }
         }, gid);
     }
@@ -526,12 +531,12 @@ public class DBManager{
      * Attaches a listener for new messages to the chatroom. In the beginning, it reads all the
      * existing messages at once, then handles each new message separately as they arrive.
      *
-     * @param gid The ID of the group whose chat is being red.
+     * @param gid The ID of the group whose chat is being read.
      * @param o The DBListener to handle each message that is read.
      */
     public void attachListenerForNewMessages(String gid, DBListener<DBMessage> o){
         final DBListener<DBMessage> obs = o;
-        database.child("messages").child(gid).addChildEventListener(new ChildEventListener() {
+        messageListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 DBMessage result = dataSnapshot.getValue(DBMessage.class);
@@ -558,6 +563,7 @@ public class DBManager{
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+        database.child("messages").child(gid).addChildEventListener(messageListener);
     }
 }
