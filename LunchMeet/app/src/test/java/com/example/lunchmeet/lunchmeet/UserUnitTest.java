@@ -19,7 +19,9 @@ public class UserUnitTest {
 
    // private DatabaseReference database = FirebaseDatabase.getInstance().getReference();
     /**
-     * Tests whether a User object was successfully created by checking if their name matches the name provided.
+     * Tests whether a User object was successfully created by checking if the provided parameters match
+     * the data saved in the User. We check the name, the bitmap of their profile picture, their location,
+     * their user ID, their profile picture URL, and their group ID to determine this.
      * @throws Exception on unsuccessful User object creation.
      */
     @Test
